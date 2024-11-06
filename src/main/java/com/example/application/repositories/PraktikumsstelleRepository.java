@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PraktikumsstelleRepository extends JpaRepository<Praktikumsstelle, Long> {
     // Custom Query-Methode, um Praktika nach Status zu finden
-    List<Praktikumsstelle> findByStatus(String status);
+    //List<Praktikumsstelle> findByStatus(String status);
 }
