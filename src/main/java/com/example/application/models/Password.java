@@ -24,13 +24,13 @@ public class Password {
                 System.out.println("Bitte versuche es erneut:");
             }
 
-            return enteredPassword;
         }
 
     }
 
     private boolean isPasswordValid(String enteredPassword) {
-        return enteredPassword.length() >= 8 &&  containsSpecialCharacter(enteredPassword) &&
+        return enteredPassword.length() >= 8 &&
+                containsSpecialCharacter(enteredPassword) &&
                 containsANumber(enteredPassword) &&
                 containsLetters(enteredPassword);
     }
