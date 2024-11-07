@@ -2,7 +2,7 @@ package com.example.application.models;
 
 import java.util.Scanner;
 
-public class Password {
+public class Registrieren {
 
     private String password;
 
@@ -47,33 +47,10 @@ public class Password {
         return text.matches(".*[a-zA-ZäÄöÖüÜ].*");
     }
 
-
-
-    public boolean enterPassword() {
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.print("Bitte Passwort eingeben: ");
-            String enteredPassword = scanner.nextLine();
-
-            if (this.password.equals(enteredPassword)) {
-                System.out.println("Passwort korrekt");
-                scanner.close();
-                return true;
-            }
-            else {
-                System.out.println("Eingegebenes Passwort ist falsch. Bitte erneut versuchen.");
-            }
-        }
-    }
-
     public static void main(String[] args) {
 
-        Password password = new Password();
-        password.setPassword();
+        Registrieren registrierung = new Registrieren();
+        registrierung.setPassword();
 
     }
-
 }
-
-
