@@ -1,20 +1,23 @@
 package com.example.application.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import java.util.Date;
 
+@Data
 @Entity
+@Table(name = "praktikumsantrag")
 public class Praktikumsantrag {
 
     @Id
     private int antragsID;
 
-    private String matrikelnummerStudentin;
+    @ManyToOne
+    @JoinColumn
+    private Studentin matrikelnummer;
+
     private String nameStudentin;
     private String vornameStudentin;
     private Date gebDatumStudentin;
