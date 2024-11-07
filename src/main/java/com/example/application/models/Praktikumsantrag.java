@@ -6,49 +6,49 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
 import java.util.Date;
-
 
 @Entity
 public class Praktikumsantrag {
 
     @Id
-    private int praktikumsantragsnr;
+    private int antragsID;
 
-    @OneToOne
-    @JoinColumn(name = "studentinMatrikelnummer", referencedColumnName = "matrikelnummer")
-    private Studentin studentin;
-
+    private String matrikelnummerStudentin;
+    private String nameStudentin;
+    private String vornameStudentin;
+    private Date gebDatumStudentin;
+    private String strasseStudentin;
+    private int hausnummerStudentin;
+    private int plzStudentin;
+    private String ortStudentin;
+    private String telefonnummerStudentin;
+    private String emailStudentin;
 
     private String vorschlagPraktikumsbetreuerIn;
     private String praktikumssemester;
     private int studiensemester;
     private String studiengang;
-    private String titelPraxisBegleitLehrVeranstaltungen;
+    private String begleitendeLehrVeranstaltungen;
 
-    private boolean leistungsnachweisVoraussetzungfuerPraktikum;
+    private boolean voraussetzendeLeistungsnachweise;
     private String fehlendeLeistungsnachweise;
-    private boolean antragAusnahmezulassungGestellt;
+    private boolean ausnahmeZulassung;
 
-    //FRAGE: wie mit Datum und Unterschrift von Studi umgehen?
-    private Date datumderStudiUnterschrift;
-    private boolean vonStudentinUnterschrieben;
+    private Date datumAntrag;
+    private Status status;
 
-    private boolean vomPBBestaetigt;
-    //FRAGE: wie mit Datum und Unterschrift von PB umgehen?
-    private Date datumdesPBUnterschrift;
-    private boolean vonPBUnterschrieben;
+    private String namePraktikumsstelle;
+    private String strassePraktikumsstelle;
+    private int plzPraktikumsstelle;
+    private String ortPraktikumsstelle;
+    private String landPraktikumsstelle;
+    private String ansprechpartnerPraktikumsstelle;
+    private String telefonPraktikumsstelle;
+    private String emailPraktikumsstelle;
+    private String abteilung;
+    private String taetigkeit;
 
-    private boolean vonAusbildungstelleBestatetigt;
-    //FRAGE wie mit Datum und Unterschrift von Ausbildungstelle umgehen? + Namen der Studi eintragen?
-    private Date datumderAusbildungstelleUnterschrift;
-    private boolean vonAusbildungstelleUnterschrieben;
-
-    //Frage wie damit umgehen dass die Praktikumsbeurteilung und Bericht dem PB vorgelegen hat und den Anforderungen entspricht und PB mit Datum und Unterschirft unterschrieben hat?
-    private Date datumdesPBUnterschrift2;
-    private boolean vonPBUnterschrieben2;
-
-    //Frage wie damit umgehen, dass Nachweis an das Prüfungsamt gesendet werden soll?
-    private boolean anprufeungsAmtversendet;
+    private Date startdatum;
+    private Date enddatum;
 }

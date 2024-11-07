@@ -1,6 +1,6 @@
 package com.example.application.services;
 
-import com.example.application.models.Praktikumsstelle;
+import com.example.application.models.Praktikumsantrag;
 import com.example.application.repositories.PraktikumsstelleRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +15,11 @@ public class PraktikumsstelleService {
         this.repository = repository;
     }
 
-    public List<Praktikumsstelle> getAllPraktika() {
+    public List<Praktikumsantrag> getAllPraktika() {
         return repository.findAll();
     }
 
-    public Praktikumsstelle savePraktikum(Praktikumsstelle praktikum) {
+    public Praktikumsantrag savePraktikum(Praktikumsantrag praktikum) {
         return repository.save(praktikum);
     }
 
