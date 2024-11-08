@@ -18,4 +18,7 @@ public class Sicherheitsfrage {
         this.frageID = frageID;
         this.frage = frage;
     }
+    public Sicherheitsfrage() {
+
+    }
 }
