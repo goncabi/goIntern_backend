@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 import java.util.Scanner;
 
+@Data
 @Entity
+@Table(name = "studentin")
 public class Studentin {
 
     @Id

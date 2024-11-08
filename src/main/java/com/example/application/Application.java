@@ -1,5 +1,7 @@
 package com.example.application;
 
+import com.example.application.models.Sicherheitsfrage;
+import com.example.application.repositories.SicherheitsfrageRepository;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
 import org.springframework.boot.SpringApplication;

@@ -1,9 +1,14 @@
 package com.example.application.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.util.Date;
 
+@Data
 @Entity
+@Table(name = "praktikumsantrag")
 public class Praktikumsantrag {
 
     @Id
@@ -13,7 +18,10 @@ public class Praktikumsantrag {
      dass jede ID in der Reihenfolge (1, 2, 3, ...) generiert wird.*/
     private int antragsID;
 
-    private String matrikelnummerStudentin;
+    @ManyToOne
+    @JoinColumn
+    private Studentin matrikelnummer;
+
     private String nameStudentin;
     private String vornameStudentin;
     private Date gebDatumStudentin;
