@@ -1,9 +1,8 @@
 package com.example.application.models;
 
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
 
-import java.util.Date;
 import java.util.Scanner;
 
 @Data
