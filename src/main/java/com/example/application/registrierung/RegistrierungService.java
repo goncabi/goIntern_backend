@@ -1,0 +1,56 @@
+package com.example.application.registrierung;
+
+import com.example.application.models.AppUserRole;
+import com.example.application.models.Sicherheitsantwort;
+import com.example.application.models.Studentin;
+import com.example.application.repositories.SicherheitsantwortRepository;
+import com.example.application.repositories.SicherheitsfrageRepository;
+import com.example.application.repositories.StudentinRepository;
+import com.example.application.services.StudentinService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class RegistrierungService {
+
+    private final StudentinService studentinService;
+    private final SicherheitsfrageRepository sicherheitsfrageRepository;
+    private final SicherheitsantwortRepository sicherheitsantwortRepository;
+    private final StudentinRepository studentinRepository;
+    private final PasswortValidierer passwortValidierer;
+    private MatrikelnummerValidierer matrikelnummerValidierer;
+
+    public void registrieren(RegistrierungsAnfrage anfrage) {
+        boolean isValidMatrikelnummer = matrikelnummerValidierer.test(anfrage.getMatrikelnummer());
+        if (!isValidMatrikelnummer) {
+            throw new IllegalStateException("Matrikelnummer invalide.");
+        }
+        boolean isValidPasswort = passwortValidierer.test(anfrage.getPasswort());
+        if (!isValidPasswort) {
+            throw new IllegalStateException("Passwort invalide.");
+        }
+        studentinService.signUpUser(
+                new Studentin(anfrage.getMatrikelnummer(), anfrage.getPasswort(), AppUserRole.USER));
+        antwortenSpeichern(anfrage);
+    }
+
+    private void antwortenSpeichern(RegistrierungsAnfrage anfrage) {
+        Sicherheitsantwort antwort1 = new Sicherheitsantwort(
+                sicherheitsfrageRepository.findById(1L).get(),
+                studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()).get(),
+                anfrage.getAntwort1());
+        Sicherheitsantwort antwort2 = new Sicherheitsantwort(
+                sicherheitsfrageRepository.findById(2L).get(),
+                studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()).get(),
+                anfrage.getAntwort2());
+        Sicherheitsantwort antwort3 = new Sicherheitsantwort(
+                sicherheitsfrageRepository.findById(3L).get(),
+                studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()).get(),
+                anfrage.getAntwort3());
+
+        sicherheitsantwortRepository.saveAll(List.of(antwort1, antwort2, antwort3));
+    }
+}
