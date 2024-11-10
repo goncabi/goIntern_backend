@@ -11,7 +11,7 @@ import lombok.Data;
 public class Sicherheitsfrage {
 
     @Id
-    private int frageID;
+    private long frageID;
     private String frage;
 
     public Sicherheitsfrage(int frageID, String frage) {

@@ -1,15 +1,15 @@
-package com.example.application;
+package com.example.application.services;
 
 import com.example.application.models.Sicherheitsfrage;
 import com.example.application.repositories.SicherheitsfrageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
-public class DBOperationRunner implements CommandLineRunner {
+@Service
+public class SicherheitsfragenService implements CommandLineRunner {
     @Autowired
     SicherheitsfrageRepository sicherheitsfrageRepo;
 
