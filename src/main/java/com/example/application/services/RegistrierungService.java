@@ -24,7 +24,7 @@ public class RegistrierungService {
     private MatrikelnummerValidierer matrikelnummerValidierer;
 
     public void registrieren(RegistrierungsAnfrage anfrage) {
-        boolean isValidMatrikelnummer = matrikelnummerValidierer.test(anfrage.getMatrikelnummer());
+        boolean isValidMatrikelnummer = matrikelnummerValidierer.isMatrikelnummerValid(anfrage.getMatrikelnummer());
         if (!isValidMatrikelnummer) {
             throw new IllegalStateException("Matrikelnummer invalide.");
         }
