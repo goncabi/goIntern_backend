@@ -1,6 +1,9 @@
 package com.example.application.services;
 
 import com.example.application.models.*;
+import com.example.application.models.registrierung.MatrikelnummerValidierer;
+import com.example.application.models.registrierung.PasswortValidierer;
+import com.example.application.models.registrierung.RegistrierungsAnfrage;
 import com.example.application.repositories.SicherheitsantwortRepository;
 import com.example.application.repositories.SicherheitsfrageRepository;
 import com.example.application.repositories.StudentinRepository;
