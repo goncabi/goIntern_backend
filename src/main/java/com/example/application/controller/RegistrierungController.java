@@ -1,7 +1,7 @@
 package com.example.application.controller;
 
-import com.example.application.models.registrierung.RegistrierungsAnfrage;
-import com.example.application.services.RegistrierungService;
+import com.example.application.models.RegistrierungsAnfrage;
+import com.example.application.services.registrierung.RegistrierungService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

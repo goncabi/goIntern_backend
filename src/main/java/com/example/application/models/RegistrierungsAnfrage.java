@@ -1,4 +1,4 @@
-package com.example.application.models.registrierung;
+package com.example.application.models;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

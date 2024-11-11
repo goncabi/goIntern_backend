@@ -1,8 +1,6 @@
-package com.example.application.models.registrierung;
+package com.example.application.services.registrierung;
 
 import org.springframework.stereotype.Service;
-
-import java.util.Scanner;
 
 @Service
 public class MatrikelnummerValidierer{
