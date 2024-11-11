@@ -28,12 +28,12 @@ public class RegistrierungService {
         if (!isValidMatrikelnummer) {
             throw new IllegalStateException("Matrikelnummer invalide.");
         }
-        boolean isValidPasswort = passwortValidierer.test(anfrage.getPasswort());
+        boolean isValidPasswort = passwortValidierer.passwordValidation(anfrage.getPasswort1(), anfrage.getPasswort2());
         if (!isValidPasswort) {
             throw new IllegalStateException("Passwort invalide.");
         }
         studentinService.signUpUser(
-                new Studentin(anfrage.getMatrikelnummer(), anfrage.getPasswort(), AppUserRole.USER));
+                new Studentin(anfrage.getMatrikelnummer(), anfrage.getPasswort1(), AppUserRole.USER));
         antwortenSpeichern(anfrage);
     }
 
