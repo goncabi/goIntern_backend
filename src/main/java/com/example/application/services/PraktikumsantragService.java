@@ -1,6 +1,7 @@
 package com.example.application.services;
 
 import com.example.application.models.Praktikumsantrag;
+import com.example.application.models.Status_Antrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,12 +9,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class PraktikumsantragService {
 
-@Autowired
-    private PraktikumsantragRepository repository;
+    @Autowired
+    private PraktikumsantragRepository praktikumsantragRepository;
 
-public Praktikumsantrag antragSpeichern(Praktikumsantrag antrag) {//Methode zum Speichern von Praktikumsdaten
-    return repository.save(antrag);
-}
+    public Praktikumsantrag antragSpeichern(Praktikumsantrag antrag) {
+        //Methode zum Speichern von Praktikumsantragdaten
+         antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG); //Status ändert sich nach Praktikumsantragausgang
+         return praktikumsantragRepository.save(antrag);
+    }
 }
 
 /*

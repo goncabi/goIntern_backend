@@ -2,8 +2,10 @@ package com.example.application.repositories;
 
 import com.example.application.models.Praktikumsantrag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface PraktikumsantragRepository extends JpaRepository<Praktikumsantrag, Integer> {
+@Repository
+public interface PraktikumsantragRepository extends JpaRepository<Praktikumsantrag, Long> {
 }
 /*Mit Spring Data JPA bieten Repositories sofortigen Zugriff auf Standard-CRUD-Operationen wie save, findAll, findById, und delete,
  ohne dass zusätzlicher Code geschrieben werden muss. Spring Data bietet sogar erweiterte Methoden zur Abfrage, die einfach
