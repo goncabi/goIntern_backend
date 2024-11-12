@@ -16,9 +16,7 @@ import java.util.List;
 public class RegistrierungService {
 
     private final StudentinService studentinService;
-    private final SicherheitsfrageRepository sicherheitsfrageRepository;
     private final SicherheitsantwortRepository sicherheitsantwortRepository;
-    private final StudentinRepository studentinRepository;
     private final PasswortValidierer passwortValidierer;
     private MatrikelnummerValidierer matrikelnummerValidierer;
 
@@ -37,19 +35,9 @@ public class RegistrierungService {
     }
 
     private void antwortenSpeichern(RegistrierungsAnfrage anfrage) {
-        Sicherheitsantwort antwort1 = new Sicherheitsantwort(
-                sicherheitsfrageRepository.findById(1L).get(),
-                studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()).get(),
-                anfrage.getAntwort1());
-        Sicherheitsantwort antwort2 = new Sicherheitsantwort(
-                sicherheitsfrageRepository.findById(2L).get(),
-                studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()).get(),
-                anfrage.getAntwort2());
-        Sicherheitsantwort antwort3 = new Sicherheitsantwort(
-                sicherheitsfrageRepository.findById(3L).get(),
-                studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()).get(),
-                anfrage.getAntwort3());
-
+        Sicherheitsantwort antwort1 = new Sicherheitsantwort(1, anfrage.getMatrikelnummer(), anfrage.getAntwort1());
+        Sicherheitsantwort antwort2 = new Sicherheitsantwort(2, anfrage.getMatrikelnummer(), anfrage.getAntwort2());
+        Sicherheitsantwort antwort3 = new Sicherheitsantwort(3, anfrage.getMatrikelnummer(), anfrage.getAntwort3());
         sicherheitsantwortRepository.saveAll(List.of(antwort1, antwort2, antwort3));
     }
 }
