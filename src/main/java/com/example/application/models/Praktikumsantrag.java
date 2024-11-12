@@ -1,9 +1,7 @@
 package com.example.application.models;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -29,120 +27,115 @@ public class Praktikumsantrag {
     @JoinColumn
     private Studentin matrikelnummer;
 
-    @NotNull
-    @Size(max = 15)
+    @NotBlank(message = "Der Name darf nicht leer sein")
+    @Size(max = 20, message = "Der Name darf maximal 20 Zeichen lang sein")
     private String nameStudentin;
 
-    @NotNull
-    @Size(max = 15)
+    @NotBlank(message = "Der Vorname darf nicht leer sein")
+    @Size(max = 15, message = "Der Vorname darf maximal 15 Zeichen lang sein")
     private String vornameStudentin;
 
-    @NotNull
+    @NotNull(message = "Das Geburtsdatum darf nicht leer sein")
     private LocalDate gebDatumStudentin;
 
-    @NotNull
+    @NotBlank(message = "Die Straße darf nicht leer sein")
     private String strasseStudentin;
 
-    @NotNull
-    @Size(max = 3)
-    private int hausnummerStudentin;
+    @Min(value = 1, message = "Die Hausnummer muss positiv sein")
+    @Max(value = 999, message = "Die Hausnummer darf maximal 3 Ziffern haben")
+    private Integer hausnummerStudentin;
 
-    @NotNull
-    @Size(max = 5)
-    private int plzStudentin;
+    @NotNull(message = "Die Postleitzahl darf nicht leer sein")
+    @Min(value = 10000, message = "Die Postleitzahl muss genau 5 Ziffern haben")
+    @Max(value = 99999, message = "Die Postleitzahl muss genau 5 Ziffern haben")
+    private Integer plzStudentin;
 
-    @NotNull
-    @Size(max = 15)
+    @NotBlank(message = "Der Ort darf nicht leer sein")
+    @Size(max = 15, message = "Der Ort darf maximal 15 Zeichen lang sein")
     private String ortStudentin;
 
-    @NotNull
-    @Size(max = 15)
+    @NotBlank(message = "Die Telefonnummer darf nicht leer sein")
+    @Size(max = 15, message = "Die Telefonnummer darf maximal 15 Zeichen lang sein")
     private String telefonnummerStudentin;
 
-    @NotNull
-    @Email
+    @NotBlank(message = "Die E-Mail darf nicht leer sein")
+    @Email(message = "Die E-Mail muss ein gültiges Format haben")
     private String emailStudentin;
 
-    @NotNull
-    @Size(max = 50)
+    @Size(max = 50, message = "Der Vorschlag des Praktikumsbetreuers darf maximal 50 Zeichen lang sein")
     private String vorschlagPraktikumsbetreuerIn;
 
-    @NotNull
-    @Size(max = 10)
+    @NotBlank(message = "Das Praktikumssemester darf nicht leer sein")
+    @Size(max = 10, message = "Das Praktikumssemester darf maximal 10 Zeichen lang sein")
     private String praktikumssemester;
 
-    @NotNull
-    @Size(max = 10)
-    private int studiensemester;
+    @NotNull(message = "Das Studiensemester darf nicht leer sein")
+    private Integer studiensemester;
 
-    @NotNull
-    @Size(max = 50)
+    @NotBlank(message = "Der Studiengang darf nicht leer sein")
+    @Size(max = 50, message = "Der Studiengang darf maximal 50 Zeichen lang sein")
     private String studiengang;
 
-    @NotNull
-    @Size(max = 500)
+    @Size(max = 500, message = "Die begleitenden Lehrveranstaltungen dürfen maximal 500 Zeichen lang sein")
     private String begleitendeLehrVeranstaltungen;
 
-    @NotNull
-    private boolean voraussetzendeLeistungsnachweise;
+    private Boolean voraussetzendeLeistungsnachweise;
 
-    @NotNull
-    @Size(max = 500)
+    @Size(max = 500, message = "Die fehlenden Leistungsnachweise dürfen maximal 500 Zeichen lang sein")
     private String fehlendeLeistungsnachweise;
 
-    @NotNull
-    private boolean ausnahmeZulassung;
+    private Boolean ausnahmeZulassung;
 
-    @NotNull
+    @NotNull(message = "Das Antragsdatum darf nicht leer sein")
     private LocalDate datumAntrag;
 
     @Enumerated(EnumType.STRING)
     private Status_Antrag statusAntrag;
 
-    @NotNull
-    @Size(max = 50)
+    @NotBlank(message = "Der Name der Praktikumsstelle darf nicht leer sein")
+    @Size(max = 50, message = "Der Name der Praktikumsstelle darf maximal 50 Zeichen lang sein")
     private String namePraktikumsstelle;
 
-    @NotNull
-    @Size(max = 50)
+    @NotBlank(message = "Die Straße der Praktikumsstelle darf nicht leer sein")
+    @Size(max = 50, message = "Die Straße der Praktikumsstelle darf maximal 50 Zeichen lang sein")
     private String strassePraktikumsstelle;
 
-    @NotNull
-    @Size(max = 5)
-    private int plzPraktikumsstelle;
+    @NotNull(message = "Die Postleitzahl der Praktikumsstelle darf nicht leer sein")
+    @Min(value = 10000, message = "Die Postleitzahl muss genau 5 Ziffern haben")
+    @Max(value = 99999, message = "Die Postleitzahl muss genau 5 Ziffern haben")
+    private Integer plzPraktikumsstelle;
 
-    @NotNull
-    @Size(max = 20)
-
+    @NotBlank(message = "Der Ort der Praktikumsstelle darf nicht leer sein")
+    @Size(max = 20, message = "Der Ort darf maximal 20 Zeichen lang sein")
     private String ortPraktikumsstelle;
 
-    @NotNull
-    @Size(max = 30)
+    @NotBlank(message = "Das Land der Praktikumsstelle darf nicht leer sein")
+    @Size(max = 30, message = "Das Land darf maximal 30 Zeichen lang sein")
     private String landPraktikumsstelle;
 
-    @NotNull
-    @Size(max = 30)
+    @NotBlank(message = "Der Ansprechpartner darf nicht leer sein")
+    @Size(max = 30, message = "Der Ansprechpartner darf maximal 30 Zeichen lang sein")
     private String ansprechpartnerPraktikumsstelle;
 
-    @NotNull
-    @Size(max = 15)
+    @NotBlank(message = "Die Telefonnummer darf nicht leer sein")
+    @Size(max = 15, message = "Die Telefonnummer darf maximal 15 Zeichen lang sein")
     private String telefonPraktikumsstelle;
 
-    @NotNull
-    @Email
+    @NotBlank(message = "Die E-Mail darf nicht leer sein")
+    @Email(message = "Die E-Mail muss ein gültiges Format haben")
     private String emailPraktikumsstelle;
 
-    @NotNull
-    @Size(max = 15)
+    @NotBlank(message = "Die Abteilung darf nicht leer sein")
+    @Size(max = 15, message = "Die Abteilung darf maximal 15 Zeichen lang sein")
     private String abteilung;
 
-    @NotNull
-    @Size(max = 30)
+    @NotBlank(message = "Die Tätigkeit darf nicht leer sein")
+    @Size(max = 30, message = "Die Tätigkeit darf maximal 30 Zeichen lang sein")
     private String taetigkeit;
 
-    @NotNull
+    @NotNull(message = "Das Startdatum darf nicht leer sein")
     private LocalDate startdatum;
 
-    @NotNull
+    @NotNull(message = "Das Enddatum darf nicht leer sein")
     private LocalDate enddatum;
 }
