@@ -2,24 +2,22 @@ package com.example.application.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Entity
 @Table
+@Getter
 public class Sicherheitsantwort {
 
     @Id
     @GeneratedValue
     private Long antwortID;
-    @ManyToOne
-    @JoinColumn
-    private Sicherheitsfrage frage;
-    @ManyToOne
-    @JoinColumn
-    private Studentin matrikelnummer;
+    private int frage;
+    private String matrikelnummer;
     private String antwort;
 
-    public Sicherheitsantwort(Sicherheitsfrage frage, Studentin matrikelnummer, String antwort) {
+    public Sicherheitsantwort(int frage, String matrikelnummer, String antwort) {
         this.frage = frage;
         this.matrikelnummer = matrikelnummer;
         this.antwort = antwort;
