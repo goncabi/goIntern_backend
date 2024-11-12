@@ -3,6 +3,8 @@ package com.example.application.controller;
 import com.example.application.models.PasswortVergessenAnfrage;
 import com.example.application.services.PasswortVergessenService;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PasswortVergessenController {
     private final PasswortVergessenService passwortVergessenService;
 
-    public String passwortVergessen(PasswortVergessenAnfrage anfrage) {
+    @PostMapping
+    public String passwortVergessen(@RequestBody PasswortVergessenAnfrage anfrage) {
         if(passwortVergessenService.passwortVergessen(anfrage)) {
             return "Antworten korrekt.";
             //Hier dann eventuell Ausgeben des vergessenen Passworts (neues Passwort erstellen komplizierter) und auf Startseite leiten

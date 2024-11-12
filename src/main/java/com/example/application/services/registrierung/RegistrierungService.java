@@ -16,9 +16,7 @@ import java.util.List;
 public class RegistrierungService {
 
     private final StudentinService studentinService;
-    private final SicherheitsfrageRepository sicherheitsfrageRepository;
     private final SicherheitsantwortRepository sicherheitsantwortRepository;
-    private final StudentinRepository studentinRepository;
     private final PasswortValidierer passwortValidierer;
     private MatrikelnummerValidierer matrikelnummerValidierer;
 
