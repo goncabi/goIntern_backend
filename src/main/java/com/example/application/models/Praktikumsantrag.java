@@ -1,13 +1,18 @@
 package com.example.application.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @Data
 @Entity
 @Table(name = "praktikumsantrag")
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class Praktikumsantrag {
 
     @Id
@@ -15,7 +20,7 @@ public class Praktikumsantrag {
      Diese Annotation weist die Datenbank an, die ID automatisch zu generieren, wenn ein neuer Eintrag erstellt wird.
      Die Strategie GenerationType.IDENTITY ist dabei eine der gebräuchlichsten und sorgt dafür,
      dass jede ID in der Reihenfolge (1, 2, 3, ...) generiert wird.*/
-    private int antragsID;
+    private Long antragsID;
 
     @ManyToOne
     @JoinColumn
@@ -23,7 +28,7 @@ public class Praktikumsantrag {
 
     private String nameStudentin;
     private String vornameStudentin;
-    private Date gebDatumStudentin;
+    private LocalDate gebDatumStudentin;
     private String strasseStudentin;
     private int hausnummerStudentin;
     private int plzStudentin;
@@ -41,7 +46,7 @@ public class Praktikumsantrag {
     private String fehlendeLeistungsnachweise;
     private boolean ausnahmeZulassung;
 
-    private Date datumAntrag;
+    private LocalDate datumAntrag;
     private Status_Antrag statusAntrag;
 
     private String namePraktikumsstelle;
@@ -55,6 +60,6 @@ public class Praktikumsantrag {
     private String abteilung;
     private String taetigkeit;
 
-    private Date startdatum;
-    private Date enddatum;
+    private LocalDate startdatum;
+    private LocalDate enddatum;
 }
