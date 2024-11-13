@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/auth")
 @AllArgsConstructor
 public class PasswortVergessenController {
     private final PasswortVergessenService passwortVergessenService;
 
-    @PostMapping
+    @PostMapping("/passwort-vergessen")
     public String passwortVergessen(@RequestBody PasswortVergessenAnfrage anfrage) {
         if(passwortVergessenService.passwortVergessen(anfrage)) {
             return "Antworten korrekt.";

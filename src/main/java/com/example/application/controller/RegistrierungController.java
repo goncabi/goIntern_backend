@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping//hier kommt die Verlinkung zum Frontend bzw. die http
+@RequestMapping("/api/auth")//hier kommt die Verlinkung zum Frontend bzw. die http
 @AllArgsConstructor
 public class RegistrierungController {
 
     private RegistrierungService registrierungService;
 
-    @PostMapping
+    @PostMapping("/registrieren")
     public String registrieren(@RequestBody RegistrierungsAnfrage anfrage){
         registrierungService.registrieren(anfrage);
         return "Registrierung erfolgreich";
