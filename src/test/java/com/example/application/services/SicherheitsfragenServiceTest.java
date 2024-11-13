@@ -15,7 +15,7 @@ private SicherheitsfragenService sicherheitsfragenService;
 private SicherheitsfrageRepository sicherheitsfrageRepository;
 
     @Test
-    void tesRun() {
+    void testRun() {
 
 
     }

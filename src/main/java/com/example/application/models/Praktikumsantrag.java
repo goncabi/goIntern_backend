@@ -17,7 +17,8 @@ import java.time.LocalDate;
 public class Praktikumsantrag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)/*
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /*
      Diese Annotation weist die Datenbank an, die ID automatisch zu generieren, wenn ein neuer Eintrag erstellt wird.
      Die Strategie GenerationType.IDENTITY ist dabei eine der gebräuchlichsten und sorgt dafür,
      dass jede ID in der Reihenfolge (1, 2, 3, ...) generiert wird.*/
