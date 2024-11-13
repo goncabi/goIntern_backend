@@ -3,16 +3,20 @@ package com.example.application.services;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Status_Antrag;
 import com.example.application.repositories.PraktikumsantragRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
+@Validated
+
 public class PraktikumsantragService {
 
     @Autowired
     private PraktikumsantragRepository praktikumsantragRepository;
 
-    public Praktikumsantrag antragSpeichern(Praktikumsantrag antrag) {
+    public Praktikumsantrag antragSpeichern(@Valid Praktikumsantrag antrag) {
         //Methode zum Speichern von Praktikumsantragdaten
          antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG); //Status ändert sich nach Praktikumsantragausgang
          return praktikumsantragRepository.save(antrag);
