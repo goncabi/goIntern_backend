@@ -17,11 +17,10 @@ import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
-@Transactional
-@Validated
+@Transactional // alle Daten Änderungen im Datenbank in Test-Kontext werden automatisch rückgängig gemacht
+@Validated //Aktiviert die Validierung, sodass @Valid funktioniert
 
 class PraktikumsantragServiceTest {
-
 
     @Autowired
     private PraktikumsantragService praktikumsantragService;
@@ -63,7 +62,7 @@ class PraktikumsantragServiceTest {
     @Test
     void testAntragMitNullwerten() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setNameStudentin(null);  // Pflichtfeld auf null setzen
+        antrag.setNameStudentin(null);
 
         assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
@@ -71,7 +70,7 @@ class PraktikumsantragServiceTest {
     @Test
     void testAntragMitLeerwerten() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setNameStudentin("");  // Pflichtfeld leer setzen
+        antrag.setNameStudentin("");
 
         assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
@@ -79,7 +78,7 @@ class PraktikumsantragServiceTest {
     @Test
     void testAntragMitMinWert() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setHausnummerStudentin(0);  // Unterer Grenzwert
+        antrag.setHausnummerStudentin(0);
 
         assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
@@ -87,7 +86,7 @@ class PraktikumsantragServiceTest {
     @Test
     void testAntragMitMaxWert() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setHausnummerStudentin(1000);  // Oberer Grenzwert überschritten
+        antrag.setHausnummerStudentin(1000);
 
         assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
@@ -96,7 +95,7 @@ class PraktikumsantragServiceTest {
     void testAntragMitGueltigenDaten() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
 
-        when(praktikumsantragRepository.save(antrag)).thenReturn(antrag);
+        when(praktikumsantragRepository.save(antrag)).thenReturn(antrag); //when() was Objekt tun soll, thenReturn() Ergebnis wird festgelegt.
 
         Praktikumsantrag result = praktikumsantragService.antragSpeichern(antrag);
         assertEquals(antrag, result);
