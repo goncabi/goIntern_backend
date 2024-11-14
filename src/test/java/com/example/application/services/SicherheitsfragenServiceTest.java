@@ -26,7 +26,7 @@ class SicherheitsfragenServiceTest {
         sicherheitsfragenService.run();
 
         verify(sicherheitsfrageRepository, atLeastOnce()).saveAll(List.of(
-                new Sicherheitsfrage(1, "Wie lautet dein Geburtsort wurdest du geboren?"),
+                new Sicherheitsfrage(1, "Wie lautet dein Geburtsort?"),
                 new Sicherheitsfrage(2, "Was war dein erstes Haustier?"),
                 new Sicherheitsfrage(3, "Wie lautet der Name deiner Grundschule?")
         ));
