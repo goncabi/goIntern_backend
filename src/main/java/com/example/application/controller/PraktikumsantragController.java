@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
-@AllArgsConstructor //generiert automatisch einen Konstruktor
+@AllArgsConstructor //generiert automatisch einen Konstruktor (@Autowired wird nicht mehr gebraucht)
 
 public class PraktikumsantragController {
     PraktikumsantragService praktikumsantragService;

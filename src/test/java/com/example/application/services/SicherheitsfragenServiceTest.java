@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -30,4 +31,14 @@ class SicherheitsfragenServiceTest {
                 new Sicherheitsfrage(3, "Wie lautete der Spitzname deines/r besten Freundes/in in der Kindheit?")
         ));
     }
+    @Test
+
+    void testRunThrowsException(){
+
+        doThrow(new RuntimeException("Fehler beim Speichern"))
+                .when(sicherheitsfrageRepository).saveAll(anyList());
+
+        assertThrows(RuntimeException.class, () -> sicherheitsfragenService.run());
+    }
+
 }

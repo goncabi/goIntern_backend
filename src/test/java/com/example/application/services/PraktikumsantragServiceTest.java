@@ -40,7 +40,7 @@ class PraktikumsantragServiceTest {
         antrag.setPlzStudentin(10598);
         antrag.setOrtStudentin("Berlin");
         antrag.setTelefonnummerStudentin("01478112530");
-        antrag.setEmailStudentin("mariajuana@gmail.com");
+        antrag.setEmailStudentin("mariahuna@gmail.com");
         antrag.setPraktikumssemester("WiSe2025");
         antrag.setStudiensemester(3);
         antrag.setStudiengang("Informatik");
