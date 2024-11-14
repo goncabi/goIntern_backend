@@ -26,9 +26,9 @@ class SicherheitsfragenServiceTest {
         sicherheitsfragenService.run();
 
         verify(sicherheitsfrageRepository, atLeastOnce()).saveAll(List.of(
-                new Sicherheitsfrage(1, "Wie lautet der Geburtsname Ihrer Mutter?"),
-                new Sicherheitsfrage(2, "Wie viele Haustiere hatten Sie, als Sie 10 Jahre alt waren?"),
-                new Sicherheitsfrage(3, "Wie lautete der Spitzname deines/r besten Freundes/in in der Kindheit?")
+                new Sicherheitsfrage(1, "Wie lautet dein Geburtsort wurdest du geboren?"),
+                new Sicherheitsfrage(2, "Was war dein erstes Haustier?"),
+                new Sicherheitsfrage(3, "Wie lautet der Name deiner Grundschule?")
         ));
     }
     @Test
