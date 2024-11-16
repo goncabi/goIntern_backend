@@ -4,12 +4,8 @@ import com.example.application.models.*;
 import com.example.application.services.StudentinService;
 import com.example.application.models.RegistrierungsAnfrage;
 import com.example.application.repositories.SicherheitsantwortRepository;
-import com.example.application.repositories.SicherheitsfrageRepository;
-import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -35,9 +31,7 @@ public class RegistrierungService {
     }
 
     private void antwortenSpeichern(RegistrierungsAnfrage anfrage) {
-        Sicherheitsantwort antwort1 = new Sicherheitsantwort(1, anfrage.getMatrikelnummer(), anfrage.getAntwort1());
-        Sicherheitsantwort antwort2 = new Sicherheitsantwort(2, anfrage.getMatrikelnummer(), anfrage.getAntwort2());
-        Sicherheitsantwort antwort3 = new Sicherheitsantwort(3, anfrage.getMatrikelnummer(), anfrage.getAntwort3());
-        sicherheitsantwortRepository.saveAll(List.of(antwort1, antwort2, antwort3));
+        Sicherheitsantwort antwort = new Sicherheitsantwort(anfrage.getFrage(), anfrage.getMatrikelnummer(), anfrage.getAntwort());
+        sicherheitsantwortRepository.save(antwort);
     }
 }
