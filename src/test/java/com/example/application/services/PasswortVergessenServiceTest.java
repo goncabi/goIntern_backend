@@ -1,6 +1,9 @@
 package com.example.application.services;
 
+import com.example.application.models.AppUserRole;
 import com.example.application.models.PasswortVergessenAnfrage;
+import com.example.application.models.Sicherheitsantwort;
+import com.example.application.models.Studentin;
 import com.example.application.repositories.SicherheitsantwortRepository;
 import com.example.application.repositories.StudentinRepository;
 import org.junit.jupiter.api.Test;
@@ -28,8 +31,8 @@ class PasswortVergessenServiceTest {
     private PasswortVergessenService passwortVergessenService;
 
     @Test
-    void passwortVergessenTest1() {
-        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Meier");
+    void passwortVergessenTestObeineExceptionGeworfen() {
+        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Berlin");
 
         when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
                 .thenReturn(Optional.empty());
@@ -38,5 +41,30 @@ class PasswortVergessenServiceTest {
                 IllegalStateException.class,
                 () -> passwortVergessenService.passwortVergessen(anfrage)
         );
+    }
+
+    @Test
+    void passwortVergessenTestObEingabeRichtig() {
+        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Berlin");
+
+        when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
+                .thenReturn(Optional.of(new Studentin("45678", "passwort1", AppUserRole.USER)));
+
+        when(sicherheitsantwortRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
+                .thenReturn(Optional.of(new Sicherheitsantwort(1, "1234567", "Berlin")));
+        assertTrue(passwortVergessenService.passwortVergessen(anfrage));
+    }
+
+
+    @Test
+    void passwortVergessenTestObEingabeFalsch() {
+        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Berlin");
+
+        when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
+                .thenReturn(Optional.of(new Studentin("45678", "passwort1", AppUserRole.USER)));
+
+        when(sicherheitsantwortRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
+                .thenReturn(Optional.of(new Sicherheitsantwort(1, "1234567", "Kassel")));
+        assertFalse(passwortVergessenService.passwortVergessen(anfrage));
     }
 }
