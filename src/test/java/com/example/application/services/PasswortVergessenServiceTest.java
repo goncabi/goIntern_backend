@@ -29,7 +29,7 @@ class PasswortVergessenServiceTest {
 
     @Test
     void passwortVergessenTest1() {
-        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", "Meier", "Mimi", "Anna");
+        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Meier");
 
         when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
                 .thenReturn(Optional.empty());
