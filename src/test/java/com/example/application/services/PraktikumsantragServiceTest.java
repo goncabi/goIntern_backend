@@ -64,7 +64,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setNameStudentin(null);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
     }
 
     @Test
@@ -72,7 +72,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setNameStudentin("");
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
     }
 
     @Test
@@ -80,7 +80,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setHausnummerStudentin(0);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
     }
 
     @Test
@@ -88,7 +88,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setHausnummerStudentin(1000);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
     }
 
     @Test
@@ -97,7 +97,7 @@ class PraktikumsantragServiceTest {
 
         when(praktikumsantragRepository.save(antrag)).thenReturn(antrag); //when() was Objekt tun soll, thenReturn() Ergebnis wird festgelegt.
 
-        Praktikumsantrag result = praktikumsantragService.antragSpeichern(antrag);
+        String result = praktikumsantragService.antragStellen(antrag);
         assertEquals(antrag, result);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Optional;
+
 @Service
 @Validated
 
@@ -16,11 +18,20 @@ public class PraktikumsantragService {
     @Autowired
     private PraktikumsantragRepository praktikumsantragRepository;
 
-    public Praktikumsantrag antragSpeichern(@Valid Praktikumsantrag antrag) {
-        //Methode zum Speichern von Praktikumsantragdaten
-         antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG); //Status ändert sich nach Praktikumsantragausgang
-         return praktikumsantragRepository.save(antrag);
+    public String antragStellen(@Valid Praktikumsantrag antrag) {
+        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(String.valueOf(antrag.getMatrikelnummer()));
+
+        if (existingAntrag.isPresent()) {
+            // Antrag mit dieser Matrikelnummer existiert bereits
+            return "Antrag weiter bearbeiten; kein zweiter Antrag möglich";
+        } else {
+            // Kein Antrag vorhanden, also speichern und Methode 'anlegen' verwenden
+            antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
+            praktikumsantragRepository.save(antrag);
+            return "Antrag erfolgreich angelegt.";
+        }
     }
+
 }
 
 /*
