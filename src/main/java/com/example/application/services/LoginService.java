@@ -19,7 +19,7 @@ public class LoginService {
             loginSuccessful = studentin.getPassword().equals(loginAnfrage.getPasswort());
         }
         else{
-            throw new IllegalStateException("User mit genannter Matrikelnummer existiert nicht.");
+            throw new IllegalStateException("Matrikelnummer falsch oder nicht registriert");
         }
         return loginSuccessful;
     }

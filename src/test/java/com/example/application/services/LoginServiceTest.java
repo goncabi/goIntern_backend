@@ -49,7 +49,7 @@ class LoginServiceTest {
 
     @Test
     void login_shouldReturnFalse_whenPasswordIsIncorrect() {
-        // Arrange
+
         String matrikelnummer = "s0123456";
         String correctPassword = "correctPassword";
         String wrongPassword = "wrongPassword";
@@ -70,15 +70,14 @@ class LoginServiceTest {
 
     @Test
     void login_shouldThrowException_whenMatrikelnummerDoesNotExist() {
-        // Arrange
+
         String matrikelnummer = "s0123456";
-        String passwort = "password";
-        LoginAnfrage loginAnfrage = new LoginAnfrage(matrikelnummer, passwort);
+        String password = "password";
+        LoginAnfrage loginAnfrage = new LoginAnfrage(matrikelnummer, password);
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 
-        // Act & Assert
         Exception exception = assertThrows(IllegalStateException.class, () -> loginService.login(loginAnfrage));
-        assertEquals("Userin mit genannter Matrikelnummer existiert nicht.", exception.getMessage());
+        assertEquals("Matrikelnummer falsch oder nicht registriert", exception.getMessage());
     }
 }

@@ -31,7 +31,7 @@ class PasswortVergessenServiceTest {
     private PasswortVergessenService passwortVergessenService;
 
     @Test
-    void passwortVergessenTestObeineExceptionGeworfen() {
+    void passwortVergessenTestObEineExceptionGeworfen() {
         PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Berlin");
 
         when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
