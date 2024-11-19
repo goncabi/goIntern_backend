@@ -55,3 +55,16 @@ REST-Methoden: `POST`, `GET`, `PUT`, `DELETE`
 Diese Struktur hält die Geschäftslogik zentral und gut organisiert, sodass das Vaadin-Frontend, später problemlos mit den Anträgen arbeiten kann.
 Service-Schicht verwaltet die zentrale Geschäftslogik, macht den Code wiederverwendbar und erleichtert Wartung und Erweiterung.
  */
+
+
+
+/*
+public void antragLoeschen(Long id) {
+    Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findById(id);
+    if (praktikumsantragDB.isEmpty()) {
+        throw new RuntimeException("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden");
+    }
+    praktikumsantragRepository.deleteById(id);
+}
+}
+*/

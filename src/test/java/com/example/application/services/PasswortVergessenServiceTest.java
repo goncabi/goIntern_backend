@@ -7,7 +7,6 @@ import com.example.application.models.Studentin;
 import com.example.application.repositories.SicherheitsantwortRepository;
 import com.example.application.repositories.StudentinRepository;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PasswortVergessenServiceTest {
 
-    //zwei Mocks:
-    @MockBean // MockBean ist dafür da um die Datenbank nicht nutzen zu muessen
+    @MockBean
     private SicherheitsantwortRepository sicherheitsantwortRepository;
+
     @MockBean
     private StudentinRepository studentinRepository;
 
@@ -60,7 +59,6 @@ class PasswortVergessenServiceTest {
                 .thenReturn(Optional.of(new Sicherheitsantwort(1, "1234567", "Berlin")));
         assertTrue(passwortVergessenService.passwortVergessen(anfrage));
     }
-
 
     @Test
     void passwortVergessenTestObEingabeFalsch() {
