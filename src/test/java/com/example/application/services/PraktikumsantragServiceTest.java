@@ -9,10 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDate;
 import static org.mockito.Mockito.when;
 
 
@@ -28,9 +26,10 @@ class PraktikumsantragServiceTest {
     @MockBean
     private PraktikumsantragRepository praktikumsantragRepository;
 
+    Praktikumsantrag antrag = new Praktikumsantrag();
 
     private Praktikumsantrag erzeugeGueltigenAntrag() {
-        Praktikumsantrag antrag = new Praktikumsantrag();
+
         antrag.setAntragsID(111L);
         antrag.setNameStudentin("Hunt");
         antrag.setVornameStudentin("Maria");
@@ -59,6 +58,7 @@ class PraktikumsantragServiceTest {
         antrag.setEnddatum(LocalDate.of(2024, 11, 16));
         return antrag;
     }
+
     @Test
     void testAntragMitNullwerten() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
@@ -99,4 +99,27 @@ class PraktikumsantragServiceTest {
         String result = praktikumsantragService.antragStellen(antrag); // Call service
         assertEquals("Antrag erfolgreich angelegt.", result);
     }
+
+//    @Test
+//    public void testAntragStellen_NeuerAntrag() {
+//        when(praktikumsantragRepository.findByMatrikelnummer(anyString())).thenReturn(Optional.empty());
+//
+//        String result = praktikumsantragService.antragStellen();
+//
+//        assertEquals("Antrag erfolgreich angelegt.", result);
+//        verify(praktikumsantragRepository, times(1)).save(this.antrag);
+//    }
+
+//    @Test
+//    void antragVorhandenButtonUndBereitsVorhanden() {
+//        boolean result = antrag.antragVorhanden(s0123456);
+//        assertTrue(result);
+//    }
+//    @Test
+//    void antragVorhandenButtonUndNochNichtVorhanden() {
+//        boolean result = antrag.antragVorhanden(s0123456);
+//        assertFalse(result);
+//    }
+//
+//
 }
