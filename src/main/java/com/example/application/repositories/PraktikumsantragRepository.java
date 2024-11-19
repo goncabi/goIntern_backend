@@ -1,6 +1,7 @@
 package com.example.application.repositories;
 
 import com.example.application.models.Praktikumsantrag;
+import com.example.application.models.Studentin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PraktikumsantragRepository extends JpaRepository<Praktikumsantrag, Long> {
-        Optional<Praktikumsantrag> findByMatrikelnummer(String matrikelnummer);
+        Optional<Praktikumsantrag> findByMatrikelnummer(Studentin matrikelnummer);
 
 }
 /*Mit Spring Data JPA bieten Repositories sofortigen Zugriff auf Standard-CRUD-Operationen wie save, findAll, findById, und delete,

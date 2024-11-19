@@ -19,7 +19,7 @@ public class PraktikumsantragService {
     private PraktikumsantragRepository praktikumsantragRepository;
 
     public String antragStellen(@Valid Praktikumsantrag antrag) {
-        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(String.valueOf(antrag.getMatrikelnummer()));
+        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer());
 
         if (existingAntrag.isPresent()) {
             // Antrag mit dieser Matrikelnummer existiert bereits

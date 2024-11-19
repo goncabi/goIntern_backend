@@ -18,14 +18,16 @@ public class Praktikumsantrag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long antragsID;
     /*
      Diese Annotation weist die Datenbank an, die ID automatisch zu generieren, wenn ein neuer Eintrag erstellt wird.
      Die Strategie GenerationType.IDENTITY ist dabei eine der gebräuchlichsten und sorgt dafür,
      dass jede ID in der Reihenfolge (1, 2, 3, ...) generiert wird.*/
-    private Long antragsID;
+
 
     @ManyToOne
     @JoinColumn
+
     private Studentin matrikelnummer;
 
     @NotBlank(message = "Der Name darf nicht leer sein")
@@ -90,7 +92,7 @@ public class Praktikumsantrag {
     @NotNull(message = "Das Antragsdatum darf nicht leer sein")
     private LocalDate datumAntrag;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL) // Maps Enum to smallint in the database
     private Status_Antrag statusAntrag;
 
     @NotBlank(message = "Der Name der Praktikumsstelle darf nicht leer sein")

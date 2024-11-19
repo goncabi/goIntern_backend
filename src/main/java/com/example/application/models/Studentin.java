@@ -12,6 +12,8 @@ import lombok.Setter;
 public class Studentin {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "matrikelnummer", unique = true, nullable = false)
     private String matrikelnummer;
     private String password;
     @Enumerated(EnumType.STRING)
