@@ -46,8 +46,15 @@ public class PraktikumsantragService {
         }
         return "Kein vorhandener Antrag mit dieser Matrikelnummer gefunden.";
     }
-}
 
+    public void antragLoeschen(Long id) {
+        Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findById(id);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
+        if (praktikumsantragDB.isEmpty()) {
+            throw new RuntimeException("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden");
+        }
+        praktikumsantragRepository.deleteById(id);
+    }
+}
 /*
  Die Service-Schicht übernimmt hier die zentrale Logik und kümmert sich um  die Verwaltung der Praktikumsanträge.
 Stellt Endpunkte für CRUD-Operationen bereit, damit das Frontend die Daten über HTTP  abrufen und verwalten kann.
@@ -58,13 +65,6 @@ Service-Schicht verwaltet die zentrale Geschäftslogik, macht den Code wiederver
 
 
 
-/*
-public void antragLoeschen(Long id) {
-    Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findById(id);
-    if (praktikumsantragDB.isEmpty()) {
-        throw new RuntimeException("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden");
-    }
-    praktikumsantragRepository.deleteById(id);
-}
-}
-*/
+
+
+

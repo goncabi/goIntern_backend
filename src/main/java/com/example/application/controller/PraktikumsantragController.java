@@ -27,18 +27,16 @@ public class PraktikumsantragController {
     }
 
     //Daten aus der Datenbank löschen mit DeleteMapping
-/*
+
    @DeleteMapping("/{id}")
-    public ResponseEntity<> antragLoeschen(@PathVariable Long id) {
+    public ResponseEntity<String> antragLoeschen(@PathVariable Long id) {
        try {
            praktikumsantragService.antragLoeschen(id);
-           return ResponseEntity.ok("Praktikumsantrag mit ID: " + id + " wurde erfolgreich gelöscht.");
        } catch (RuntimeException e) {
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
        }
+       return ResponseEntity.ok("Praktikumsantrag mit ID: " + id + " wurde erfolgreich gelöscht.");
    }
-   */
-    
 }
 
 
