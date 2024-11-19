@@ -95,9 +95,8 @@ class PraktikumsantragServiceTest {
     void testAntragMitGueltigenDaten() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
 
-        when(praktikumsantragRepository.save(antrag)).thenReturn(antrag); //when() was Objekt tun soll, thenReturn() Ergebnis wird festgelegt.
-
-        String result = praktikumsantragService.antragStellen(antrag);
-        assertEquals(antrag, result);
+        when(praktikumsantragRepository.save(antrag)).thenReturn(antrag); // Mock save method
+        String result = praktikumsantragService.antragStellen(antrag); // Call service
+        assertEquals("Antrag erfolgreich angelegt.", result);
     }
 }
