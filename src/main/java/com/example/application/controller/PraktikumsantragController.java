@@ -6,10 +6,9 @@ import com.example.application.services.PraktikumsantragService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
@@ -24,6 +23,23 @@ public class PraktikumsantragController {
 
         antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
         praktikumsantragService.antragStellen(antrag);
-        return ResponseEntity.ok("Praktikumsantrag wurde elfolgreich gespeichert!");
+        return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gespeichert!");
     }
+
+    //Daten aus der Datenbank löschen mit DeleteMapping
+/*
+   @DeleteMapping("/{id}")
+    public ResponseEntity<> antragLoeschen(@PathVariable Long id) {
+       try {
+           praktikumsantragService.antragLoeschen(id);
+           return ResponseEntity.ok("Praktikumsantrag mit ID: " + id + " wurde erfolgreich gelöscht.");
+       } catch (RuntimeException e) {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+       }
+   }
+   */
+    
 }
+
+
+
