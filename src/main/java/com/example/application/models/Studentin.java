@@ -11,6 +11,7 @@ import lombok.Setter;
 @Table(name = "studentin")
 public class Studentin {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "matrikelnummer", unique = true, nullable = false)
@@ -22,10 +23,13 @@ public class Studentin {
     public Studentin() {
     }
 
+
     public Studentin(String matrikelnummer, String password, AppUserRole appUserRole) {
         this.matrikelnummer = matrikelnummer;
         this.password = password;
         this.appUserRole = appUserRole;
     }
+
+
 }
 

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PraktikumsantragRepository extends JpaRepository<Praktikumsantrag, Long> {
-        Optional<Praktikumsantrag> findByMatrikelnummer(Studentin matrikelnummer);
+        Optional<Praktikumsantrag> findByMatrikelnummer(String matrikelnummer);
 
 }
 /*Mit Spring Data JPA bieten Repositories sofortigen Zugriff auf Standard-CRUD-Operationen wie save, findAll, findById, und delete,

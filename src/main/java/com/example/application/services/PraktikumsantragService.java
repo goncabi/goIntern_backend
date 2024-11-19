@@ -2,11 +2,14 @@ package com.example.application.services;
 
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Status_Antrag;
+import com.example.application.models.Studentin;
 import com.example.application.repositories.PraktikumsantragRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Optional;
 
@@ -18,19 +21,27 @@ public class PraktikumsantragService {
     @Autowired
     private PraktikumsantragRepository praktikumsantragRepository;
 
-    public String antragStellen(@Valid Praktikumsantrag antrag) {
-        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer());
 
-        if (existingAntrag.isPresent()) {
-            // Antrag mit dieser Matrikelnummer existiert bereits
-            return "Antrag weiter bearbeiten; kein zweiter Antrag möglich";
-        } else {
-            // Kein Antrag vorhanden, also speichern und Methode 'anlegen' verwenden
-            antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
-            praktikumsantragRepository.save(antrag);
-            return "Antrag erfolgreich angelegt.";
-        }
+    // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
+    public boolean antragVorhanden(String matrikelnummer) {
+        return praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent();
     }
+
+
+
+//    public String antragStellen(@Valid Praktikumsantrag antrag) {
+//        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer());
+//
+//        if (existingAntrag.isPresent()) {
+//            // Antrag mit dieser Matrikelnummer existiert bereits
+//            return "Antrag weiter bearbeiten; kein zweiter Antrag möglich";
+//        } else {
+//            // Kein Antrag vorhanden, also speichern und Methode 'anlegen' verwenden
+//            antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
+//            praktikumsantragRepository.save(antrag);
+//            return "Antrag erfolgreich angelegt.";
+//        }
+//    }
 
 }
 
