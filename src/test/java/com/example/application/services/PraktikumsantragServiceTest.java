@@ -13,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import static org.mockito.Mockito.when;
 import java.util.Optional;
-
-
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -103,6 +101,7 @@ class PraktikumsantragServiceTest {
         assertEquals("Antrag erfolgreich angelegt.", result);
     }
 
+
 //    @Test
 //    public void testAntragStellen_NeuerAntrag() {
 //        when(praktikumsantragRepository.findByMatrikelnummer(anyString())).thenReturn(Optional.empty());
@@ -113,7 +112,7 @@ class PraktikumsantragServiceTest {
 //        verify(praktikumsantragRepository, times(1)).save(this.antrag);
 //    }
 
-//    @Test
+    //    @Test
 //    void antragVorhandenButtonUndBereitsVorhanden() {
 //        boolean result = antrag.antragVorhanden(s0123456);
 //        assertTrue(result);
@@ -125,25 +124,21 @@ class PraktikumsantragServiceTest {
 //    }
 //
 //
-@Test
-void testAntragLoeschenErfolgreich() {
-    Long id = 1L;
-    Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-    antrag.setAntragsID(id);
+    @Test
+    void testAntragLoeschenErfolgreich() {
+        Long id = 1L;
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setAntragsID(id);
 
-    //MockTeil: praktikumRepo soll gemockt werden:
-    //Die beiden Zeilen sagen dass die Datenbank umgangen werden soll und dass bei findById ein optional returnt werden soll und bei delteID soll nix passieren (weil beim test soll nicht wirlich was gelöscht werden in der datenbank)
-    when(praktikumsantragRepository.findById(id)).thenReturn(Optional.of(antrag)); // Ein Optional antrag wird erzeugt und zurück gegeben
-    doNothing().when(praktikumsantragRepository).deleteById(id);
+        //MockTeil:
+        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.of(antrag));
+        doNothing().when(praktikumsantragRepository).deleteById(id);
 
-    //hier wird die loschenMethode aufgerufen und der antrag mit der id wird gelöscht
-    praktikumsantragService.antragLoeschen(id);
+        praktikumsantragService.antragLoeschen(id);
 
-    //ähnlich wie assert. Hier wird getestet wie oft findyById aufgerufen wird und wie oft die ID gelöscht wird
-    verify(praktikumsantragRepository, times(1)).findById(id);
-    verify(praktikumsantragRepository, times(1)).deleteById(id);
-}
-
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(1)).deleteById(id);
+    }
 
     @Test
     void testAntragLoeschenNichtVorhanden() {
@@ -161,5 +156,17 @@ void testAntragLoeschenErfolgreich() {
         verify(praktikumsantragRepository, times(0)).deleteById(id);
     }
 
+    @Test
+    void testAntragLoeschenMitNullId() {
+        Long id = null;
 
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> praktikumsantragService.antragLoeschen(id));
+
+        assertEquals("Praktikumsantrag mit der ID: null ist nicht vorhanden und kann nicht gelöscht werden",
+                exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(0)).deleteById(id);
+    }
 }
