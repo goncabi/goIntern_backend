@@ -103,6 +103,9 @@ class PraktikumsantragServiceTest {
         assertEquals("Antrag erfolgreich angelegt.", result);
     }
 
+
+
+
 //    @Test
 //    public void testAntragStellen_NeuerAntrag() {
 //        when(praktikumsantragRepository.findByMatrikelnummer(anyString())).thenReturn(Optional.empty());
@@ -161,5 +164,18 @@ void testAntragLoeschenErfolgreich() {
         verify(praktikumsantragRepository, times(0)).deleteById(id);
     }
 
+    @Test
+    void testAntragLoeschenMitNullId() {
+        Long id = null; //hier sonderfall
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> praktikumsantragService.antragLoeschen(id));
+
+        assertEquals("Praktikumsantrag mit der ID: null ist nicht vorhanden und kann nicht gelöscht werden",
+                exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(0)).deleteById(id);
+    }
 
 }

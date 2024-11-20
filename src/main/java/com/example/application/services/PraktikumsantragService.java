@@ -54,6 +54,9 @@ public class PraktikumsantragService {
         }
         praktikumsantragRepository.deleteById(id);
     }
+
+
+
 }
 /*
  Die Service-Schicht übernimmt hier die zentrale Logik und kümmert sich um  die Verwaltung der Praktikumsanträge.
