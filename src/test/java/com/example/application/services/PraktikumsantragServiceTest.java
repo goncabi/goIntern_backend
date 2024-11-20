@@ -12,7 +12,10 @@ import org.springframework.validation.annotation.Validated;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import static org.mockito.Mockito.when;
+import java.util.Optional;
 
+
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional // alle Daten Änderungen im Datenbank in Test-Kontext werden automatisch rückgängig gemacht
@@ -122,4 +125,41 @@ class PraktikumsantragServiceTest {
 //    }
 //
 //
+@Test
+void testAntragLoeschenErfolgreich() {
+    Long id = 1L;
+    Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+    antrag.setAntragsID(id);
+
+    //MockTeil: praktikumRepo soll gemockt werden:
+    //Die beiden Zeilen sagen dass die Datenbank umgangen werden soll und dass bei findById ein optional returnt werden soll und bei delteID soll nix passieren (weil beim test soll nicht wirlich was gelöscht werden in der datenbank)
+    when(praktikumsantragRepository.findById(id)).thenReturn(Optional.of(antrag)); // Ein Optional antrag wird erzeugt und zurück gegeben
+    doNothing().when(praktikumsantragRepository).deleteById(id);
+
+    //hier wird die loschenMethode aufgerufen und der antrag mit der id wird gelöscht
+    praktikumsantragService.antragLoeschen(id);
+
+    //ähnlich wie assert. Hier wird getestet wie oft findyById aufgerufen wird und wie oft die ID gelöscht wird
+    verify(praktikumsantragRepository, times(1)).findById(id);
+    verify(praktikumsantragRepository, times(1)).deleteById(id);
+}
+
+
+    @Test
+    void testAntragLoeschenNichtVorhanden() {
+        Long id = 22L;
+
+        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> praktikumsantragService.antragLoeschen(id));
+
+        assertEquals("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden",
+                exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(0)).deleteById(id);
+    }
+
+
 }
