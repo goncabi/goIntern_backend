@@ -12,7 +12,8 @@ import org.springframework.validation.annotation.Validated;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import static org.mockito.Mockito.when;
-
+import java.util.Optional;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional // alle Daten Änderungen im Datenbank in Test-Kontext werden automatisch rückgängig gemacht
@@ -100,6 +101,7 @@ class PraktikumsantragServiceTest {
         assertEquals("Antrag erfolgreich angelegt.", result);
     }
 
+
 //    @Test
 //    public void testAntragStellen_NeuerAntrag() {
 //        when(praktikumsantragRepository.findByMatrikelnummer(anyString())).thenReturn(Optional.empty());
@@ -110,7 +112,7 @@ class PraktikumsantragServiceTest {
 //        verify(praktikumsantragRepository, times(1)).save(this.antrag);
 //    }
 
-//    @Test
+    //    @Test
 //    void antragVorhandenButtonUndBereitsVorhanden() {
 //        boolean result = antrag.antragVorhanden(s0123456);
 //        assertTrue(result);
@@ -122,4 +124,49 @@ class PraktikumsantragServiceTest {
 //    }
 //
 //
+    @Test
+    void testAntragLoeschenErfolgreich() {
+        Long id = 1L;
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setAntragsID(id);
+
+        //MockTeil:
+        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.of(antrag));
+        doNothing().when(praktikumsantragRepository).deleteById(id);
+
+        praktikumsantragService.antragLoeschen(id);
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void testAntragLoeschenNichtVorhanden() {
+        Long id = 22L;
+
+        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> praktikumsantragService.antragLoeschen(id));
+
+        assertEquals("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden",
+                exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(0)).deleteById(id);
+    }
+
+    @Test
+    void testAntragLoeschenMitNullId() {
+        Long id = null;
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> praktikumsantragService.antragLoeschen(id));
+
+        assertEquals("Praktikumsantrag mit der ID: null ist nicht vorhanden und kann nicht gelöscht werden",
+                exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(0)).deleteById(id);
+    }
 }
