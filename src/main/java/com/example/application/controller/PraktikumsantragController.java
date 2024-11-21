@@ -22,7 +22,7 @@ public class PraktikumsantragController {
         // dass der Antrag erfolgreich gespeichert wurde.
 
         antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
-        praktikumsantragService.antragStellen(antrag);
+        praktikumsantragService.antragSpeichern(antrag);
         return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gespeichert!");
     }
 

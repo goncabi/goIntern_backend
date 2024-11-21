@@ -20,31 +20,26 @@ public class PraktikumsantragService {
 
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
-    public boolean antragVorhanden(String matrikelnummer) {
+    private boolean antragVorhanden(String matrikelnummer) {
         return praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent();
     }
 
     // Methode zur Erstellung eines neuen Antrags, wenn keiner vorhanden ist
-    public String antragStellen(@Valid Praktikumsantrag antrag) {
-        if (antragVorhanden(String.valueOf(antrag.getMatrikelnummer()))) {
-            return "Es ist bereits ein Antrag vorhanden.";
-        }
-        antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
+    public String antragSpeichern(@Valid Praktikumsantrag antrag) {
         praktikumsantragRepository.save(antrag);
         return "Antrag erfolgreich angelegt.";
     }
+//
+//    // Methode zur Bearbeitung eines bestehenden Antrags
+//    public void antragBearbeiten(String matrikelnummer, @Valid Praktikumsantrag updatedAntrag) {
+//        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
+//        Praktikumsantrag antrag = existingAntrag.get();
+//        praktikumsantragRepository.save(antrag);
+//
+//    }
 
-    // Methode zur Bearbeitung eines bestehenden Antrags
-    public String antragBearbeiten(String matrikelnummer, @Valid Praktikumsantrag updatedAntrag) {
-        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
-        if (existingAntrag.isPresent()) {
-            Praktikumsantrag antrag = existingAntrag.get();
-            // hier müssten dann die Bearbeitungen am Antrag eingearbeitet werden
-            antrag.setStatusAntrag(updatedAntrag.getStatusAntrag());
-            praktikumsantragRepository.save(antrag);
-            return "Antrag erfolgreich bearbeitet.";
-        }
-        return "Kein vorhandener Antrag mit dieser Matrikelnummer gefunden.";
+    public void antragErstellen() {
+
     }
 
     public void antragLoeschen(Long id) {
