@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter @Setter
 @Data
 @Entity
@@ -16,12 +18,17 @@ public class Studentin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "matrikelnummer", unique = true, nullable = false)
     private String matrikelnummer;
+    //private List<Benachrichtigung> nachrichtenliste;
     private String password;
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;
 
+
+
     public Studentin() {
     }
+
+
 
 
     public Studentin(String matrikelnummer, String password, AppUserRole appUserRole) {
