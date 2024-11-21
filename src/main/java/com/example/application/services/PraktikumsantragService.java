@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service
 @Validated
@@ -55,6 +56,10 @@ public class PraktikumsantragService {
         praktikumsantragRepository.deleteById(id);
     }
 
+    public List<Praktikumsantrag> getAllAntraege() {
+        return praktikumsantragRepository.findAll();
+    }
+
 
 
 }
@@ -65,7 +70,6 @@ REST-Methoden: `POST`, `GET`, `PUT`, `DELETE`
 Diese Struktur hält die Geschäftslogik zentral und gut organisiert, sodass das Vaadin-Frontend, später problemlos mit den Anträgen arbeiten kann.
 Service-Schicht verwaltet die zentrale Geschäftslogik, macht den Code wiederverwendbar und erleichtert Wartung und Erweiterung.
  */
-
 
 
 
