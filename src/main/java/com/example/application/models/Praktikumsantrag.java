@@ -25,10 +25,10 @@ public class Praktikumsantrag {
      dass jede ID in der Reihenfolge (1, 2, 3, ...) generiert wird.*/
 
 
-    @ManyToOne
-    @JoinColumn
+   // @ManyToOne
+   // @JoinColumn
 
-    private Studentin matrikelnummer;
+    private String matrikelnummer;
 
     @NotBlank(message = "Der Name darf nicht leer sein")
     @Size(max = 20, message = "Der Name darf maximal 20 Zeichen lang sein")
