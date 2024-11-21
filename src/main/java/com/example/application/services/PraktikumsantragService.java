@@ -25,7 +25,7 @@ public class PraktikumsantragService {
     }
 
     // Methode zur Erstellung eines neuen Antrags, wenn keiner vorhanden ist
-    public String antragSpeichern(@Valid Praktikumsantrag antrag) {
+    public String antragSpeichern(Praktikumsantrag antrag) {
         praktikumsantragRepository.save(antrag);
         return "Antrag erfolgreich angelegt.";
     }
@@ -38,9 +38,7 @@ public class PraktikumsantragService {
 //
 //    }
 
-    public void antragErstellen() {
 
-    }
 
     public void antragLoeschen(Long id) {
         Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findById(id);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt

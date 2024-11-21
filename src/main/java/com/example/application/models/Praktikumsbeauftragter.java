@@ -11,8 +11,8 @@ import lombok.Data;
 public class Praktikumsbeauftragter {
 
     @Id
-    private String nachname;
-
-    private String vorname;
+    private String username;
     private String passwort;
+
+
 }
