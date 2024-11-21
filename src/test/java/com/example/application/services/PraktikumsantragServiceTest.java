@@ -111,8 +111,8 @@ class PraktikumsantragServiceTest {
 //        assertEquals("Antrag erfolgreich angelegt.", result);
 //        verify(praktikumsantragRepository, times(1)).save(this.antrag);
 //    }
-
-    //    @Test
+//
+//        @Test
 //    void antragVorhandenButtonUndBereitsVorhanden() {
 //        boolean result = antrag.antragVorhanden(s0123456);
 //        assertTrue(result);
@@ -121,9 +121,9 @@ class PraktikumsantragServiceTest {
 //    void antragVorhandenButtonUndNochNichtVorhanden() {
 //        boolean result = antrag.antragVorhanden(s0123456);
 //        assertFalse(result);
-//    }
-//
-//
+//  }
+
+
     @Test
     void testAntragLoeschenErfolgreich() {
         Long id = 1L;
@@ -170,3 +170,4 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(0)).deleteById(id);
     }
 }
+
