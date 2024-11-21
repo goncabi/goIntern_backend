@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
 @AllArgsConstructor //generiert automatisch einen Konstruktor (@Autowired wird nicht mehr gebraucht)
@@ -37,6 +39,13 @@ public class PraktikumsantragController {
        }
        return ResponseEntity.ok("Praktikumsantrag mit ID: " + id + " wurde erfolgreich gelöscht.");
    }
+    @GetMapping("/alle")
+    public List<Praktikumsantrag> getAlleAntraege() {
+        return praktikumsantragService.getAllAntraege();
+    }
+
+
+
 }
 
 
