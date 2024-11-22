@@ -9,12 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDate;
 import static org.mockito.Mockito.when;
-
+import java.util.Optional;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional // alle Daten Änderungen im Datenbank in Test-Kontext werden automatisch rückgängig gemacht
@@ -28,9 +27,10 @@ class PraktikumsantragServiceTest {
     @MockBean
     private PraktikumsantragRepository praktikumsantragRepository;
 
+    Praktikumsantrag antrag = new Praktikumsantrag();
 
     private Praktikumsantrag erzeugeGueltigenAntrag() {
-        Praktikumsantrag antrag = new Praktikumsantrag();
+
         antrag.setAntragsID(111L);
         antrag.setNameStudentin("Hunt");
         antrag.setVornameStudentin("Maria");
@@ -59,6 +59,7 @@ class PraktikumsantragServiceTest {
         antrag.setEnddatum(LocalDate.of(2024, 11, 16));
         return antrag;
     }
+
     @Test
     void testAntragMitNullwerten() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
@@ -99,4 +100,74 @@ class PraktikumsantragServiceTest {
         String result = praktikumsantragService.antragStellen(antrag); // Call service
         assertEquals("Antrag erfolgreich angelegt.", result);
     }
+
+
+//    @Test
+//    public void testAntragStellen_NeuerAntrag() {
+//        when(praktikumsantragRepository.findByMatrikelnummer(anyString())).thenReturn(Optional.empty());
+//
+//        String result = praktikumsantragService.antragStellen();
+//
+//        assertEquals("Antrag erfolgreich angelegt.", result);
+//        verify(praktikumsantragRepository, times(1)).save(this.antrag);
+//    }
+//
+//        @Test
+//    void antragVorhandenButtonUndBereitsVorhanden() {
+//        boolean result = antrag.antragVorhanden(s0123456);
+//        assertTrue(result);
+//    }
+//    @Test
+//    void antragVorhandenButtonUndNochNichtVorhanden() {
+//        boolean result = antrag.antragVorhanden(s0123456);
+//        assertFalse(result);
+//  }
+
+
+    @Test
+    void testAntragLoeschenErfolgreich() {
+        Long id = 1L;
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setAntragsID(id);
+
+        //MockTeil:
+        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.of(antrag));
+        doNothing().when(praktikumsantragRepository).deleteById(id);
+
+        praktikumsantragService.antragLoeschen(id);
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void testAntragLoeschenNichtVorhanden() {
+        Long id = 22L;
+
+        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> praktikumsantragService.antragLoeschen(id));
+
+        assertEquals("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden",
+                exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(0)).deleteById(id);
+    }
+
+    @Test
+    void testAntragLoeschenMitNullId() {
+        Long id = null;
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> praktikumsantragService.antragLoeschen(id));
+
+        assertEquals("Praktikumsantrag mit der ID: null ist nicht vorhanden und kann nicht gelöscht werden",
+                exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(0)).deleteById(id);
+    }
 }
+

@@ -3,17 +3,17 @@ package com.example.application.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
 @Entity
-@Table
+@Data
+@Table(name = "nachricht")
 public class Nachricht {
     @Id
     @GeneratedValue
-    private Long nachrichtID;
+    private Long nachrichtid;
+    private String nachricht;
 
     @ManyToOne
     @JoinColumn
-    private Studentin studentin; //Empfänger
+    private Studentin studentin;
 
-    private String nachricht;
 }

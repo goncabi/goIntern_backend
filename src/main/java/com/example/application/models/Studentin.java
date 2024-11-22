@@ -21,14 +21,19 @@ public class Studentin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "matrikelnummer", unique = true, nullable = false)
     private String matrikelnummer;
+    //private List<Benachrichtigung> nachrichtenliste;
     private String password;
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;
     @Transient
     private List<Benachrichtigung> benachrichtigungList;
 
+
+
     public Studentin() {
     }
+
+
 
 
     public Studentin(String matrikelnummer, String password, AppUserRole appUserRole) {
