@@ -1,5 +1,5 @@
 package com.example.application.services;
-import com.example.application.models.LoginAnfrage;
+import com.example.application.models.LoginAnfrageStudentin;
 import com.example.application.models.Studentin;
 import com.example.application.repositories.StudentinRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ class LoginServiceTest {
         studentin.setMatrikelnummer(matrikelnummer);
         studentin.setPassword(password);
 
-        LoginAnfrage loginAnfrage = new LoginAnfrage(matrikelnummer, password);
+        LoginAnfrageStudentin loginAnfrage = new LoginAnfrageStudentin(matrikelnummer, password);
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
 
@@ -57,7 +57,7 @@ class LoginServiceTest {
         studentin.setMatrikelnummer(matrikelnummer);
         studentin.setPassword(correctPassword);
 
-        LoginAnfrage loginAnfrage = new LoginAnfrage(matrikelnummer, wrongPassword);
+        LoginAnfrageStudentin loginAnfrage = new LoginAnfrageStudentin(matrikelnummer, wrongPassword);
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
 
@@ -73,7 +73,7 @@ class LoginServiceTest {
 
         String matrikelnummer = "s0123456";
         String password = "password";
-        LoginAnfrage loginAnfrage = new LoginAnfrage(matrikelnummer, password);
+        LoginAnfrageStudentin loginAnfrage = new LoginAnfrageStudentin(matrikelnummer, password);
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 

@@ -1,6 +1,6 @@
 package com.example.application.services;
 
-import com.example.application.models.LoginAnfrage;
+import com.example.application.models.LoginAnfrageStudentin;
 import com.example.application.models.Studentin;
 import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ public class LoginService {
 
     private final StudentinRepository studentinRepository;
 
-    public boolean login(LoginAnfrage loginAnfrage) {
+    public boolean login(LoginAnfrageStudentin loginAnfrage) {
         boolean loginSuccessful;
         if(studentinRepository.findByMatrikelnummer(loginAnfrage.getMatrikelnummer()).isPresent()) {
             Studentin studentin = studentinRepository.findByMatrikelnummer(loginAnfrage.getMatrikelnummer()).get();
