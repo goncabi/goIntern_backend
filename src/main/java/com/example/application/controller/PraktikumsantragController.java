@@ -21,7 +21,7 @@ public class PraktikumsantragController {
     public ResponseEntity<String> PraktikumsantragErstellen(@Valid @RequestBody Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
         // dass der Antrag erfolgreich gespeichert wurde.
 
-        antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
+        antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
         praktikumsantragService.antragSpeichern(antrag);
         return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gespeichert!");
     }
