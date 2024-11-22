@@ -4,8 +4,7 @@ import com.example.application.models.LoginAnfragePB;
 import com.example.application.models.LoginAnfrageStudentin;
 import com.example.application.models.Praktikumsbeauftragter;
 import com.example.application.models.Studentin;
-import com.example.application.repositories.PraktikumsantragRepository;
-import com.example.application.repositories.PraktikumsbeauftragterRepository;
+import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class LoginService {
 
     private final StudentinRepository studentinRepository;
-    private final PraktikumsbeauftragterRepository praktikumsbeauftragterRepository;
+    private final PBRepository praktikumsbeauftragterRepository;
 
 
     public boolean login(LoginAnfrageStudentin loginAnfrage) {

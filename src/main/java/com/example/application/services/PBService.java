@@ -1,18 +1,15 @@
 package com.example.application.services;
 
 import com.example.application.models.Praktikumsbeauftragter;
-import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.example.application.repositories.PraktikumsbeauftragterRepository;
-
-import java.util.Optional;
+import com.example.application.repositories.PBRepository;
 
 @Service
 @AllArgsConstructor
 public class PBService {
 
-    private final PraktikumsbeauftragterRepository praktikumsbeauftragterRepository;
+    private final PBRepository praktikumsbeauftragterRepository;
 
     public void signUpUser(Praktikumsbeauftragter praktikumsbeauftragter) {
         boolean userExists = praktikumsbeauftragterRepository.findByUsername(praktikumsbeauftragter.getUsername()).isPresent();
