@@ -3,7 +3,6 @@ package com.example.application.controller;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Status_Antrag;
 import com.example.application.services.PraktikumsantragService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ public class PraktikumsantragController {
     PraktikumsantragService praktikumsantragService;
 
     @PostMapping("/praktikumsantrag")//Generiert Post-Endpunkt
-    public ResponseEntity<String> PraktikumsantragErstellen(@Valid @RequestBody Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
+    public ResponseEntity<String> PraktikumsantragErstellen(@Valid Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
         // dass der Antrag erfolgreich gespeichert wurde.
 
         antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
