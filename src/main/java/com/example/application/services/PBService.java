@@ -1,5 +1,6 @@
 package com.example.application.services;
 
+<<<<<<< src/main/java/com/example/application/services/PBService.java
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Status_Antrag;
 import com.example.application.models.Studentin;
@@ -7,13 +8,26 @@ import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.models.benachrichtigung.LeseStatus;
 import com.example.application.repositories.StudentinRepository;
 import org.springframework.stereotype.Service;
+import lombok.AllArgsConstructor;
+import com.example.application.models.Praktikumsbeauftragter;
+import com.example.application.repositories.PBRepository;
 
 import java.util.Date;
 
 @Service
+@AllArgsConstructor
 public class PBService {
 
     private StudentinRepository studentinRepository;
+    private final PBRepository praktikumsbeauftragterRepository;
+
+    public void signUpUser(Praktikumsbeauftragter praktikumsbeauftragter) {
+            boolean userExists = praktikumsbeauftragterRepository.findByUsername(praktikumsbeauftragter.getUsername()).isPresent();
+            if(userExists) {
+                throw new IllegalStateException("Username existiert bereits");
+            }
+            praktikumsbeauftragterRepository.save(praktikumsbeauftragter);
+        }
 
     public void antragAblehnen(Praktikumsantrag antrag) {
         String matrikelnummer = antrag.getMatrikelnummer();
@@ -28,6 +42,3 @@ public class PBService {
             Studentin studentin = studentinRepository.findByMatrikelnummer(matrikelnummer).get();
             studentin.addNachricht(ablehnungsNotiz);
         }
-    }
-
-}
