@@ -61,5 +61,14 @@ public class Studentin {
         return ungeleseneNachrichten;
     }
 
+    public boolean existierenUngeleseneNachrichten(){
+        //Zur Überprüfung, ob Glocke leuchtet oder nicht
+        for(int index = 0 ; index < benachrichtigungList.size() ; index++){
+            if (benachrichtigungList.get(index).getLeseStatus() == LeseStatus.UNGELESEN) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
