@@ -30,7 +30,7 @@ public class PBService {
         praktikumsbeauftragterRepository.save(praktikumsbeauftragter);
     }
 
-    // Methode antragGenehmigen setzt Status auf zugelassen und fügt Nachricht Element der Nachrichtenliste in Studentin hinzu
+    //Methode antragGenehmigen setzt Status auf zugelassen und fügt Nachricht Element der Nachrichtenliste in Studentin hinzu
     public void antragGenehmigen(Long antragsID, String matrikelnummer) {
         Praktikumsantrag antrag = praktikumsantragRepository.findById(antragsID)
                 .orElseThrow(() -> new IllegalArgumentException("Antrag nicht gefunden: " + antragsID));
