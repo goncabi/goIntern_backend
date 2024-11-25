@@ -39,9 +39,9 @@ public class PraktikumsantragController {
        return ResponseEntity.ok("Praktikumsantrag mit ID: " + id + " wurde erfolgreich gelöscht.");
    }
 
-    @PostMapping("/uebermitteln/{matrikelnummer}")
-    public ResponseEntity<String> uebermittelnAntrag(@PathVariable String matrikelnummer) {
-        praktikumsantragService.antragUebermitteln(matrikelnummer);
+    @PostMapping("/uebermitteln/")
+    public ResponseEntity<String> uebermittelnAntrag(@RequestBody Praktikumsantrag antrag) {
+        praktikumsantragService.antragUebermitteln(antrag);
         return ResponseEntity.ok("Antrag erfolgreich übermittelt.");
     }
 

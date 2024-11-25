@@ -34,7 +34,7 @@ public class PraktikumsantragService {
         if (antragVorhanden(String.valueOf(antrag.getMatrikelnummer()))) {
             return "Es ist bereits ein Antrag vorhanden.";
         }
-        antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
+        antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
         praktikumsantragRepository.save(antrag);
         return "Antrag erfolgreich angelegt.";
     }
@@ -60,13 +60,14 @@ public class PraktikumsantragService {
         praktikumsantragRepository.deleteById(id);
     }
 
-    public void antragUebermitteln(String matrikelnummer) {
-        if (!antragVorhanden(matrikelnummer)) {
-            throw new IllegalArgumentException("Kein Antrag mit der Matrikelnummer " + matrikelnummer + " gefunden.");
+    public void antragUebermitteln(Praktikumsantrag antrag) {
+        if (!antragVorhanden(String.valueOf(antrag.getMatrikelnummer()))) {
+            throw new IllegalArgumentException("Kein Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " gefunden.");
         }
+         antrag.setStatusAntrag(Status_Antrag.UEBERMITTELT);
 
         //PBService kümmert sich um die Benachrichtigung
-        pbService.antragUebermitteln(matrikelnummer);
+        pbService.antragUebermitteln(antrag);
     }
 
 
