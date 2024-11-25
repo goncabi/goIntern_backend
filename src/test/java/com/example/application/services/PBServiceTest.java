@@ -1,6 +1,8 @@
 package com.example.application.services;
 
+import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsbeauftragter;
+import com.example.application.models.Sicherheitsfrage;
 import com.example.application.repositories.PBRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,12 +11,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class PBServiceTest {
@@ -22,46 +31,24 @@ class PBServiceTest {
     @Mock
     private PBRepository pBRepository; // Mock für das Repository
 
-    @InjectMocks
-    private PBService pbService; // pbService mit gemockten Repositories injizieren
+    @MockBean
+    private PBRepository pBRepository;
 
-    private Praktikumsbeauftragter praktikumsbeauftragter;
+    @Test
+    void testRun() throws Exception {
+        Praktikumsbeauftragter mockPB = new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN);
 
-    @BeforeEach
-    void setUp() {
-        // Praktikumsbeauftragter erstellen
-        praktikumsbeauftragter = new Praktikumsbeauftragter();
-        praktikumsbeauftragter.setPasswort("AbInDieFreiheit13579!");
-        praktikumsbeauftragter.setUsername("Jörn Freiheit");
+        pbService.run();
+
+        verify(pBRepository, atLeastOnce()).save(mockPB);
     }
 
     @Test
-    void testSignUpPBUserDoesNotExist() {
-        // Mock-Verhalten definieren: Benutzername existiert nicht: empty()
-        Mockito.when(pBRepository.findByUsername(praktikumsbeauftragter.getUsername()))
-                .thenReturn(Optional.empty());
+    void testRunThrowsException() {
+        doThrow(new RuntimeException("Fehler beim Speichern"))
+                .when(pBRepository).save(any(Praktikumsbeauftragter.class));
 
-        // Methode testen
-        pbService.signUpUser(praktikumsbeauftragter);
-
-        // Überprüfen, dass der Benutzer gespeichert wurde (save wird genau 1x aufgeufen)
-        verify(pBRepository, times(1)).save(praktikumsbeauftragter);
-    }
-
-    @Test
-    void testSignUpPBUserExists() {
-        praktikumsbeauftragter.setUsername("Jörn Freiheit");
-
-        // Mock-Verhalten definieren: findByUsername gibt bereits existierenden Benutzer zurück
-        Mockito.when(pBRepository.findByUsername(praktikumsbeauftragter.getUsername()))
-                .thenReturn(Optional.of(praktikumsbeauftragter));
-
-        // Überprüfen, dass die Methode eine IllegalStateException wirft
-        Assertions.assertThrows(IllegalStateException.class,
-                () -> pbService.signUpUser(praktikumsbeauftragter));
-
-        // Überprüfen, dass save nicht aufgerufen wurde (0 Mal)
-        verify(pBRepository, times(0)).save(Mockito.any());
+        assertThrows(RuntimeException.class, () -> pbService.run());
     }
 
 }
