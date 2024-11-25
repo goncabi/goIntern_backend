@@ -2,37 +2,30 @@ package com.example.application.services;
 
 import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsbeauftragter;
-import com.example.application.models.Sicherheitsfrage;
 import com.example.application.repositories.PBRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 class PBServiceTest {
 
-    @Mock
-    private PBRepository pBRepository; // Mock für das Repository
+    @Autowired
+    private PBService pbService;
 
     @MockBean
-    private PBRepository pBRepository;
+    private PBRepository pBRepository; // Mock für das Repository
 
     @Test
     void testRun() throws Exception {
