@@ -1,34 +1,27 @@
 package com.example.application.services;
 
-
-import com.example.application.models.Praktikumsantrag;
-import com.example.application.models.Status_Antrag;
-import com.example.application.models.Studentin;
+import com.example.application.models.*;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.models.benachrichtigung.LeseStatus;
 import com.example.application.repositories.PraktikumsantragRepository;
 import com.example.application.repositories.StudentinRepository;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
-import com.example.application.models.Praktikumsbeauftragter;
 import com.example.application.repositories.PBRepository;
-
 import java.util.Date;
 
 @Service
 @AllArgsConstructor
-public class PBService {
+public class PBService implements CommandLineRunner {
 
     private StudentinRepository studentinRepository;
     private final PBRepository praktikumsbeauftragterRepository;
     private final PraktikumsantragRepository praktikumsantragRepository;
 
-    public void signUpUser(Praktikumsbeauftragter praktikumsbeauftragter) {
-        boolean userExists = praktikumsbeauftragterRepository.findByUsername(praktikumsbeauftragter.getUsername()).isPresent();
-        if (userExists) {
-            throw new IllegalStateException("Username existiert bereits");
-        }
-        praktikumsbeauftragterRepository.save(praktikumsbeauftragter);
+    @Override
+    public void run(String... args) throws Exception {
+        praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN));
     }
 
     //Methode antragGenehmigen setzt Status auf zugelassen und fügt Nachricht Element der Nachrichtenliste in Studentin hinzu
@@ -41,9 +34,6 @@ public class PBService {
 
         antrag.setStatusAntrag(Status_Antrag.ZUGELASSEN);
         studentin.addNachricht(new Benachrichtigung("Dein Antrag wurde genehmigt.", new Date(), LeseStatus.UNGELESEN));
-
-        praktikumsantragRepository.save(antrag);
-        studentinRepository.save(studentin);
     }
 
     public void antragAblehnen(Praktikumsantrag antrag) {

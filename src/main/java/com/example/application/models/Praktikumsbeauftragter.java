@@ -26,13 +26,13 @@ public class Praktikumsbeauftragter {
     private String username;
     private String passwort;
     @Enumerated(EnumType.STRING)
-    private AppUserRole ADMIN;
+    private AppUserRole app_user_role;
 
 
-    public Praktikumsbeauftragter(String username, String passwort, AppUserRole admin) {
+    public Praktikumsbeauftragter(String username, String passwort, AppUserRole appUserRole) {
             this.username = username;
             this.passwort = passwort;
-            this.ADMIN = admin;
+            this.app_user_role = appUserRole;
 
         }
 

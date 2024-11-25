@@ -1,6 +1,8 @@
 package com.example.application.services;
 
+import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsbeauftragter;
+import com.example.application.models.Sicherheitsfrage;
 import com.example.application.repositories.PBRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -9,10 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
 
 
 @SpringBootTest
@@ -26,20 +32,22 @@ class PBServiceTest {
 
     @MockBean
     private PBRepository pBRepository;
-    Praktikumsbeauftragter praktikumsbeauftragter = new Praktikumsbeauftragter();
 
     @Test
-    void testSignUpPB() {
+    void testRun() throws Exception {
+        Praktikumsbeauftragter mockPB = new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN);
 
-        praktikumsbeauftragter.setPasswort("AbInDieFreiheit13579!");
-        praktikumsbeauftragter.setUsername("Jörn Freiheit");
-        pbService.signUpUser(praktikumsbeauftragter);
+        pbService.run();
 
-        Mockito.when(pBRepository.findByUsername(praktikumsbeauftragter.getUsername()))
-                .thenReturn(Optional.empty());
-        verify(pBRepository, times(1)).save(praktikumsbeauftragter);
+        verify(pBRepository, atLeastOnce()).save(mockPB);
     }
 
+    @Test
+    void testRunThrowsException() {
+        doThrow(new RuntimeException("Fehler beim Speichern"))
+                .when(pBRepository).save(any(Praktikumsbeauftragter.class));
 
+        assertThrows(RuntimeException.class, () -> pbService.run());
+    }
 
 }
