@@ -37,7 +37,7 @@ public class Praktikumsbeauftragter {
         }
 
     @Transient
-    private List<Benachrichtigung> benachrichtigungList;
+    private List<Benachrichtigung> benachrichtigungList = new ArrayList<>();
 
     public void addNachricht(Benachrichtigung benachrichtigung) {
         this.benachrichtigungList.add(benachrichtigung);

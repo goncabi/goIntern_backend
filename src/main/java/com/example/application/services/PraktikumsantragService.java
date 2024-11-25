@@ -19,6 +19,10 @@ public class PraktikumsantragService {
     @Autowired
     private PraktikumsantragRepository praktikumsantragRepository;
 
+    @Autowired
+    private PBService pbService;
+
+
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
     public boolean antragVorhanden(String matrikelnummer) {
@@ -56,12 +60,19 @@ public class PraktikumsantragService {
         praktikumsantragRepository.deleteById(id);
     }
 
-    public List<Praktikumsantrag> getAllAntraege() {
-        return praktikumsantragRepository.findAll();
+    public void antragUebermitteln(String matrikelnummer) {
+        if (!antragVorhanden(matrikelnummer)) {
+            throw new IllegalArgumentException("Kein Antrag mit der Matrikelnummer " + matrikelnummer + " gefunden.");
+        }
+
+        //PBService kümmert sich um die Benachrichtigung
+        pbService.antragUebermitteln(matrikelnummer);
     }
 
 
-
+    public List<Praktikumsantrag> getAllAntraege() {
+        return praktikumsantragRepository.findAll();
+    }
 }
 /*
  Die Service-Schicht übernimmt hier die zentrale Logik und kümmert sich um  die Verwaltung der Praktikumsanträge.

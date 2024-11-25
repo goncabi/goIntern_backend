@@ -50,4 +50,18 @@ public class PBService implements CommandLineRunner {
             studentin.addNachricht(ablehnungsNotiz);
         }
     }
+
+    public void antragUebermitteln(String matrikelnummer) {
+        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByRole(AppUserRole.ADMIN)
+                                                .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
+
+        Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
+                "Ein neuer Antrag mit der Matrikelnummer " + matrikelnummer + " wurde übermittelt.",
+                new Date(),
+                LeseStatus.UNGELESEN
+        );
+
+        pb.getBenachrichtigungList().add(neueBenachrichtigung);
+
+    }
 }
