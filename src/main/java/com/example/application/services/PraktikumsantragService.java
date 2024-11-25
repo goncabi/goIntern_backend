@@ -60,14 +60,14 @@ public class PraktikumsantragService {
         praktikumsantragRepository.deleteById(id);
     }
 
-    public void antragUebermitteln(Praktikumsantrag antrag) {
+    public void antragUebermitteln(Praktikumsantrag antrag, String username) {
         if (!antragVorhanden(String.valueOf(antrag.getMatrikelnummer()))) {
             throw new IllegalArgumentException("Kein Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " gefunden.");
         }
          antrag.setStatusAntrag(Status_Antrag.UEBERMITTELT);
 
-        //PBService kümmert sich um die Benachrichtigung
-        pbService.antragUebermitteln(antrag);
+        //PBService kümmert sich um die Benachrichtigung, Frontend gibt username von PB
+        pbService.antragUebermitteln(antrag, username);
     }
 
 

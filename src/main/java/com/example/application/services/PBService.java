@@ -51,9 +51,9 @@ public class PBService implements CommandLineRunner {
         }
     }
 
-    public void antragUebermitteln(Praktikumsantrag antrag) {
-        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByRole(AppUserRole.ADMIN)
-                                                .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
+    public void antragUebermitteln(Praktikumsantrag antrag, String username) {
+        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUsername(username)
+                                                                    .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit dem Benutzernamen " + username + " gefunden."));
 
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
                 "Ein neuer Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " wurde übermittelt.",
