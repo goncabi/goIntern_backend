@@ -4,7 +4,12 @@ import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsbeauftragter;
 import com.example.application.models.Sicherheitsfrage;
 import com.example.application.repositories.PBRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,15 +25,11 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
 
-
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
-
+@ExtendWith(MockitoExtension.class)
 class PBServiceTest {
 
-    @Autowired
-    private PBService pbService;
+    @Mock
+    private PBRepository pBRepository; // Mock für das Repository
 
     @MockBean
     private PBRepository pBRepository;
