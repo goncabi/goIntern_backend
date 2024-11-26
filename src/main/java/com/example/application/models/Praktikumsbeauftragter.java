@@ -19,15 +19,16 @@ import java.util.List;
 public class Praktikumsbeauftragter {
 
 
-    public Praktikumsbeauftragter() {
-    }
-
     @Id
     private String username;
     private String passwort;
     @Enumerated(EnumType.STRING)
     private AppUserRole app_user_role;
+    @Transient
+    private List<Benachrichtigung> benachrichtigungList = new ArrayList<>();
 
+    public Praktikumsbeauftragter() {
+    }
 
     public Praktikumsbeauftragter(String username, String passwort, AppUserRole appUserRole) {
             this.username = username;
@@ -36,8 +37,6 @@ public class Praktikumsbeauftragter {
 
         }
 
-    @Transient
-    private List<Benachrichtigung> benachrichtigungList = new ArrayList<>();
 
     public void addNachricht(Benachrichtigung benachrichtigung) {
         this.benachrichtigungList.add(benachrichtigung);
