@@ -34,4 +34,17 @@ public class RegistrierungService {
         Sicherheitsantwort antwort = new Sicherheitsantwort(anfrage.getFrage(), anfrage.getMatrikelnummer(), anfrage.getAntwort());
         sicherheitsantwortRepository.save(antwort);
     }
+
+    public void registrieren(String matrikelnummer, String passwort1, String passwort2) {
+        boolean isValidMatrikelnummer = matrikelnummerValidierer.isMatrikelnummerValid(matrikelnummer);
+        if (!isValidMatrikelnummer) {
+            throw new IllegalStateException("Matrikelnummer invalide.");
+        }
+        boolean isValidPasswort = passwortValidierer.passwordValidation(passwort1, passwort2);
+        if (!isValidPasswort) {
+            throw new IllegalStateException("Passwort invalide.");
+        }
+        studentinService.signUpUser(
+                new Studentin(matrikelnummer, passwort1, AppUserRole.USER));
+    }
 }

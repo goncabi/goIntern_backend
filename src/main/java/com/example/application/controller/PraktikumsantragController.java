@@ -3,12 +3,13 @@ package com.example.application.controller;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Status_Antrag;
 import com.example.application.services.PraktikumsantragService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
@@ -18,11 +19,11 @@ public class PraktikumsantragController {
     PraktikumsantragService praktikumsantragService;
 
     @PostMapping("/praktikumsantrag")//Generiert Post-Endpunkt
-    public ResponseEntity<String> PraktikumsantragErstellen(@Valid @RequestBody Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
+    public ResponseEntity<String> PraktikumsantragErstellen(@Valid Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
         // dass der Antrag erfolgreich gespeichert wurde.
 
         antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
-        praktikumsantragService.antragSpeichern(antrag);
+        praktikumsantragService.antragStellen(antrag);
         return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gespeichert!");
     }
 
@@ -37,6 +38,22 @@ public class PraktikumsantragController {
        }
        return ResponseEntity.ok("Praktikumsantrag mit ID: " + id + " wurde erfolgreich gelöscht.");
    }
+
+    @PostMapping("/uebermitteln/")
+    public ResponseEntity<String> uebermittelnAntrag(@RequestBody Praktikumsantrag antrag) {
+        praktikumsantragService.antragUebermitteln(antrag);
+        return ResponseEntity.ok("Antrag erfolgreich übermittelt.");
+
+    }
+
+
+    @GetMapping("/alle")
+    public List<Praktikumsantrag> getAlleAntraege() {
+        return praktikumsantragService.getAllAntraege();
+    }
+
+
+
 }
 
 

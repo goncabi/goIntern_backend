@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class LoginService {
-
     private final StudentinRepository studentinRepository;
     private final PBRepository praktikumsbeauftragterRepository;
 

@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class LoginAnfrageStudentin {
-
     private String matrikelnummer;
     private String passwort;
 

@@ -1,6 +1,5 @@
 package com.example.application.controller;
 
-import com.example.application.models.LoginAnfragePB;
 import com.example.application.models.LoginAnfrageStudentin;
 import com.example.application.services.LoginService;
 import lombok.AllArgsConstructor;
@@ -18,15 +17,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginAnfrageStudentin loginAnfrage){
-        if(loginService.login(loginAnfrage)){
-            return "Login OK";
-            //Hier dann weiterleiten zu der Homepage
-        }
-        return "Login Failed: Password is incorrect";
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestBody LoginAnfragePB loginAnfrage){
         if(loginService.login(loginAnfrage)){
             return "Login OK";
             //Hier dann weiterleiten zu der Homepage
