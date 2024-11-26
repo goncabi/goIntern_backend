@@ -65,7 +65,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setNameStudentin(null);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
 
     @Test
@@ -73,7 +73,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setNameStudentin("");
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
 
     @Test
@@ -81,7 +81,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setHausnummerStudentin(0);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
 
     @Test
@@ -89,7 +89,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setHausnummerStudentin(1000);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragStellen(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
     }
 
     @Test
@@ -97,31 +97,21 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
 
         when(praktikumsantragRepository.save(antrag)).thenReturn(antrag); // Mock save method
-        String result = praktikumsantragService.antragStellen(antrag); // Call service
+        String result = praktikumsantragService.antragSpeichern(antrag); // Call service
         assertEquals("Antrag erfolgreich angelegt.", result);
     }
 
 
 //    @Test
-//    public void testAntragStellen_NeuerAntrag() {
+//    public void testSpeichernWennNochKeinAntrag() {
 //        when(praktikumsantragRepository.findByMatrikelnummer(anyString())).thenReturn(Optional.empty());
+//        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
 //
-//        String result = praktikumsantragService.antragStellen();
+//        String result = praktikumsantragService.antragSpeichern(antrag);
 //
 //        assertEquals("Antrag erfolgreich angelegt.", result);
 //        verify(praktikumsantragRepository, times(1)).save(this.antrag);
 //    }
-//
-//        @Test
-//    void antragVorhandenButtonUndBereitsVorhanden() {
-//        boolean result = antrag.antragVorhanden(s0123456);
-//        assertTrue(result);
-//    }
-//    @Test
-//    void antragVorhandenButtonUndNochNichtVorhanden() {
-//        boolean result = antrag.antragVorhanden(s0123456);
-//        assertFalse(result);
-//  }
 
 
     @Test

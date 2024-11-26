@@ -3,8 +3,7 @@ package com.example.application.models;
 import lombok.Getter;
 
 @Getter
-
-public class LoginAnfragePB {
+public class LoginAnfragePB{
 
     private String username;
     private String passwort;
