@@ -29,7 +29,7 @@ class PBServiceTest {
 
     @Test
     void testRun() throws Exception {
-        Praktikumsbeauftragter mockPB = new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN, "Informatik und Wirtschaft");
+        Praktikumsbeauftragter mockPB = new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN);
 
         pbService.run();
 
