@@ -21,7 +21,7 @@ public class Benachrichtigung {
     private String nachricht;
     private Date datum;
     private LeseStatus leseStatus;
-    private String empfaenger_in;
+    private String empfaenger;
 
     public Benachrichtigung() {}
 
@@ -29,6 +29,6 @@ public class Benachrichtigung {
         this.nachricht = nachricht;
         this.datum = datum;
         this.leseStatus = leseStatus;
-        this.empfaenger_in = empfaenger_in;
+        this.empfaenger = empfaenger_in;
     }
 }

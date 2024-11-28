@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface BenachrichtigungRepository extends JpaRepository<Benachrichtigung, Long> {
-    List<Benachrichtigung> findByEmpfaenger_inOrderByDatumAsc(String empfaenger_in);
+    List<Benachrichtigung> findByEmpfaengerOrderByDatum(String empfaenger);
 }
