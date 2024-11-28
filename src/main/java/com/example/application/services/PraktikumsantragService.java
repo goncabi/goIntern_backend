@@ -3,17 +3,13 @@ package com.example.application.services;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Status_Antrag;
 import com.example.application.repositories.PraktikumsantragRepository;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
 import java.util.Optional;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 @Validated
@@ -25,7 +21,6 @@ public class PraktikumsantragService {
 
     @Autowired
     private PBService pbService;
-    private Validator validator;
 
 
 
@@ -55,25 +50,29 @@ public class PraktikumsantragService {
 
     }
 
-    public String antragBearbeiten(String matrikelnummer, @Valid Praktikumsantrag antragVorBearbeitung) {
-        // antragAnzeigen, damit ich Felder ansehen kann, bevor ich bearbeite
-        Praktikumsantrag neuerAntrag = antragAnzeigen(matrikelnummer);
 
-        // hier Werte beispielhaft aktualisieren...
-        neuerAntrag.setAusnahmeZulassung(true);
-        neuerAntrag.setStartdatum(antragVorBearbeitung.getStartdatum());
-        neuerAntrag.setEnddatum(antragVorBearbeitung.getEnddatum());
+    //antrag kann nur nach antragAnzeigen bearbeitet werden
+    public String antragBearbeiten(String matrikelnummer, Praktikumsantrag antragVorBearbeitung) {
 
-        // Validierung des aktualisierten Antrags (weil nur valide aktualisierungen auch gespeichert werden sollen)
-        Set<ConstraintViolation<Praktikumsantrag>> violations = validator.validate(neuerAntrag);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+        if(antragVorBearbeitung.getStatusAntrag() == Status_Antrag.GESPEICHERT || antragVorBearbeitung.getStatusAntrag() == Status_Antrag.ABGELEHNT) {
+
+            // antragAnzeigen, damit ich Felder ansehen kann, bevor ich bearbeite
+
+            Praktikumsantrag bearbeiteterAntrag = antragAnzeigen(matrikelnummer);
+
+            // hier Werte beispielhaft aktualisieren...
+            bearbeiteterAntrag.setAusnahmeZulassung(true);
+            bearbeiteterAntrag.setStartdatum(antragVorBearbeitung.getStartdatum());
+            bearbeiteterAntrag.setEnddatum(antragVorBearbeitung.getEnddatum());
+
+            // Speichert den aktualisierten Antrag in der Datenbank
+            praktikumsantragRepository.save(bearbeiteterAntrag);
+            bearbeiteterAntrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
+            return "Antrag erfolgreich bearbeitet.";
         }
-
-        // Speichert den aktualisierten Antrag in der Datenbank
-        praktikumsantragRepository.save(neuerAntrag);
-        neuerAntrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
-        return "Antrag erfolgreich bearbeitet.";
+        else {
+            return "Keine weitere Bearbeitung möglich, da Antrag bereits abgesendet";
+        }
     }
 
 
@@ -101,6 +100,8 @@ public class PraktikumsantragService {
         return praktikumsantragRepository.findAll();
     }
 }
+
+
 /*
  Die Service-Schicht übernimmt hier die zentrale Logik und kümmert sich um  die Verwaltung der Praktikumsanträge.
 Stellt Endpunkte für CRUD-Operationen bereit, damit das Frontend die Daten über HTTP  abrufen und verwalten kann.

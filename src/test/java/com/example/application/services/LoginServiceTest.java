@@ -1,6 +1,7 @@
 package com.example.application.services;
 import com.example.application.models.LoginAnfrageStudentin;
 import com.example.application.models.Studentin;
+import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.StudentinRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ class LoginServiceTest {
 
     @Mock
     private StudentinRepository studentinRepository;
+    private PBRepository pbRepository;
 
     @InjectMocks
     private LoginService loginService;
@@ -27,8 +29,9 @@ class LoginServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
     @Test
-    void login_shouldReturnTrue_whenCredentialsAreCorrect() {
+    void loginStudent_shouldReturnTrue_whenCredentialsAreCorrect() {
         // Arrange
         String matrikelnummer = "s0123456";
         String password = "password1!";
@@ -48,7 +51,7 @@ class LoginServiceTest {
     }
 
     @Test
-    void login_shouldReturnFalse_whenPasswordIsIncorrect() {
+    void loginStudent_shouldReturnFalse_whenPasswordIsIncorrect() {
 
         String matrikelnummer = "s0123456";
         String correctPassword = "correctPassword";
@@ -69,7 +72,7 @@ class LoginServiceTest {
     }
 
     @Test
-    void login_shouldThrowException_whenMatrikelnummerDoesNotExist() {
+    void loginStudent_shouldThrowException_whenMatrikelnummerDoesNotExist() {
 
         String matrikelnummer = "s0123456";
         String password = "password";
@@ -80,4 +83,5 @@ class LoginServiceTest {
         Exception exception = assertThrows(IllegalStateException.class, () -> loginService.login(loginAnfrage));
         assertEquals("Matrikelnummer falsch oder nicht registriert", exception.getMessage());
     }
+
 }

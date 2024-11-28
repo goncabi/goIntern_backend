@@ -1,8 +1,11 @@
 package com.example.application.services;
 
 import com.example.application.models.Praktikumsantrag;
+import com.example.application.models.Status_Antrag;
+import com.example.application.models.Studentin;
 import com.example.application.repositories.PraktikumsantragRepository;
 import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +32,7 @@ class PraktikumsantragServiceTest {
 
     Praktikumsantrag antrag = new Praktikumsantrag();
 
+
     private Praktikumsantrag erzeugeGueltigenAntrag() {
 
         antrag.setAntragsID(111L);
@@ -40,7 +44,7 @@ class PraktikumsantragServiceTest {
         antrag.setPlzStudentin(10598);
         antrag.setOrtStudentin("Berlin");
         antrag.setTelefonnummerStudentin("01478112530");
-        antrag.setEmailStudentin("mariahuna@gmail.com");
+        antrag.setEmailStudentin("mariahunt@gmail.com");
         antrag.setPraktikumssemester("WiSe2025");
         antrag.setStudiensemester(3);
         antrag.setStudiengang("Informatik");
@@ -57,6 +61,7 @@ class PraktikumsantragServiceTest {
         antrag.setTaetigkeit("Qualitätssicherung");
         antrag.setStartdatum(LocalDate.of(2024, 11, 15));
         antrag.setEnddatum(LocalDate.of(2024, 11, 16));
+        antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
         return antrag;
     }
 
@@ -65,7 +70,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setNameStudentin(null);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragBearbeiten("s01234567", antrag));
     }
 
     @Test
@@ -73,7 +78,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setNameStudentin("");
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragBearbeiten("s01234567", antrag));
     }
 
     @Test
@@ -81,7 +86,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setHausnummerStudentin(0);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragBearbeiten("s01234567", antrag));
     }
 
     @Test
@@ -89,7 +94,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setHausnummerStudentin(1000);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragBearbeiten("s01234567", antrag));
     }
 
     @Test
@@ -97,7 +102,7 @@ class PraktikumsantragServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
 
         when(praktikumsantragRepository.save(antrag)).thenReturn(antrag); // Mock save method
-        String result = praktikumsantragService.antragSpeichern(antrag); // Call service
+        String result = praktikumsantragService.antragBearbeiten("s01234567", antrag); // Call service
         assertEquals("Antrag erfolgreich angelegt.", result);
     }
 
