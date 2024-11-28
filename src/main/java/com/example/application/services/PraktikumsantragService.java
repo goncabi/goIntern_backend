@@ -3,26 +3,20 @@ package com.example.application.services;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Status_Antrag;
 import com.example.application.repositories.PraktikumsantragRepository;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import java.util.Optional;
 import java.util.List;
 
-
+@AllArgsConstructor
 @Service
 @Validated
-
 public class PraktikumsantragService {
 
-    @Autowired
-    private PraktikumsantragRepository praktikumsantragRepository;
 
-    @Autowired
-    private PBService pbService;
-
-
+    private final PraktikumsantragRepository praktikumsantragRepository;
+    private final PBService pbService;
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
     public boolean antragVorhanden(String matrikelnummer) {

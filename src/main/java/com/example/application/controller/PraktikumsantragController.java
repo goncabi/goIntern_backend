@@ -8,15 +8,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+@AllArgsConstructor
 @RestController // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
-@AllArgsConstructor //generiert automatisch einen Konstruktor (@Autowired wird nicht mehr gebraucht)
-
 public class PraktikumsantragController {
-    PraktikumsantragService praktikumsantragService;
+
+    private final PraktikumsantragService praktikumsantragService;
 
     @PostMapping("/praktikumsantrag")//Generiert Post-Endpunkt
     public ResponseEntity<String> PraktikumsantragErstellen(@Valid Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,

@@ -4,9 +4,9 @@ import com.example.application.models.*;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.models.benachrichtigung.LeseStatus;
 import com.example.application.repositories.BenachrichtigungRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
-import lombok.AllArgsConstructor;
 import com.example.application.repositories.PBRepository;
 import java.util.Date;
 
@@ -43,7 +43,7 @@ public class PBService implements CommandLineRunner {
     }
 
     public void antragUebermitteln(Praktikumsantrag antrag) {
-        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByRole(AppUserRole.ADMIN)
+        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.ADMIN)
                                                                     .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
 
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(

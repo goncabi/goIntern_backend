@@ -9,12 +9,12 @@ import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
 @AllArgsConstructor
+@Service
 public class LoginService {
+
     private final StudentinRepository studentinRepository;
     private final PBRepository praktikumsbeauftragterRepository;
-
 
     public boolean login(LoginAnfrageStudentin loginAnfrage) {
         boolean loginSuccessful;
