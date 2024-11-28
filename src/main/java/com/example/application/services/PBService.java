@@ -3,8 +3,7 @@ package com.example.application.services;
 import com.example.application.models.*;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.models.benachrichtigung.LeseStatus;
-import com.example.application.repositories.PraktikumsantragRepository;
-import com.example.application.repositories.StudentinRepository;
+import com.example.application.repositories.BenachrichtigungRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
@@ -15,9 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class PBService implements CommandLineRunner {
 
-    private StudentinRepository studentinRepository;
     private final PBRepository praktikumsbeauftragterRepository;
-    private final PraktikumsantragRepository praktikumsantragRepository;
+    private final BenachrichtigungRepository benachrichtigungRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -25,15 +23,11 @@ public class PBService implements CommandLineRunner {
     }
 
     //Methode antragGenehmigen setzt Status auf zugelassen und fügt Nachricht Element der Nachrichtenliste in Studentin hinzu
-    public void antragGenehmigen(Long antragsID, String matrikelnummer) {
-        Praktikumsantrag antrag = praktikumsantragRepository.findById(antragsID)
-                .orElseThrow(() -> new IllegalArgumentException("Antrag nicht gefunden: " + antragsID));
-
-        Studentin studentin = studentinRepository.findByMatrikelnummer(matrikelnummer)
-                .orElseThrow(() -> new IllegalArgumentException("Studentin nicht gefunden: " + matrikelnummer));
-
+    public void antragGenehmigen(Praktikumsantrag antrag) {
+        String matrikelnummer = antrag.getMatrikelnummer();
         antrag.setStatusAntrag(Status_Antrag.ZUGELASSEN);
-        studentin.addNachricht(new Benachrichtigung("Dein Antrag wurde genehmigt.", new Date(), LeseStatus.UNGELESEN));
+        Benachrichtigung nachrichtStudentin = new Benachrichtigung("Dein Antrag wurde genehmigt.", new Date(), LeseStatus.UNGELESEN, matrikelnummer);
+        benachrichtigungRepository.save(nachrichtStudentin);
     }
 
     public void antragAblehnen(Praktikumsantrag antrag) {
@@ -42,13 +36,10 @@ public class PBService implements CommandLineRunner {
         String input = "Textfeld im Frontend für Ablehnungsbegründung";
         String begruendung = "Sehr geehrte Frau " + studentinName + ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + input;
         Date aktuellesDatum = new Date();
-        Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, aktuellesDatum, LeseStatus.UNGELESEN);
+        Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, aktuellesDatum, LeseStatus.UNGELESEN, matrikelnummer);
 
-        if (studentinRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
-            antrag.setStatusAntrag(Status_Antrag.ABGELEHNT);
-            Studentin studentin = studentinRepository.findByMatrikelnummer(matrikelnummer).get();
-            studentin.addNachricht(ablehnungsNotiz);
-        }
+        antrag.setStatusAntrag(Status_Antrag.ABGELEHNT);
+        benachrichtigungRepository.save(ablehnungsNotiz);
     }
 
     public void antragUebermitteln(Praktikumsantrag antrag) {
@@ -58,10 +49,9 @@ public class PBService implements CommandLineRunner {
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
                 "Ein neuer Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " wurde übermittelt.",
                 new Date(),
-                LeseStatus.UNGELESEN
+                LeseStatus.UNGELESEN,
+                pb.getUsername()
         );
-
-        pb.getBenachrichtigungList().add(neueBenachrichtigung);
-
+        benachrichtigungRepository.save(neueBenachrichtigung);
     }
 }
