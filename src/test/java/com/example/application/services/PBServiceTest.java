@@ -60,18 +60,17 @@ class PBServiceTest {
         antrag.setMatrikelnummer("123456");
         antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
 
-        // Hier die Methode ausfuehren
         pbService.antragGenehmigen(antrag);
 
         // hier testen
         assertEquals(Status_Antrag.ZUGELASSEN, antrag.getStatusAntrag());
-        verify(benachrichtigungRepository, times(1)).save(Mockito.any());
+        verify(benachrichtigungRepository, times(1)).save(Mockito.any()); //verify ist ähnlich wie assert. hier wird getestet dass die safe methode einmal ausgefuehrt wurde. Die save methode wird mit irgentwas aufgerufen(Mockito.any())
     }
 
     @Test
     void testAntragGenehmigenWithNullAntrag() {
         Praktikumsantrag antrag = null;
-        assertThrows(NullPointerException.class, () -> pbService.antragGenehmigen(antrag));
+        assertThrows(NullPointerException.class, () -> pbService.antragGenehmigen(antrag)); //wenn der Antrag null ist wird eine Exception geworfen
     }
 
 }
