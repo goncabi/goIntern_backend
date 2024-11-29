@@ -4,18 +4,14 @@ import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Praktikumsbeauftragter;
 import com.example.application.models.Status_Antrag;
-import com.example.application.models.benachrichtigung.Benachrichtigung;
-import com.example.application.models.benachrichtigung.LeseStatus;
+
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
+
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,12 +35,6 @@ class PBServiceTest {
 
     @MockBean
     private BenachrichtigungRepository benachrichtigungRepository;
-
-/*    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        pbService = new PBService(null, benachrichtigungRepository);
-    }*/
 
     @Test
     void testRun() throws Exception {
@@ -80,10 +70,7 @@ class PBServiceTest {
 
     @Test
     void testAntragGenehmigenWithNullAntrag() {
-        // Arrange
         Praktikumsantrag antrag = null;
-
-        // Act & Assert
         assertThrows(NullPointerException.class, () -> pbService.antragGenehmigen(antrag));
     }
 
