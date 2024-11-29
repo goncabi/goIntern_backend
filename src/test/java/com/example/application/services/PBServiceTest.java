@@ -1,18 +1,24 @@
 package com.example.application.services;
 
 import com.example.application.models.AppUserRole;
+import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Praktikumsbeauftragter;
+import com.example.application.models.Status_Antrag;
+
+import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.mockito.Mockito;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
 
@@ -26,6 +32,9 @@ class PBServiceTest {
 
     @MockBean
     private PBRepository pBRepository; // Mock für das Repository
+
+    @MockBean
+    private BenachrichtigungRepository benachrichtigungRepository;
 
     @Test
     void testRun() throws Exception {
@@ -42,6 +51,27 @@ class PBServiceTest {
                 .when(pBRepository).save(any(Praktikumsbeauftragter.class));
 
         assertThrows(RuntimeException.class, () -> pbService.run());
+    }
+
+    @Test
+    void testAntragGenehmigen() {
+        // Vorbereitung
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer("123456");
+        antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
+
+        // Hier die Methode ausfuehren
+        pbService.antragGenehmigen(antrag);
+
+        // hier testen
+        assertEquals(Status_Antrag.ZUGELASSEN, antrag.getStatusAntrag());
+        verify(benachrichtigungRepository, times(1)).save(Mockito.any());
+    }
+
+    @Test
+    void testAntragGenehmigenWithNullAntrag() {
+        Praktikumsantrag antrag = null;
+        assertThrows(NullPointerException.class, () -> pbService.antragGenehmigen(antrag));
     }
 
 }
