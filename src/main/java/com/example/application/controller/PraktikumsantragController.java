@@ -1,7 +1,6 @@
 package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
-import com.example.application.models.Status_Antrag;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,8 +19,6 @@ public class PraktikumsantragController {
     @PostMapping("/praktikumsantrag")//Generiert Post-Endpunkt
     public ResponseEntity<String> PraktikumsantragErstellen(@Valid Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
         // dass der Antrag erfolgreich gespeichert wurde.
-
-        antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
         praktikumsantragService.antragErstellen(String.valueOf(antrag));
         return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gespeichert!");
     }
