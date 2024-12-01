@@ -4,27 +4,15 @@ import com.example.application.models.LoginAnfrageStudentin;
 import com.example.application.models.Studentin;
 import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.StudentinRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import com.example.application.models.LoginAnfragePB;
 import com.example.application.models.Praktikumsbeauftragter;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -39,11 +27,8 @@ class LoginServiceTest {
     @MockBean
     private PBRepository pbRepository;
 
-    //@InjectMocks
-    @Autowired
-    //erstellt eine Abhängigkeit damit eine Objektvariable loginService erstellt wird. Und es werden alle Abhängikeiten erstellt, auch studentinRepository und praktikumsbeauftragterRepository
+    @Autowired//erstellt eine Abhängigkeit damit eine Objektvariable loginService erstellt wird. Und es werden alle Abhängikeiten erstellt, auch studentinRepository und praktikumsbeauftragterRepository
     private LoginService loginService;
-
 
     @Test
     void loginStudent_shouldReturnTrue_whenCredentialsAreCorrect() {
@@ -107,7 +92,6 @@ class LoginServiceTest {
         Praktikumsbeauftragter pb = new Praktikumsbeauftragter();
         pb.setUsername(username);
         pb.setPasswort(password);
-
         LoginAnfragePB loginAnfrage = new LoginAnfragePB(username, password);
 
         when(pbRepository.findByUsername(username)).thenReturn(Optional.of(pb));
