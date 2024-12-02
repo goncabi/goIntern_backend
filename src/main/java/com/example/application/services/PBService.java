@@ -12,6 +12,7 @@ import java.util.Date;
 
 @Service
 @AllArgsConstructor
+
 public class PBService implements CommandLineRunner {
 
     private final PBRepository praktikumsbeauftragterRepository;
@@ -25,7 +26,7 @@ public class PBService implements CommandLineRunner {
     //Methode antragGenehmigen setzt Status auf zugelassen und fügt Nachricht Element der Nachrichtenliste in Studentin hinzu
     public void antragGenehmigen(Praktikumsantrag antrag) {
         String matrikelnummer = antrag.getMatrikelnummer();
-        antrag.setStatusAntrag(Status_Antrag.ZUGELASSEN);
+        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
         Benachrichtigung nachrichtStudentin = new Benachrichtigung("Dein Antrag wurde genehmigt.", new Date(), LeseStatus.UNGELESEN, matrikelnummer);
         benachrichtigungRepository.save(nachrichtStudentin);
     }
@@ -38,11 +39,12 @@ public class PBService implements CommandLineRunner {
         Date aktuellesDatum = new Date();
         Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, aktuellesDatum, LeseStatus.UNGELESEN, matrikelnummer);
 
-        antrag.setStatusAntrag(Status_Antrag.ABGELEHNT);
+        antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
         benachrichtigungRepository.save(ablehnungsNotiz);
     }
 
     public void antragUebermitteln(Praktikumsantrag antrag) {
+
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.ADMIN)
                                                                     .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
 

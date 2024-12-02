@@ -17,7 +17,7 @@ public class PraktikumsantragController {
     private final PraktikumsantragService praktikumsantragService;
 
     @PostMapping("/praktikumsantrag")//Generiert Post-Endpunkt
-    public ResponseEntity<String> PraktikumsantragErstellen(@Valid Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
+    public ResponseEntity<String> PraktikumsantragErstellen(Praktikumsantrag antrag) { // Gibt eine Bestätigung mit HTTP-Status 200 OK zurück,
         // dass der Antrag erfolgreich gespeichert wurde.
         praktikumsantragService.antragErstellen(String.valueOf(antrag));
         return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gespeichert!");
@@ -36,10 +36,13 @@ public class PraktikumsantragController {
    }
 
     @PostMapping("/uebermitteln/")
-    public ResponseEntity<String> uebermittelnAntrag(@RequestBody Praktikumsantrag antrag) {
-        praktikumsantragService.antragUebermitteln(antrag);
-        return ResponseEntity.ok("Antrag erfolgreich übermittelt.");
-
+    public ResponseEntity<String> uebermittelnAntrag(@Valid @RequestBody Praktikumsantrag antrag) {
+        try {
+            praktikumsantragService.antragUebermitteln(antrag);
+            return ResponseEntity.ok("Antrag erfolgreich übermittelt.");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
 

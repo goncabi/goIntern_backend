@@ -1,11 +1,9 @@
 package com.example.application.services;
 
 import com.example.application.models.Praktikumsantrag;
-import com.example.application.models.Status_Antrag;
-import com.example.application.models.Studentin;
+import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import jakarta.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,7 +59,7 @@ class PraktikumsantragServiceTest {
         antrag.setTaetigkeit("Qualitätssicherung");
         antrag.setStartdatum(LocalDate.of(2024, 11, 15));
         antrag.setEnddatum(LocalDate.of(2024, 11, 16));
-        antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
+        antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
         return antrag;
     }
 

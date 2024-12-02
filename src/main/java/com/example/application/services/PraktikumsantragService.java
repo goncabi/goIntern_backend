@@ -1,17 +1,20 @@
 package com.example.application.services;
 
 import com.example.application.models.Praktikumsantrag;
-import com.example.application.models.Status_Antrag;
+import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
 import java.util.Optional;
 import java.util.List;
 
+@Validated
 @AllArgsConstructor
 @Service
-@Validated
+
 public class PraktikumsantragService {
 
 
@@ -24,16 +27,19 @@ public class PraktikumsantragService {
     }
 
     // Methode zur Erstellung eines neuen Antrags, wenn keiner vorhanden ist
-    public String antragErstellen(String matrikelnummer) {
+    public void antragErstellen(String matrikelnummer) {
+        if (matrikelnummer == null || matrikelnummer.isBlank()) {
+            throw new IllegalArgumentException("Die Matrikelnummer darf nicht leer sein.");
+        }
+
         if (antragVorhanden(matrikelnummer)) {
-            return "Es ist bereits ein Antrag vorhanden.";
+            throw new IllegalArgumentException("Es ist bereits ein Antrag vorhanden.");
         }
         Praktikumsantrag antrag = new Praktikumsantrag();
-        antrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
+        antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
         praktikumsantragRepository.save(antrag);
-        return "Antrag erfolgreich angelegt.";
-    }
 
+    }
 
     public Praktikumsantrag antragAnzeigen(String matrikelnummer) {
         Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
@@ -48,7 +54,7 @@ public class PraktikumsantragService {
     //antrag kann nur nach antragAnzeigen bearbeitet werden
     public String antragBearbeiten(String matrikelnummer, Praktikumsantrag antragVorBearbeitung) {
 
-        if(antragVorBearbeitung.getStatusAntrag() == Status_Antrag.GESPEICHERT || antragVorBearbeitung.getStatusAntrag() == Status_Antrag.ABGELEHNT) {
+        if(antragVorBearbeitung.getStatusAntrag() == StatusAntrag.GESPEICHERT || antragVorBearbeitung.getStatusAntrag() == StatusAntrag.ABGELEHNT) {
 
             // antragAnzeigen, damit ich Felder ansehen kann, bevor ich bearbeite
 
@@ -61,7 +67,7 @@ public class PraktikumsantragService {
 
             // Speichert den aktualisierten Antrag in der Datenbank
             praktikumsantragRepository.save(bearbeiteterAntrag);
-            bearbeiteterAntrag.setStatusAntrag(Status_Antrag.GESPEICHERT);
+            bearbeiteterAntrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
             return "Antrag erfolgreich bearbeitet.";
         }
         else {
@@ -78,15 +84,19 @@ public class PraktikumsantragService {
         praktikumsantragRepository.deleteById(id);
     }
 
-    public void antragUebermitteln(Praktikumsantrag antrag) {
-        if(!antragVorhanden(String.valueOf(antrag.getMatrikelnummer()))) {
-            throw new IllegalArgumentException(
-                    "Kein Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " gefunden.");
+    public void antragUebermitteln(@Valid Praktikumsantrag antrag) {
+        if (!antragVorhanden(antrag.getMatrikelnummer())) {
+            throw new IllegalArgumentException("Kein Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " gefunden.");
         }
-        antrag.setStatusAntrag(Status_Antrag.UEBERMITTELT);
+        if (antrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
+            throw new IllegalStateException("Nur gespeicherte Anträge können übermittelt werden.");
+        }
+        if (antrag.getStartdatum().isAfter(antrag.getEnddatum())) {
+            throw new IllegalArgumentException("Das Startdatum darf nicht nach dem Enddatum liegen.");
+        }
 
-        //PBService kümmert sich um die Benachrichtigung
-        pbService.antragUebermitteln(antrag);
+        pbService.antragUebermitteln(antrag);         //PBService kümmert sich um die Benachrichtigung
+
     }
 
     public List<Praktikumsantrag> getAllAntraege() {
