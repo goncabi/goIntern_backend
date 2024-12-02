@@ -240,7 +240,7 @@ class PraktikumsantragServiceTest {
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> praktikumsantragService.antragLoeschen(id));
 
-        assertEquals("Praktikumsantrag mit der ID: null. Antrag ist nicht vorhanden und kann nicht gelöscht werden",
+        assertEquals("Praktikumsantrag mit der ID: null ist nicht vorhanden und kann nicht gelöscht werden",
                 exception.getMessage());
 
         verify(praktikumsantragRepository, times(1)).findById(id);
