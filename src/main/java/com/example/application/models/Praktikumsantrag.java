@@ -93,7 +93,7 @@ public class Praktikumsantrag {
     private LocalDate datumAntrag;
 
     @Enumerated(EnumType.ORDINAL) // Maps Enum to smallint in the database
-    private Status_Antrag statusAntrag;
+    private StatusAntrag statusAntrag;
 
     @NotBlank(message = "Der Name der Praktikumsstelle darf nicht leer sein")
     @Size(max = 50, message = "Der Name der Praktikumsstelle darf maximal 50 Zeichen lang sein")

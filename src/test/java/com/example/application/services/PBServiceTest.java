@@ -3,7 +3,7 @@ package com.example.application.services;
 import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Praktikumsbeauftragter;
-import com.example.application.models.Status_Antrag;
+import com.example.application.models.StatusAntrag;
 
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
@@ -58,12 +58,12 @@ class PBServiceTest {
         // Vorbereitung
         Praktikumsantrag antrag = new Praktikumsantrag();
         antrag.setMatrikelnummer("123456");
-        antrag.setStatusAntrag(Status_Antrag.INBEARBEITUNG);
+        antrag.setStatusAntrag(StatusAntrag.INBEARBEITUNG);
 
         pbService.antragGenehmigen(antrag);
 
         // hier testen
-        assertEquals(Status_Antrag.ZUGELASSEN, antrag.getStatusAntrag());
+        assertEquals(StatusAntrag.ZUGELASSEN, antrag.getStatusAntrag());
         verify(benachrichtigungRepository, times(1)).save(Mockito.any()); //verify ist ähnlich wie assert. hier wird getestet dass die safe methode einmal ausgefuehrt wurde. Die save methode wird mit irgentwas aufgerufen(Mockito.any())
     }
 
