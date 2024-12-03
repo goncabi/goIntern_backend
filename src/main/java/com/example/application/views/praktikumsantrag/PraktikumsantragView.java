@@ -1,6 +1,6 @@
 package com.example.application.views.praktikumsantrag;
 
-import com.example.application.components.phonenumberfield.PhoneNumberField;
+//import com.example.application.components.phonenumberfield.PhoneNumberField;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -40,7 +40,7 @@ public class PraktikumsantragView extends Composite<VerticalLayout> {
         TextField textField4 = new TextField();
         TextField textField5 = new TextField();
         EmailField emailField = new EmailField();
-        PhoneNumberField phoneNumber = new PhoneNumberField();
+        //PhoneNumberField phoneNumber = new PhoneNumberField();
         TextField textField6 = new TextField();
         ComboBox comboBox = new ComboBox();
         TextArea textArea = new TextArea();
@@ -70,9 +70,9 @@ public class PraktikumsantragView extends Composite<VerticalLayout> {
         textField5.setLabel("PLZ/Ort");
         textField5.setWidth("min-content");
         emailField.setLabel("E-Mail");
-        phoneNumber.setLabel("Telefonnummer");
-        phoneNumber.setWidth("37px");
-        phoneNumber.setHeight("61px");
+//        phoneNumber.setLabel("Telefonnummer");
+//        phoneNumber.setWidth("37px");
+//        phoneNumber.setHeight("61px");
         textField6.setLabel("Vorschlag für den Praktikumsbetreuer_in an der HTW Berlin");
         layoutColumn2.setAlignSelf(FlexComponent.Alignment.CENTER, textField6);
         textField6.setWidth("100%");
@@ -106,7 +106,7 @@ public class PraktikumsantragView extends Composite<VerticalLayout> {
         formLayout2Col.add(textField4);
         formLayout2Col.add(textField5);
         formLayout2Col.add(emailField);
-        formLayout2Col.add(phoneNumber);
+        //formLayout2Col.add(phoneNumber);
         layoutColumn2.add(textField6);
         layoutColumn2.add(comboBox);
         layoutColumn2.add(textArea);
