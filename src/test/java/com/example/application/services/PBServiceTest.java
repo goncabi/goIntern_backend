@@ -139,4 +139,36 @@ class PBServiceTest {
         verify(pBRepository, times(1)).findByUserRole(AppUserRole.ADMIN);
         verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
     }
+
+    @Test
+    void testAntragAblehnen(){
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setStatusAntrag(StatusAntrag.INBEARBEITUNG);
+
+        pbService.antragAblehnen(antrag);
+
+        assertEquals(StatusAntrag.ABGELEHNT, antrag.getStatusAntrag());
+        verify(benachrichtigungRepository, times(1)).save(Mockito.any());
+    }
+
+    @Test
+    void testAntragAblehnenWithNullAntrag() {
+        Praktikumsantrag antrag = null;
+        assertThrows(NullPointerException.class, () -> pbService.antragAblehnen(antrag));
+    }
+
+    @Test
+    void testAntragAblehnenSpeichernFehler() {
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+
+        doThrow(new RuntimeException("Fehler beim Speichern der Benachrichtigung"))
+                .when(benachrichtigungRepository).save(any(Benachrichtigung.class));
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> pbService.antragAblehnen(antrag));
+
+        assertEquals("Fehler beim Speichern der Benachrichtigung", exception.getMessage());
+
+        verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
+    }
 }
