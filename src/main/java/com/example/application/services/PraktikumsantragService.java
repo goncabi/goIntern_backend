@@ -6,6 +6,7 @@ import com.example.application.repositories.PraktikumsantragRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Optional;
@@ -51,6 +52,9 @@ public class PraktikumsantragService {
     }
 
 
+    //transactional dient dazu, dass wenn beim bearbeiten etwas passiert
+    // alle daten dann wieder zurück gesetzt werden auf den anfangszustand
+    @Transactional
     //antrag kann nur nach antragAnzeigen bearbeitet werden
     public String antragBearbeiten(String matrikelnummer, Praktikumsantrag antragVorBearbeitung) {
 
