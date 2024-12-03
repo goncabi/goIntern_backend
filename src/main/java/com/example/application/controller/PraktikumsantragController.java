@@ -29,6 +29,18 @@ public class PraktikumsantragController {
         }
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<String> update(@PathVariable String matrikelnummer, @RequestBody Praktikumsantrag antrag) {
+
+        try {
+            praktikumsantragService.antragBearbeiten(matrikelnummer, antrag);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Antrag konnte nicht bearbeitet werden" + e.getMessage());
+        }
+        return ResponseEntity.ok("Antrag wurde erfolgreich bearbeitet!");
+    }
+
     //Daten aus der Datenbank löschen mit DeleteMapping
 
     @DeleteMapping("/{id}")
