@@ -85,7 +85,7 @@ class LoginServiceTest {
     }
 
     @Test
-    void loginPB_ReturntTrueWennAlleLoginDatenRichtigSind() {
+    void loginPB_ReturnTrueWennAlleLoginDatenRichtigSind() {
 
         String username = "Praktikumsbeauftragter";
         String password = "PB_Passwort";
