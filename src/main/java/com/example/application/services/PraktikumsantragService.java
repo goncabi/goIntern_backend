@@ -75,7 +75,6 @@ public class PraktikumsantragService {
         }
     }
 
-
     public void antragLoeschen(Long id) {
         Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findById(id);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
         if (praktikumsantragDB.isEmpty()) {
