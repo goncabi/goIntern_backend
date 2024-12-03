@@ -61,13 +61,19 @@ public class PraktikumsantragService {
         if(antragVorBearbeitung.getStatusAntrag() == StatusAntrag.GESPEICHERT || antragVorBearbeitung.getStatusAntrag() == StatusAntrag.ABGELEHNT) {
 
             // antragAnzeigen, damit ich Felder ansehen kann, bevor ich bearbeite
-
             Praktikumsantrag bearbeiteterAntrag = antragAnzeigen(matrikelnummer);
 
-            // hier Werte beispielhaft aktualisieren...
+            // hier Werte beispielhaft aktualisieren, wird später mit der Binder-Klasse und Vaadin zusammen geführt
             bearbeiteterAntrag.setAusnahmeZulassung(true);
             bearbeiteterAntrag.setStartdatum(antragVorBearbeitung.getStartdatum());
             bearbeiteterAntrag.setEnddatum(antragVorBearbeitung.getEnddatum());
+
+            // Start- und Enddatum prüfen (falls bearbeitet)
+            if (antragVorBearbeitung.getStartdatum() != null && antragVorBearbeitung.getEnddatum() != null) {
+                if (antragVorBearbeitung.getEnddatum().isBefore(antragVorBearbeitung.getStartdatum())) {
+                    throw new IllegalArgumentException("Das Enddatum darf nicht vor dem Startdatum liegen.");
+                }
+            }
 
             // Speichert den aktualisierten Antrag in der Datenbank
             praktikumsantragRepository.save(bearbeiteterAntrag);
