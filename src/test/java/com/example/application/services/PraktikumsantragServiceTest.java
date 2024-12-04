@@ -80,7 +80,7 @@ class PraktikumsantragServiceTest {
     }
 
     @Test
-    void testAntragVorhandenNichtVorhanden() {
+    void testAntragVorhandenNichtErfolgreich() {
         String matrikelnummer = "12345678";
         when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer))
                 .thenReturn(Optional.empty());
@@ -115,6 +115,15 @@ class PraktikumsantragServiceTest {
     void testAntragErstellenMitNullMatrikelnummer() {
         String matrikelnummer = null;
         assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragErstellen(matrikelnummer));
+    }
+    @Test
+    void testAntragErstellenMitLeererMatrikelnummer() {
+        String matrikelnummer = "  ";
+
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragErstellen(matrikelnummer));
+
+        // Fehlermeldung
+        assertEquals("Die Matrikelnummer darf nicht leer sein.", exception.getMessage());
     }
 
     @Test
@@ -200,6 +209,47 @@ class PraktikumsantragServiceTest {
         verify(pbService, times(1)).antragUebermitteln(antrag);
     }
 
+    @Test
+    void testAntragUebermittelnAntragNichtVorhanden() {
+        String matrikelnummer = "12345678";
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
+
+        assertEquals("Kein Antrag mit der Matrikelnummer " + matrikelnummer + " gefunden.", exception.getMessage());
+    }
+
+    @Test
+    void testAntragUebermittelnFalscherStatus() {
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setStatusAntrag(StatusAntrag.ABSOLVIERT); // Nicht GESPEICHERT
+
+        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
+                .thenReturn(Optional.of(antrag));
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
+
+        assertEquals("Nur gespeicherte Anträge können übermittelt werden.", exception.getMessage());
+    }
+
+    @Test
+    void testAntragUebermittelnStartdatumNachEnddatum() {
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setStartdatum(LocalDate.of(2024, 12, 15));
+        antrag.setEnddatum(LocalDate.of(2024, 11, 15)); // Startdatum nach Enddatum
+
+        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
+                .thenReturn(Optional.of(antrag));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
+
+        assertEquals("Das Startdatum darf nicht nach dem Enddatum liegen.", exception.getMessage());
+    }
+
+
 
     @Test
     void testAntragLoeschenErfolgreich() {
@@ -234,6 +284,7 @@ class PraktikumsantragServiceTest {
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions") // warning ignorieren
     void testAntragLoeschenMitNullId() {
         Long id = null;
 

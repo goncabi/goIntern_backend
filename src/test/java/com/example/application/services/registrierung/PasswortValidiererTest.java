@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PasswortValidiererTest {
 
-    private final PasswortValidierer passwortValidierer = new PasswortValidierer();
+        private final PasswortValidierer passwortValidierer = new PasswortValidierer();
 
     @Test
-    void testPasswoerterStimmenÜberein() {
+    void testPasswoerterStimmenUeberein() {
 
         String password1 = "Passw0rd!";
         String password2 = "Passw0rd!";
@@ -20,7 +20,7 @@ class PasswortValidiererTest {
     }
 
     @Test
-    void testPasswoerterStimmenNichtÜberein() {
+    void testPasswoerterStimmenNichtUeberein() {
 
         String password1 = "Passw0rd!";
         String password2 = "blablabla";
@@ -105,6 +105,65 @@ class PasswortValidiererTest {
         boolean isValid = passwortValidierer.passwordValidation(password1, password2);
 
         assertTrue(isValid, "Passwort gespeichert.");
+    }
+
+    @Test
+    void testPasswoerterSindNull() {
+        String password1 = null;
+        String password2 = null;
+
+        boolean isValid = passwortValidierer.passwordValidation(password1, password2);
+
+        assertFalse(isValid,
+                "Passwörter dürfen nicht null sein.");
+    }
+    @Test
+    void testPasswort1NullUndPasswort2Leer() {
+        String password1 = null;
+        String password2 = "";
+
+        boolean isValid = passwortValidierer.passwordValidation(password1, password2);
+
+        assertFalse(isValid, "Passwort darf weder null noch leer sein.");
+    }
+
+    @Test
+    void testPasswort2NullUndPasswort2Leer() {
+        String password1 = "";
+        String password2 = null;
+
+        boolean isValid = passwortValidierer.passwordValidation(password1, password2);
+
+        assertFalse(isValid, "Passwort darf weder null noch leer sein.");
+    }
+    @Test
+    void testPassword1IstLeer() {
+        String password1 = "";
+        String password2 = "Passw0rd!";
+
+        boolean isValid = passwortValidierer.passwordValidation(password1, password2);
+
+        assertFalse(isValid, "Passwort1 ist leer und sollte invalide sein.");
+    }
+    @Test
+    void testPassword2IstLeer() {
+        String password1 = "Passw0rd!";
+        String password2 = "";
+
+        boolean isValid = passwortValidierer.passwordValidation(password1, password2);
+
+        assertFalse(isValid, "Passwort2 ist leer und sollte invalide sein.");
+    }
+
+
+    @Test
+    void testPasswortNurSonderzeichen() {
+        String password1 = "!§$%&/()=?";
+        String password2 = "!§$%&/()=?";
+
+        boolean isValid = passwortValidierer.passwordValidation(password1, password2);
+
+        assertFalse(isValid, "Passwort darf nicht nur aus Sonderzeichen bestehen.");
     }
 }
 
