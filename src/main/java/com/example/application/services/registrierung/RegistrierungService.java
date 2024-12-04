@@ -16,7 +16,7 @@ public class RegistrierungService {
     private final PasswortValidierer passwortValidierer;
     private MatrikelnummerValidierer matrikelnummerValidierer;
 
-    public void registrieren(RegistrierungsAnfrage anfrage) {
+    public void registrierenMitSicherheitsantwort(RegistrierungsAnfrage anfrage) {
         boolean isValidMatrikelnummer = matrikelnummerValidierer.isMatrikelnummerValid(anfrage.getMatrikelnummer());
         if (!isValidMatrikelnummer) {
             throw new IllegalStateException("Matrikelnummer invalide.");
@@ -35,7 +35,7 @@ public class RegistrierungService {
         sicherheitsantwortRepository.save(antwort);
     }
 
-    public void registrieren(String matrikelnummer, String passwort1, String passwort2) {
+    public void registrierenOhneSicherheitsantwort(String matrikelnummer, String passwort1, String passwort2) {
         boolean isValidMatrikelnummer = matrikelnummerValidierer.isMatrikelnummerValid(matrikelnummer);
         if (!isValidMatrikelnummer) {
             throw new IllegalStateException("Matrikelnummer invalide.");
