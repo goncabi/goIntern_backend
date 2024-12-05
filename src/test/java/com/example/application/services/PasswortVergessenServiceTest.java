@@ -37,7 +37,7 @@ class PasswortVergessenServiceTest {
 
     @Test
     void passwortVergessenTestObEineExceptionGeworfen() {
-        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Berlin");
+        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567",  1, "Berlin");
 
         when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
                 .thenReturn(Optional.empty());
@@ -50,7 +50,7 @@ class PasswortVergessenServiceTest {
 
     @Test
     void passwortVergessenTestObEingabeRichtig() {
-        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Berlin");
+        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1,"Berlin");
 
         when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
                 .thenReturn(Optional.of(new Studentin("45678", "passwort1", AppUserRole.USER)));
@@ -62,7 +62,7 @@ class PasswortVergessenServiceTest {
 
     @Test
     void passwortVergessenTestObEingabeFalsch() {
-        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567", 1, "Berlin");
+        PasswortVergessenAnfrage anfrage = new PasswortVergessenAnfrage("1234567",1, "Berlin");
 
         when(studentinRepository.findByMatrikelnummer(anfrage.getMatrikelnummer()))
                 .thenReturn(Optional.of(new Studentin("45678", "passwort1", AppUserRole.USER)));

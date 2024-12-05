@@ -1,5 +1,6 @@
 package com.example.application.models;
 
+import com.example.application.repositories.SicherheitsantwortRepository;
 import lombok.Getter;
 
 @Getter

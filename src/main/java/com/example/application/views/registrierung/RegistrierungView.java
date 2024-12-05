@@ -44,7 +44,7 @@ public class RegistrierungView extends Composite {
             Notification.show("Bitte geben Sie ein von Ihnen selbstgewähltes Passwort ein.");
         }
         else{
-            registrierungService.registrieren(matrikelnummer, passwort1, passwort2);
+            registrierungService.registrierenOhneSicherheitsantwort(matrikelnummer, passwort1, passwort2);
             Notification.show("Registrierung war erfolgreich.");
         }
     }
