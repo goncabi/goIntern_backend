@@ -17,7 +17,7 @@ public class RegistrierungController {
 
     @PostMapping("/registrieren")
     public String registrieren(@RequestBody RegistrierungsAnfrage anfrage){
-        registrierungService.registrierenMitSicherheitsantwort(anfrage);
+        registrierungService.registrieren(anfrage);
         return "Registrierung erfolgreich";
     }
 }
