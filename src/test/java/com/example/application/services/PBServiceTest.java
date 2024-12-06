@@ -4,23 +4,17 @@ import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Praktikumsbeauftragter;
 import com.example.application.models.StatusAntrag;
-
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
-
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mockito;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
@@ -74,14 +68,12 @@ class PBServiceTest {
     void testAntragGenehmigen() {
         // Vorbereitung
         Praktikumsantrag antrag = new Praktikumsantrag();
-        antrag.setMatrikelnummer("123456");
         antrag.setStatusAntrag(StatusAntrag.INBEARBEITUNG);
 
         pbService.antragGenehmigen(antrag);
 
         // hier testen
         assertEquals(StatusAntrag.ZUGELASSEN, antrag.getStatusAntrag());
-        verify(benachrichtigungRepository, times(1)).save(Mockito.any()); //verify ist ähnlich wie assert. hier wird getestet dass die safe methode einmal ausgefuehrt wurde. Die save methode wird mit irgentwas aufgerufen(Mockito.any())
     }
 
     @Test

@@ -23,12 +23,9 @@ public class PBService implements CommandLineRunner {
         praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN));
     }
 
-    //Methode antragGenehmigen setzt Status auf zugelassen und fügt Nachricht Element der Nachrichtenliste in Studentin hinzu
+    //Methode antragGenehmigen setzt Status auf zugelassen
     public void antragGenehmigen(Praktikumsantrag antrag) {
-        String matrikelnummer = antrag.getMatrikelnummer();
         antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
-        Benachrichtigung nachrichtStudentin = new Benachrichtigung("Dein Antrag wurde genehmigt.", new Date(), LeseStatus.UNGELESEN, matrikelnummer);
-        benachrichtigungRepository.save(nachrichtStudentin);
     }
 
     public void antragAblehnen(Praktikumsantrag antrag) {
