@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import static org.mockito.Mockito.when;
@@ -92,40 +93,49 @@ class PraktikumsantragServiceTest {
     }
 
     @Test
-    void testAntragErstellenErfolgreich() {
+    void testAntragSpeichernErfolgreich() {
         String matrikelnummer = "12345678";
         when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 
-        praktikumsantragService.antragErstellen(matrikelnummer);
+        praktikumsantragService.antragSpeichern(erzeugeGueltigenAntrag());
 
         verify(praktikumsantragRepository, times(1)).save(any(Praktikumsantrag.class));
     }
-
     @Test
     void testAntragErstellenMitVorhandenemAntrag() {
-        String matrikelnummer = "12345678";
-        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer))
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+
+        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
                 .thenReturn(Optional.of(new Praktikumsantrag()));
 
-        assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragErstellen(matrikelnummer));
-        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+        assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(antrag.getMatrikelnummer());
     }
 
     @Test
-    void testAntragErstellenMitNullMatrikelnummer() {
-        String matrikelnummer = null;
-        assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragErstellen(matrikelnummer));
+    void testAntragSpeichernMitNullAntrag() {
+        Praktikumsantrag antrag = null;
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> praktikumsantragService.antragSpeichern(antrag));
+
+        assertEquals("Der Antrag darf nicht null sein.", exception.getMessage());
     }
+
     @Test
-    void testAntragErstellenMitLeererMatrikelnummer() {
-        String matrikelnummer = "  ";
+    void testAntragSpeichernMitLeererMatrikelnummer() {
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setMatrikelnummer("  "); // Leere Matrikelnummer
 
-            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragErstellen(matrikelnummer));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> praktikumsantragService.antragSpeichern(antrag));
 
-        // Fehlermeldung
         assertEquals("Die Matrikelnummer darf nicht leer sein.", exception.getMessage());
-    }
 
+        verify(praktikumsantragRepository, times(0)).findByMatrikelnummer(anyString());
+        verify(praktikumsantragRepository, times(0)).save(any());
+    }
     @Test
     void testAntragAnzeigenErfolgreich() {
         String matrikelnummer = "12345678";
@@ -250,18 +260,17 @@ class PraktikumsantragServiceTest {
     }
 
 
-
     @Test
     void testAntragLoeschenErfolgreich() {
         Long id = 1L;
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setAntragsID(id);
 
-        //MockTeil:
+        // MockTeil:
         when(praktikumsantragRepository.findById(id)).thenReturn(Optional.of(antrag));
         doNothing().when(praktikumsantragRepository).deleteById(id);
 
-        praktikumsantragService.antragLoeschen(id);
+        praktikumsantragService.antragLoeschen(antrag);
 
         verify(praktikumsantragRepository, times(1)).findById(id);
         verify(praktikumsantragRepository, times(1)).deleteById(id);
@@ -269,12 +278,14 @@ class PraktikumsantragServiceTest {
 
     @Test
     void testAntragLoeschenNichtVorhanden() {
-        Long id = 22L;
+        Long id = 100L; // Se asegura que id está inicializado
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setAntragsID(id);
 
         when(praktikumsantragRepository.findById(id)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> praktikumsantragService.antragLoeschen(id));
+                () -> praktikumsantragService.antragLoeschen(antrag));
 
         assertEquals("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden",
                 exception.getMessage());
@@ -284,18 +295,18 @@ class PraktikumsantragServiceTest {
     }
 
     @Test
-    @SuppressWarnings("ConstantConditions") // warning ignorieren
     void testAntragLoeschenMitNullId() {
-        Long id = null;
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setAntragsID(null); // Asegura que el ID es null
 
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> praktikumsantragService.antragLoeschen(id));
+                () -> praktikumsantragService.antragLoeschen(antrag));
 
         assertEquals("Praktikumsantrag mit der ID: null ist nicht vorhanden und kann nicht gelöscht werden",
                 exception.getMessage());
 
-        verify(praktikumsantragRepository, times(1)).findById(id);
-        verify(praktikumsantragRepository, times(0)).deleteById(id);
+        verify(praktikumsantragRepository, times(0)).findById(any());
+        verify(praktikumsantragRepository, times(0)).deleteById(any());
     }
 
     @Test
