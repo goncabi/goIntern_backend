@@ -28,18 +28,17 @@ public class PraktikumsantragService {
     }
 
     // Methode zur Erstellung eines neuen Antrags, wenn keiner vorhanden ist
-    public void antragErstellen(String matrikelnummer) {
-        if (matrikelnummer == null || matrikelnummer.isBlank()) {
+    public void antragSpeichern(Praktikumsantrag antrag) {
+        if (antrag == null || antrag.getMatrikelnummer() == null || antrag.getMatrikelnummer().isBlank()) {
             throw new IllegalArgumentException("Die Matrikelnummer darf nicht leer sein.");
         }
 
-        if (antragVorhanden(matrikelnummer)) {
-            throw new IllegalArgumentException("Es ist bereits ein Antrag vorhanden.");
+        if (antragVorhanden(antrag.getMatrikelnummer())) {
+            throw new IllegalArgumentException("Ein Antrag mit dieser Matrikelnummer existiert bereits.");
         }
-        Praktikumsantrag antrag = new Praktikumsantrag();
+
         antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
         praktikumsantragRepository.save(antrag);
-
     }
 
     public Praktikumsantrag antragAnzeigen(String matrikelnummer) {
@@ -50,7 +49,6 @@ public class PraktikumsantragService {
         return antrag.get();
 
     }
-
 
     //transactional dient dazu, dass wenn beim bearbeiten etwas passiert
     // alle daten dann wieder zurück gesetzt werden auf den anfangszustand
@@ -85,12 +83,13 @@ public class PraktikumsantragService {
         }
     }
 
-    public void antragLoeschen(Long id) {
-        Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findById(id);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
+
+    public void antragLoeschen(Praktikumsantrag antrag) {
+        Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findById(antrag.getAntragsID());// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
         if (praktikumsantragDB.isEmpty()) {
-            throw new RuntimeException("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden");
+            throw new RuntimeException("Praktikumsantrag mit der ID: " + antrag.getAntragsID() + " ist nicht vorhanden und kann nicht gelöscht werden");
         }
-        praktikumsantragRepository.deleteById(id);
+        praktikumsantragRepository.deleteById(antrag.getAntragsID());
     }
 
     public void antragUebermitteln(@Valid Praktikumsantrag antrag) {
@@ -104,6 +103,7 @@ public class PraktikumsantragService {
             throw new IllegalArgumentException("Das Startdatum darf nicht nach dem Enddatum liegen.");
         }
 
+        antrag.setStatusAntrag(StatusAntrag.READY);
         pbService.antragUebermitteln(antrag);         //PBService kümmert sich um die Benachrichtigung
 
     }
