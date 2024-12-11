@@ -72,13 +72,13 @@ public class PraktikumsantragController {
 
     //Daten aus der Datenbank löschen mit DeleteMapping
 
-    @DeleteMapping("/loeschen")
-    public ResponseEntity<String> antragLoeschen(@RequestBody Praktikumsantrag antrag) {
+    @DeleteMapping("/{matrikelnummer}")
+    public ResponseEntity<String> antragLoeschen(@PathVariable String matrikelnummer) {
         try {
-            praktikumsantragService.antragLoeschen(antrag);
-            return ResponseEntity.ok(
-                    "Praktikumsantrag mit ID: " + antrag.getAntragsID() + " wurde erfolgreich gelöscht.");
+            praktikumsantragService.antragLoeschen(matrikelnummer);
+            return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gelöscht.");
         }
+
         catch(RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                  .body("Fehler beim Löschen des Antrags: " + e.getMessage());

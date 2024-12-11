@@ -263,46 +263,44 @@ class PraktikumsantragServiceTest {
     @Test
     void testAntragLoeschenErfolgreich() {
         Long id = 1L;
+        String matrikelnummer = "s123";
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setAntragsID(id);
 
         // MockTeil:
-        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.of(antrag));
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
         doNothing().when(praktikumsantragRepository).deleteById(id);
 
-        praktikumsantragService.antragLoeschen(antrag);
+        praktikumsantragService.antragLoeschen(matrikelnummer);
 
-        verify(praktikumsantragRepository, times(1)).findById(id);
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
         verify(praktikumsantragRepository, times(1)).deleteById(id);
     }
 
     @Test
     void testAntragLoeschenNichtVorhanden() {
-        Long id = 100L; // Se asegura que id está inicializado
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setAntragsID(id);
+        String matrikelnummer = "s123"; // Se asegura que id está inicializado
 
-        when(praktikumsantragRepository.findById(id)).thenReturn(Optional.empty());
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> praktikumsantragService.antragLoeschen(antrag));
+                () -> praktikumsantragService.antragLoeschen(matrikelnummer));
 
-        assertEquals("Praktikumsantrag mit der ID: " + id + " ist nicht vorhanden und kann nicht gelöscht werden",
+        assertEquals("Praktikumsantrag für die Matrikelnummer: " + matrikelnummer + " ist nicht vorhanden und kann nicht gelöscht werden",
                 exception.getMessage());
 
-        verify(praktikumsantragRepository, times(1)).findById(id);
-        verify(praktikumsantragRepository, times(0)).deleteById(id);
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+        verify(praktikumsantragRepository, times(0)).deleteById(any());
     }
 
     @Test
     void testAntragLoeschenMitNullId() {
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setAntragsID(null); // Asegura que el ID es null
+        String matrikelnummer = null;
 
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> praktikumsantragService.antragLoeschen(antrag));
+                () -> praktikumsantragService.antragLoeschen(matrikelnummer));
 
-        assertEquals("Praktikumsantrag mit der ID: null ist nicht vorhanden und kann nicht gelöscht werden",
+        assertEquals("Praktikumsantrag für die Matrikelnummer: null ist nicht vorhanden und kann nicht gelöscht werden",
                 exception.getMessage());
 
         verify(praktikumsantragRepository, times(0)).findById(any());
