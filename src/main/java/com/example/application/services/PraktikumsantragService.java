@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
 import java.util.Optional;
 import java.util.List;
 
@@ -82,7 +81,6 @@ public class PraktikumsantragService {
             return "Keine weitere Bearbeitung möglich, da Antrag bereits abgesendet";
         }
     }
-
 
     public void antragLoeschen(String matrikelnummer) {
         Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt

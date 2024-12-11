@@ -10,20 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @AllArgsConstructor
 @RestController // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
-
-
-
 public class PraktikumsantragController {
 
     private final PraktikumsantragService praktikumsantragService;
-
 
     @PostMapping("/speichern")
     public ResponseEntity<EntityModel<Praktikumsantrag>> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
@@ -34,7 +29,6 @@ public class PraktikumsantragController {
                 return ResponseEntity.badRequest()
                                      .build();
             }
-
             praktikumsantragService.antragSpeichern(antrag);
 
             EntityModel<Praktikumsantrag> resource = EntityModel.of(antrag, linkTo(methodOn(PraktikumsantragController.class).speichernAntrag(antrag)).withSelfRel(),
@@ -45,7 +39,6 @@ public class PraktikumsantragController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(resource);
             //Gibt einen HTTP-Status 201 (CREATED) mit der URI des neu erstellten Ressourcenlinks (SELF-Link) zurück.
-
         }
         catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest()
@@ -71,14 +64,12 @@ public class PraktikumsantragController {
     }
 
     //Daten aus der Datenbank löschen mit DeleteMapping
-
     @DeleteMapping("/{matrikelnummer}")
     public ResponseEntity<String> antragLoeschen(@PathVariable String matrikelnummer) {
         try {
             praktikumsantragService.antragLoeschen(matrikelnummer);
             return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gelöscht.");
         }
-
         catch(RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                  .body("Fehler beim Löschen des Antrags: " + e.getMessage());
@@ -114,6 +105,5 @@ public class PraktikumsantragController {
         List<Praktikumsantrag> antraege = praktikumsantragService.getAllAntraege();
         return ResponseEntity.ok(antraege);
     }
-
 }
 
