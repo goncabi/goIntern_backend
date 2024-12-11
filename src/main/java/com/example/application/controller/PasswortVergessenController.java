@@ -1,12 +1,11 @@
 package com.example.application.controller;
 
-import com.example.application.models.PasswortVergessenAnfrage;
+import com.example.application.models.Sicherheitsfrage;
 import com.example.application.services.PasswortVergessenService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -15,13 +14,37 @@ public class PasswortVergessenController {
     private final PasswortVergessenService passwortVergessenService;
 
     @PostMapping("/passwort-vergessen")
-    public String passwortVergessen(@RequestBody PasswortVergessenAnfrage anfrage) {
-        if(passwortVergessenService.passwortVergessen(anfrage)) {
-            return "Antworten korrekt.";
-            //Hier dann eventuell Ausgeben des vergessenen Passworts (neues Passwort erstellen komplizierter) und auf Startseite leiten
-            //return "Antworten korrekt. Vergessenes Passwort: " +
-            //   studentinRepository.findByMatrikelnummer(loginAnfrage.getMatrikelnummer()).get().getPasswort().toString();
+    public ResponseEntity<String> eingabeMatrikelnummer(@RequestBody String matrikelnummer) {
+        try{
+            if(passwortVergessenService.eingabeMatrikelnummer(matrikelnummer)){
+                return ResponseEntity.ok("Eingabe korrekt.");
+            }
+            else{
+                return ResponseEntity.badRequest().body("User mit Matrikelnummer nicht vorhanden.");
+            }
         }
-        return "Antworten falsch.";
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
+        }
+    }
+
+    @GetMapping("/passwort-vergessen/{matrikelnummer}")
+    public ResponseEntity<Sicherheitsfrage> ausgabeSicherheitsfrage(@PathVariable String matrikelnummer) {
+        return ResponseEntity.ok(passwortVergessenService.getSicherheitsfrage(matrikelnummer));
+    }
+
+    @PostMapping("/passwort-vergessen/{matrikelnummer}")
+    public ResponseEntity<String> eingabeAntwort(@PathVariable String matrikelnummer, @RequestBody String antwort) {
+        try{
+            if(passwortVergessenService.eingabeAntwort(matrikelnummer, antwort)){
+                return ResponseEntity.ok("Antwort korrekt.");
+            }
+            else{
+                return ResponseEntity.badRequest().body("Antwort nicht korrekt.");
+            }
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
+        }
     }
 }

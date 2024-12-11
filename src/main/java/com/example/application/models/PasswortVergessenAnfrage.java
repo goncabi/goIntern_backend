@@ -1,12 +1,16 @@
 package com.example.application.models;
 
-import com.example.application.repositories.SicherheitsantwortRepository;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class PasswortVergessenAnfrage {
-    private final String matrikelnummer;
-    private final Sicherheitsantwort sicherheitsantwort;
+    private String matrikelnummer;
+    private int frageID;
+    private Sicherheitsantwort sicherheitsantwort;
+
+    public PasswortVergessenAnfrage(){}
 
     public PasswortVergessenAnfrage(String matrikelnummer, int frage, String answer) {
         this.matrikelnummer = matrikelnummer;
