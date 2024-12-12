@@ -125,4 +125,27 @@ class PasswortVergessenServiceTest {
         assertFalse(result);
         verify(sicherheitsantwortRepository, times(1)).findByMatrikelnummer(matrikelnummer);
     }
+
+    @Test
+    void testAusgabePasswort_StudentinGefunden(){
+        String matrikelnummer = "123456";
+        Studentin studentin = new Studentin(matrikelnummer, "id834#", AppUserRole.USER);
+        when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
+
+        String result = passwortVergessenService.ausgabeVergessenesPasswort(matrikelnummer);
+
+        assertEquals("id834#", result);
+        verify(studentinRepository, times(2)).findByMatrikelnummer(matrikelnummer);
+    }
+
+    @Test
+    void testAusgabePasswort_StudentinEmpty(){
+        String matrikelnummer = "123456";
+        when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(IllegalStateException.class, () -> passwortVergessenService.ausgabeVergessenesPasswort(matrikelnummer));
+
+        assertEquals("Fehler beim Finden der Studentin.", exception.getMessage());
+        verify(studentinRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+    }
 }

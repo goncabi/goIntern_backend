@@ -47,4 +47,14 @@ public class PasswortVergessenController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
         }
     }
+
+    @GetMapping("/passwort-vergessen/{matrikelnummer}/passwort")
+    public ResponseEntity<String> ausgabeVergessenesPasswort(@PathVariable String matrikelnummer) {
+        try{
+            return ResponseEntity.ok(passwortVergessenService.ausgabeVergessenesPasswort(matrikelnummer));
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
+        }
+    }
 }
