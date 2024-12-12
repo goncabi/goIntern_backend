@@ -40,4 +40,13 @@ public class PasswortVergessenService {
         Sicherheitsantwort enteredAnswer = new Sicherheitsantwort(requiredAnswer.getFrage(), matrikelnummer, antwort);
         return requiredAnswer.equals(enteredAnswer);
     }
+
+    public String ausgabeVergessenesPasswort(String matrikelnummer){
+        if(studentinRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
+            return studentinRepository.findByMatrikelnummer(matrikelnummer).get().getPassword();
+        }
+        else{
+            throw new IllegalStateException("Fehler beim Finden der Studentin.");
+        }
+    }
 }
