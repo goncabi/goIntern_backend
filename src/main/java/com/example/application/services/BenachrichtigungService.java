@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -17,6 +18,10 @@ public class BenachrichtigungService {
 
     public List<Benachrichtigung> alleLesen(String empfaenger_in){
         return benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger_in);
+    }
+
+    public Optional<Benachrichtigung> notizAusgeben(String matrikelnummer){
+        return benachrichtigungRepository.findByEmpfaenger(matrikelnummer);
     }
 
     public List<Benachrichtigung> ungeleseneLesen(String empfaenger_in){
