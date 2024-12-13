@@ -48,10 +48,10 @@ public class PasswortVergessenController {
         }
     }
 
-    @GetMapping("/passwort-vergessen/{matrikelnummer}/passwort")
-    public ResponseEntity<String> ausgabeVergessenesPasswort(@PathVariable String matrikelnummer) {
+    @PostMapping("/passwort-vergessen/{matrikelnummer}/passwort_setzen")
+    public ResponseEntity<String> neuesPasswortSetzen(@PathVariable String matrikelnummer, @RequestBody String passwortNeu, @RequestBody String passwortWdh) {
         try{
-            return ResponseEntity.ok(passwortVergessenService.ausgabeVergessenesPasswort(matrikelnummer));
+            return ResponseEntity.ok(passwortVergessenService.neuesPasswortSetzen(matrikelnummer, passwortNeu, passwortWdh));
         }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");

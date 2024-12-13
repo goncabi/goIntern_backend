@@ -5,10 +5,7 @@ import com.example.application.services.PBService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/pb")
@@ -27,12 +24,12 @@ public class PBController {
         }
     }
 
-    @PostMapping("/antrag/ablehnen")
-    public ResponseEntity<String> ablehnenAntrag(@RequestBody Praktikumsantrag antrag) {
+    @PostMapping("/antrag/{antragID}/ablehnen")
+    public ResponseEntity<String> ablehnenAntrag(@PathVariable int antragID, @RequestBody String ablehnenNotiz) {
         try {
-            pbService.antragAblehnen(antrag);
-            return ResponseEntity.ok("Der Antrag wurde erfolgreich abgelehnt.");
-        } catch (Exception e) {
+            return ResponseEntity.ok(pbService.antragAblehnen(antragID, ablehnenNotiz));
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fehler beim Ablehnen des Antrags: " + e.getMessage());
         }
     }

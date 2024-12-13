@@ -2,6 +2,7 @@ package com.example.application.services;
 
 import com.example.application.models.Sicherheitsantwort;
 import com.example.application.models.Sicherheitsfrage;
+import com.example.application.models.Studentin;
 import com.example.application.repositories.SicherheitsantwortRepository;
 import com.example.application.repositories.SicherheitsfrageRepository;
 import com.example.application.repositories.StudentinRepository;
@@ -41,9 +42,18 @@ public class PasswortVergessenService {
         return requiredAnswer.equals(enteredAnswer);
     }
 
-    public String ausgabeVergessenesPasswort(String matrikelnummer){
+    public String neuesPasswortSetzen(String matrikelnummer, String passwortNeu, String passwortWdh){
         if(studentinRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
-            return studentinRepository.findByMatrikelnummer(matrikelnummer).get().getPassword();
+            if(passwortNeu.equals(passwortWdh)) {
+                Studentin studentin = studentinRepository.findByMatrikelnummer(matrikelnummer).get();
+                studentin.setPassword(passwortNeu);
+                studentinRepository.save(studentin);
+                return "Neues Passwort wurde erfolgreich gesetzt.";
+            }
+            else{
+                return "Passwörter sind nicht identisch.";
+            }
+
         }
         else{
             throw new IllegalStateException("Fehler beim Finden der Studentin.");

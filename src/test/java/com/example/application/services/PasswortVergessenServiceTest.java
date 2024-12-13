@@ -127,23 +127,39 @@ class PasswortVergessenServiceTest {
     }
 
     @Test
-    void testAusgabePasswort_StudentinGefunden(){
+    void testAusgabePasswort_StudentinGefundenPasswoerterIdentisch(){
         String matrikelnummer = "123456";
-        Studentin studentin = new Studentin(matrikelnummer, "id834#", AppUserRole.USER);
-        when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
+        String passwortNeu = "id834#";
+        when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(new Studentin()));
 
-        String result = passwortVergessenService.ausgabeVergessenesPasswort(matrikelnummer);
+        String result = passwortVergessenService.neuesPasswortSetzen(matrikelnummer, passwortNeu, passwortNeu);
 
-        assertEquals("id834#", result);
+        assertEquals("Neues Passwort wurde erfolgreich gesetzt.", result);
         verify(studentinRepository, times(2)).findByMatrikelnummer(matrikelnummer);
+        verify(studentinRepository, times(1)).save(any(Studentin.class));
+    }
+
+    @Test
+    void testAusgabePasswort_StudentinGefundenPasswoerterNichtIdentisch(){
+        String matrikelnummer = "123456";
+        String passwortNeu = "id834#";
+        String passwortWdh = "id8u";
+        when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(new Studentin()));
+
+        String result = passwortVergessenService.neuesPasswortSetzen(matrikelnummer, passwortNeu, passwortWdh);
+
+        assertEquals("Passwörter sind nicht identisch.", result);
+        verify(studentinRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+        verify(studentinRepository, times(0)).save(any(Studentin.class));
     }
 
     @Test
     void testAusgabePasswort_StudentinEmpty(){
         String matrikelnummer = "123456";
+        String passwortNeu = "id834#";
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(IllegalStateException.class, () -> passwortVergessenService.ausgabeVergessenesPasswort(matrikelnummer));
+        Exception exception = assertThrows(IllegalStateException.class, () -> passwortVergessenService.neuesPasswortSetzen(matrikelnummer, passwortNeu, passwortNeu));
 
         assertEquals("Fehler beim Finden der Studentin.", exception.getMessage());
         verify(studentinRepository, times(1)).findByMatrikelnummer(matrikelnummer);
