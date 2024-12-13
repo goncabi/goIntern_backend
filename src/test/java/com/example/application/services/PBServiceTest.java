@@ -7,6 +7,7 @@ import com.example.application.models.StatusAntrag;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
+import com.example.application.repositories.PraktikumsantragRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ class PBServiceTest {
 
     @MockBean
     private BenachrichtigungRepository benachrichtigungRepository;
+    @MockBean
+    private PraktikumsantragRepository praktikumsantragRepository;
 
     private Praktikumsantrag erzeugeGueltigenAntrag() {
         Praktikumsantrag antrag = new Praktikumsantrag();
@@ -135,32 +138,24 @@ class PBServiceTest {
     @Test
     void testAntragAblehnen(){
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setStatusAntrag(StatusAntrag.INBEARBEITUNG);
+        antrag.setAntragsID(1L);
+        antrag.setNameStudentin("Frau Held ");
+        when(praktikumsantragRepository.findById(1L)).thenReturn(Optional.of(antrag));
 
-        pbService.antragAblehnen(antrag);
+        String result = pbService.antragAblehnen(1, "Falsche Daten");
 
         assertEquals(StatusAntrag.ABGELEHNT, antrag.getStatusAntrag());
+        assertEquals("Der Antrag von Frau Held wurde erfolgreich abgelehnt und die Nachricht übermittelt.", result);
+        verify(praktikumsantragRepository, times(2)).findById(1L);
         verify(benachrichtigungRepository, times(1)).save(Mockito.any());
     }
 
     @Test
-    void testAntragAblehnenWithNullAntrag() {
-        Praktikumsantrag antrag = null;
-        assertThrows(NullPointerException.class, () -> pbService.antragAblehnen(antrag));
-    }
+    void testAntragAblehnen_AntragNichtGefunden() {
+        when(praktikumsantragRepository.findById(1L)).thenReturn(Optional.empty());
 
-    @Test
-    void testAntragAblehnenSpeichernFehler() {
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        Exception exception = assertThrows(IllegalStateException.class, () -> pbService.antragAblehnen(1, "Falsche Daten"));
 
-        doThrow(new RuntimeException("Fehler beim Speichern der Benachrichtigung"))
-                .when(benachrichtigungRepository).save(any(Benachrichtigung.class));
-
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> pbService.antragAblehnen(antrag));
-
-        assertEquals("Fehler beim Speichern der Benachrichtigung", exception.getMessage());
-
-        verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
+        assertEquals("Fehler beim Finden des Praktikumsantrags.", exception.getMessage());
     }
 }

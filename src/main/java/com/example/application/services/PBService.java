@@ -4,10 +4,13 @@ import com.example.application.models.*;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.models.benachrichtigung.LeseStatus;
 import com.example.application.repositories.BenachrichtigungRepository;
+import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import com.example.application.repositories.PBRepository;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.Date;
 
 @Service
@@ -17,6 +20,7 @@ public class PBService implements CommandLineRunner {
 
     private final PBRepository praktikumsbeauftragterRepository;
     private final BenachrichtigungRepository benachrichtigungRepository;
+    private final PraktikumsantragRepository praktikumsantragRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -28,16 +32,21 @@ public class PBService implements CommandLineRunner {
         antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
     }
 
-    public void antragAblehnen(Praktikumsantrag antrag) {
-        String matrikelnummer = antrag.getMatrikelnummer();
-        String studentinName = antrag.getNameStudentin();
-        String input = "Textfeld im Frontend für Ablehnungsbegründung";
-        String begruendung = "Sehr geehrte Frau " + studentinName + ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + input;
-        Date aktuellesDatum = new Date();
-        Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, aktuellesDatum, LeseStatus.UNGELESEN, matrikelnummer);
+    public String antragAblehnen(long antragID, String ablehnenNotiz) {
+        if(praktikumsantragRepository.findById(antragID).isPresent()) {
+            Praktikumsantrag antrag = praktikumsantragRepository.findById(antragID).get();
+            String begruendung = "Sehr geehrte Frau " + antrag.getNameStudentin() +
+                    ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + ablehnenNotiz;
+            Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, new Date(), LeseStatus.UNGELESEN, antrag.getMatrikelnummer());
 
-        antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
-        benachrichtigungRepository.save(ablehnungsNotiz);
+            antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
+            benachrichtigungRepository.save(ablehnungsNotiz);
+            return "Der Antrag von " + antrag.getNameStudentin() + "wurde erfolgreich abgelehnt und die Nachricht übermittelt.";
+        }
+        else{
+            throw new IllegalStateException("Fehler beim Finden des Praktikumsantrags.");
+        }
+
     }
 
     public void antragUebermitteln(Praktikumsantrag antrag) {
