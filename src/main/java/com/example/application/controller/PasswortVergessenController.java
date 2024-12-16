@@ -48,7 +48,7 @@ public class PasswortVergessenController {
         }
     }
 
-    @PostMapping("/passwort-vergessen/{matrikelnummer}/passwort_setzen")
+    @PutMapping("/passwort-vergessen/{matrikelnummer}/passwort_setzen")
     public ResponseEntity<String> neuesPasswortSetzen(@PathVariable String matrikelnummer, @RequestBody String passwortNeu, @RequestBody String passwortWdh) {
         try{
             return ResponseEntity.ok(passwortVergessenService.neuesPasswortSetzen(matrikelnummer, passwortNeu, passwortWdh));
