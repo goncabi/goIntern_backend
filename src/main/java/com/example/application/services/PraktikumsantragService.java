@@ -35,7 +35,6 @@ public class PraktikumsantragService {
         if (antragVorhanden(antrag.getMatrikelnummer())) {
             throw new IllegalArgumentException("Ein Antrag mit dieser Matrikelnummer existiert bereits.");
         }
-
         antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
         praktikumsantragRepository.save(antrag);
     }
@@ -46,7 +45,6 @@ public class PraktikumsantragService {
                 throw new RuntimeException("Kein Antrag mit der Matrikelnummer " + matrikelnummer + " vorhanden. Lege zuerst einen Antrag an.");
         }
         return antrag.get();
-
     }
 
     //transactional dient dazu, dass wenn beim bearbeiten etwas passiert

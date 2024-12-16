@@ -9,12 +9,15 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @AllArgsConstructor
-@RestController // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
+@RestController
+// wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
 public class PraktikumsantragController {
 
@@ -25,9 +28,9 @@ public class PraktikumsantragController {
         //Das EntityModel von Spring HATEOAS wird verwendet, um Links in der Antwort einzubinden.
         //Das Objekt gespeicherterAntrag wird in ein EntityModel eingebettet.
         try {
-            if(praktikumsantragService.antragVorhanden(antrag.getMatrikelnummer())) {
+            if (praktikumsantragService.antragVorhanden(antrag.getMatrikelnummer())) {
                 return ResponseEntity.badRequest()
-                                     .build();
+                        .build();
             }
             praktikumsantragService.antragSpeichern(antrag);
 
@@ -39,14 +42,12 @@ public class PraktikumsantragController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(resource);
             //Gibt einen HTTP-Status 201 (CREATED) mit der URI des neu erstellten Ressourcenlinks (SELF-Link) zurück.
-        }
-        catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
-                                 .body(null);
-        }
-        catch(Exception e) {
+                    .body(null);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(null);
+                    .body(null);
         }
     }
 
@@ -55,10 +56,9 @@ public class PraktikumsantragController {
 
         try {
             praktikumsantragService.antragBearbeiten(matrikelnummer, antrag);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Antrag konnte nicht bearbeitet werden" + e.getMessage());
+                    .body("Antrag konnte nicht bearbeitet werden" + e.getMessage());
         }
         return ResponseEntity.ok("Antrag wurde erfolgreich bearbeitet!");
     }
@@ -69,14 +69,12 @@ public class PraktikumsantragController {
         try {
             praktikumsantragService.antragLoeschen(matrikelnummer);
             return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gelöscht.");
-        }
-        catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                 .body("Fehler beim Löschen des Antrags: " + e.getMessage());
-        }
-        catch(Exception e) {
+                    .body("Fehler beim Löschen des Antrags: " + e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Ein unerwarteter Fehler ist aufgetreten.");
+                    .body("Ein unerwarteter Fehler ist aufgetreten.");
         }
     }
 
@@ -85,18 +83,15 @@ public class PraktikumsantragController {
         try {
             praktikumsantragService.antragUebermitteln(antrag);
             return ResponseEntity.ok("Antrag erfolgreich übermittelt.");
-        }
-        catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
-                                 .body("Fehler beim Übermitteln des Antrags: " + e.getMessage());
-        }
-        catch(ConstraintViolationException e) {
+                    .body("Fehler beim Übermitteln des Antrags: " + e.getMessage());
+        } catch (ConstraintViolationException e) {
             return ResponseEntity.badRequest()
-                                 .body("Datenvalidierung fehlgeschlagen: " + e.getMessage());
-        }
-        catch(Exception e) {
+                    .body("Datenvalidierung fehlgeschlagen: " + e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Ein unerwarteter Fehler ist aufgetreten.");
+                    .body("Ein unerwarteter Fehler ist aufgetreten.");
         }
     }
 
@@ -105,5 +100,20 @@ public class PraktikumsantragController {
         List<Praktikumsantrag> antraege = praktikumsantragService.getAllAntraege();
         return ResponseEntity.ok(antraege);
     }
+
+    //Neuer Endpoint:
+    //Matrikelnummer wird uebergeben und ein Antrag bekommen
+    @GetMapping("getantrag/{matrikelnummer}")
+    public ResponseEntity<Praktikumsantrag> getAntrag(@PathVariable String matrikelnummer) {
+        try {
+            Praktikumsantrag antrag = praktikumsantragService.antragAnzeigen(matrikelnummer);
+            return ResponseEntity.ok(antrag);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+
 }
 
