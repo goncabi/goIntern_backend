@@ -25,7 +25,16 @@ public class PraktikumsantragService {
         return praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent();
     }
 
+    public Praktikumsantrag antragAnzeigen(String matrikelnummer) {
+        Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
+        if(antrag.isEmpty()) {
+            throw new RuntimeException("Kein Antrag mit der Matrikelnummer " + matrikelnummer + " vorhanden. Lege zuerst einen Antrag an.");
+        }
+        return antrag.get();
+    }
+
     // Methode zur Erstellung eines neuen Antrags, wenn keiner vorhanden ist
+    //oder: update der Daten, wenn Antrag schon vorhanden ist
     public void antragSpeichern(Praktikumsantrag antrag) {
         if (antrag.getMatrikelnummer() == null || antrag.getMatrikelnummer().isBlank()) {
             throw new IllegalArgumentException("Die Matrikelnummer darf nicht leer sein.");
@@ -36,61 +45,19 @@ public class PraktikumsantragService {
         if (vorhandenerAntrag.isPresent()) {
             Praktikumsantrag bestehenderAntrag = vorhandenerAntrag.get();
 
-            // Prüfen, ob der Antrag den Status "GESPEICHERT" hat
-            if (bestehenderAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
-                throw new IllegalStateException("Ein eingereichter Antrag kann nicht mehr geändert oder gespeichert werden.");
+            // Prüfen, ob der Antrag den Status "GESPEICHERT" oder Status "ABGELEHNT" hat
+            if ((bestehenderAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) && (bestehenderAntrag.getStatusAntrag() != StatusAntrag.ABGELEHNT)){
+                throw new IllegalStateException("Anträge können nur bearbeitet werden, wenn sie noch nicht eingereicht sind, oder wenn sie bereits abgelehnt sind.");
             }
 
             // Felder aktualisieren
             updateAntragFields(bestehenderAntrag, antrag);
 
-            praktikumsantragRepository.save(bestehenderAntrag);
-        } else {
+            praktikumsantragRepository.save(bestehenderAntrag);}
+        else {
             // Neuer Antrag speichern
             antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
             praktikumsantragRepository.save(antrag);
-        }
-    }
-
-
-    public Praktikumsantrag antragAnzeigen(String matrikelnummer) {
-        Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
-        if(antrag.isEmpty()) {
-                throw new RuntimeException("Kein Antrag mit der Matrikelnummer " + matrikelnummer + " vorhanden. Lege zuerst einen Antrag an.");
-        }
-        return antrag.get();
-    }
-
-    //transactional dient dazu, dass wenn beim bearbeiten etwas passiert
-    // alle daten dann wieder zurück gesetzt werden auf den anfangszustand
-    @Transactional
-    //antrag kann nur nach antragAnzeigen bearbeitet werden
-    public String antragBearbeiten(String matrikelnummer, Praktikumsantrag antragVorBearbeitung) {
-
-        if(antragVorBearbeitung.getStatusAntrag() == StatusAntrag.GESPEICHERT || antragVorBearbeitung.getStatusAntrag() == StatusAntrag.ABGELEHNT) {
-
-            // antragAnzeigen, damit ich Felder ansehen kann, bevor ich bearbeite
-            Praktikumsantrag bearbeiteterAntrag = antragAnzeigen(matrikelnummer);
-
-            // hier Werte beispielhaft aktualisieren, wird später mit der Binder-Klasse und Vaadin zusammen geführt
-            bearbeiteterAntrag.setAusnahmeZulassung(true);
-            bearbeiteterAntrag.setStartdatum(antragVorBearbeitung.getStartdatum());
-            bearbeiteterAntrag.setEnddatum(antragVorBearbeitung.getEnddatum());
-
-            // Start- und Enddatum prüfen (falls bearbeitet)
-            if (antragVorBearbeitung.getStartdatum() != null && antragVorBearbeitung.getEnddatum() != null) {
-                if (antragVorBearbeitung.getEnddatum().isBefore(antragVorBearbeitung.getStartdatum())) {
-                    throw new IllegalArgumentException("Das Enddatum darf nicht vor dem Startdatum liegen.");
-                }
-            }
-
-            // Speichert den aktualisierten Antrag in der Datenbank
-            praktikumsantragRepository.save(bearbeiteterAntrag);
-            bearbeiteterAntrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
-            return "Antrag erfolgreich bearbeitet.";
-        }
-        else {
-            return "Keine weitere Bearbeitung möglich, da Antrag bereits abgesendet";
         }
     }
 
