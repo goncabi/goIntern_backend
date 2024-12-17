@@ -36,10 +36,9 @@ public class PraktikumsantragController {
 
             EntityModel<Praktikumsantrag> resource = EntityModel.of(antrag, linkTo(methodOn(PraktikumsantragController.class).speichernAntrag(antrag)).withSelfRel(),
                     //withSelfRel: Erstellt einen Link zur eigenen Methode speichern mit der gleichen Ressource.
-                    linkTo(methodOn(PraktikumsantragController.class).getAlleAntraege()).withRel("alle-antraege")
-                    //withRel("alle-antraege"): Fügt einen generischen Link hinzu, um alle Praktikumsantrag-Einträge aufzulisten.
+                   linkTo(methodOn(PraktikumsantragController.class).getAlleAntraege()).withRel("alle-antraege")
+                //withRel("alle-antraege"): Fügt einen generischen Link hinzu, um alle Praktikumsantrag-Einträge aufzulisten.*/
             );
-
             return ResponseEntity.status(HttpStatus.CREATED).body(resource);
             //Gibt einen HTTP-Status 201 (CREATED) mit der URI des neu erstellten Ressourcenlinks (SELF-Link) zurück.
         } catch (IllegalArgumentException e) {
@@ -78,8 +77,8 @@ public class PraktikumsantragController {
         }
     }
 
-    @PostMapping("/uebermitteln/")
-    public ResponseEntity<String> uebermittelnAntrag(@Valid @RequestBody Praktikumsantrag antrag) { //mit @Valid werden die Angaben validiert.
+    @PostMapping("/uebermitteln")
+    public ResponseEntity<String> uebermittelnAntrag(@RequestBody Praktikumsantrag antrag) { //mit @Valid werden die Angaben validiert.
         try {
             praktikumsantragService.antragUebermitteln(antrag);
             return ResponseEntity.ok("Antrag erfolgreich übermittelt.");
