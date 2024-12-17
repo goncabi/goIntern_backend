@@ -3,7 +3,6 @@ package com.example.application.services;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,54 +34,24 @@ public class PraktikumsantragService {
         Optional<Praktikumsantrag> vorhandenerAntrag = praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer());
 
         if (vorhandenerAntrag.isPresent()) {
-            // Aktualisiere den existierenden Antrag
             Praktikumsantrag bestehenderAntrag = vorhandenerAntrag.get();
-            // Prüfung: Antrag mit Status EINGEREICHT darf nicht mehr geändert werden
-            if (bestehenderAntrag.getStatusAntrag() != null || bestehenderAntrag.getStatusAntrag() !=  StatusAntrag.GESPEICHERT) {
+
+            // Prüfen, ob der Antrag den Status "GESPEICHERT" hat
+            if (bestehenderAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
                 throw new IllegalStateException("Ein eingereichter Antrag kann nicht mehr geändert oder gespeichert werden.");
             }
-            // Übernehme alle Felder
-            bestehenderAntrag.setNameStudentin(antrag.getNameStudentin());
-            bestehenderAntrag.setVornameStudentin(antrag.getVornameStudentin());
-            bestehenderAntrag.setGebDatumStudentin(antrag.getGebDatumStudentin());
-            bestehenderAntrag.setStrasseStudentin(antrag.getStrasseStudentin());
-            bestehenderAntrag.setHausnummerStudentin(antrag.getHausnummerStudentin());
-            bestehenderAntrag.setPlzStudentin(antrag.getPlzStudentin());
-            bestehenderAntrag.setOrtStudentin(antrag.getOrtStudentin());
-            bestehenderAntrag.setTelefonnummerStudentin(antrag.getTelefonnummerStudentin());
-            bestehenderAntrag.setEmailStudentin(antrag.getEmailStudentin());
-            bestehenderAntrag.setVorschlagPraktikumsbetreuerIn(antrag.getVorschlagPraktikumsbetreuerIn());
-            bestehenderAntrag.setPraktikumssemester(antrag.getPraktikumssemester());
-            bestehenderAntrag.setStudiensemester(antrag.getStudiensemester());
-            bestehenderAntrag.setStudiengang(antrag.getStudiengang());
-            bestehenderAntrag.setVoraussetzendeLeistungsnachweise(antrag.getVoraussetzendeLeistungsnachweise());
-            bestehenderAntrag.setFehlendeLeistungsnachweise(antrag.getFehlendeLeistungsnachweise());
-            bestehenderAntrag.setAusnahmeZulassung(antrag.getAusnahmeZulassung());
-            bestehenderAntrag.setDatumAntrag(antrag.getDatumAntrag());
-            bestehenderAntrag.setNamePraktikumsstelle(antrag.getNamePraktikumsstelle());
-            bestehenderAntrag.setStrassePraktikumsstelle(antrag.getStrassePraktikumsstelle());
-            bestehenderAntrag.setPlzPraktikumsstelle(antrag.getPlzPraktikumsstelle());
-            bestehenderAntrag.setOrtPraktikumsstelle(antrag.getOrtPraktikumsstelle());
-            bestehenderAntrag.setLandPraktikumsstelle(antrag.getLandPraktikumsstelle());
-            bestehenderAntrag.setAnsprechpartnerPraktikumsstelle(antrag.getAnsprechpartnerPraktikumsstelle());
-            bestehenderAntrag.setTelefonPraktikumsstelle(antrag.getTelefonPraktikumsstelle());
-            bestehenderAntrag.setEmailPraktikumsstelle(antrag.getEmailPraktikumsstelle());
-            bestehenderAntrag.setAbteilung(antrag.getAbteilung());
-            bestehenderAntrag.setTaetigkeit(antrag.getTaetigkeit());
-            bestehenderAntrag.setStartdatum(antrag.getStartdatum());
-            bestehenderAntrag.setEnddatum(antrag.getEnddatum());
-            bestehenderAntrag.setStatusAntrag(antrag.getStatusAntrag());
-            bestehenderAntrag.setBegleitendeLehrveranstaltungen(antrag.getBegleitendeLehrveranstaltungen());
-            bestehenderAntrag.setVoraussetzendeLeistungsnachweise(antrag.getVoraussetzendeLeistungsnachweise());
 
-            // Speichere aktualisierten Antrag
+            // Felder aktualisieren
+            updateAntragFields(bestehenderAntrag, antrag);
+
             praktikumsantragRepository.save(bestehenderAntrag);
         } else {
-            // Neuer Antrag: Status setzen und speichern
+            // Neuer Antrag speichern
             antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
             praktikumsantragRepository.save(antrag);
         }
     }
+
 
     public Praktikumsantrag antragAnzeigen(String matrikelnummer) {
         Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
@@ -168,6 +137,39 @@ public class PraktikumsantragService {
 
         return praktikumsantragRepository.findAll();
     }
+
+    private void updateAntragFields(Praktikumsantrag bestehender, Praktikumsantrag neu) {
+        bestehender.setNameStudentin(neu.getNameStudentin());
+        bestehender.setVornameStudentin(neu.getVornameStudentin());
+        bestehender.setGebDatumStudentin(neu.getGebDatumStudentin());
+        bestehender.setStrasseStudentin(neu.getStrasseStudentin());
+        bestehender.setHausnummerStudentin(neu.getHausnummerStudentin());
+        bestehender.setPlzStudentin(neu.getPlzStudentin());
+        bestehender.setOrtStudentin(neu.getOrtStudentin());
+        bestehender.setTelefonnummerStudentin(neu.getTelefonnummerStudentin());
+        bestehender.setEmailStudentin(neu.getEmailStudentin());
+        bestehender.setVorschlagPraktikumsbetreuerIn(neu.getVorschlagPraktikumsbetreuerIn());
+        bestehender.setPraktikumssemester(neu.getPraktikumssemester());
+        bestehender.setStudiensemester(neu.getStudiensemester());
+        bestehender.setStudiengang(neu.getStudiengang());
+        bestehender.setVoraussetzendeLeistungsnachweise(neu.getVoraussetzendeLeistungsnachweise());
+        bestehender.setFehlendeLeistungsnachweise(neu.getFehlendeLeistungsnachweise());
+        bestehender.setAusnahmeZulassung(neu.getAusnahmeZulassung());
+        bestehender.setDatumAntrag(neu.getDatumAntrag());
+        bestehender.setNamePraktikumsstelle(neu.getNamePraktikumsstelle());
+        bestehender.setStrassePraktikumsstelle(neu.getStrassePraktikumsstelle());
+        bestehender.setPlzPraktikumsstelle(neu.getPlzPraktikumsstelle());
+        bestehender.setOrtPraktikumsstelle(neu.getOrtPraktikumsstelle());
+        bestehender.setLandPraktikumsstelle(neu.getLandPraktikumsstelle());
+        bestehender.setAnsprechpartnerPraktikumsstelle(neu.getAnsprechpartnerPraktikumsstelle());
+        bestehender.setTelefonPraktikumsstelle(neu.getTelefonPraktikumsstelle());
+        bestehender.setEmailPraktikumsstelle(neu.getEmailPraktikumsstelle());
+        bestehender.setAbteilung(neu.getAbteilung());
+        bestehender.setTaetigkeit(neu.getTaetigkeit());
+        bestehender.setStartdatum(neu.getStartdatum());
+        bestehender.setEnddatum(neu.getEnddatum());
+    }
+
 }
 
 
