@@ -45,7 +45,7 @@ public class PraktikumsantragService {
         if (vorhandenerAntrag.isPresent()) {
             Praktikumsantrag bestehenderAntrag = vorhandenerAntrag.get();
 
-            // Prüfen, ob der Antrag den Status "GESPEICHERT" oder den Status "ABGELEHNT" hat
+            // Prüfen, ob der Antrag den Status "GESPEICHERT" oder Status "ABGELEHNT" hat
             if ((bestehenderAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) && (bestehenderAntrag.getStatusAntrag() != StatusAntrag.ABGELEHNT)){
                 throw new IllegalStateException("Anträge können nur bearbeitet werden, wenn sie noch nicht eingereicht sind, oder wenn sie bereits abgelehnt sind.");
             }
