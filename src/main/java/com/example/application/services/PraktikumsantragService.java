@@ -3,7 +3,6 @@ package com.example.application.services;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +27,31 @@ public class PraktikumsantragService {
 
     // Methode zur Erstellung eines neuen Antrags, wenn keiner vorhanden ist
     public void antragSpeichern(Praktikumsantrag antrag) {
-        if (antrag == null || antrag.getMatrikelnummer() == null || antrag.getMatrikelnummer().isBlank()) {
+        if (antrag.getMatrikelnummer() == null || antrag.getMatrikelnummer().isBlank()) {
             throw new IllegalArgumentException("Die Matrikelnummer darf nicht leer sein.");
         }
 
-        if (antragVorhanden(antrag.getMatrikelnummer())) {
-            throw new IllegalArgumentException("Ein Antrag mit dieser Matrikelnummer existiert bereits.");
+        Optional<Praktikumsantrag> vorhandenerAntrag = praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer());
+
+        if (vorhandenerAntrag.isPresent()) {
+            Praktikumsantrag bestehenderAntrag = vorhandenerAntrag.get();
+
+            // Prüfen, ob der Antrag den Status "GESPEICHERT" hat
+            if (bestehenderAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
+                throw new IllegalStateException("Ein eingereichter Antrag kann nicht mehr geändert oder gespeichert werden.");
+            }
+
+            // Felder aktualisieren
+            updateAntragFields(bestehenderAntrag, antrag);
+
+            praktikumsantragRepository.save(bestehenderAntrag);
+        } else {
+            // Neuer Antrag speichern
+            antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
+            praktikumsantragRepository.save(antrag);
         }
-        antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
-        praktikumsantragRepository.save(antrag);
     }
+
 
     public Praktikumsantrag antragAnzeigen(String matrikelnummer) {
         Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
@@ -88,26 +102,74 @@ public class PraktikumsantragService {
         praktikumsantragRepository.deleteById(praktikumsantragDB.get().getAntragsID());
     }
 
-    public void antragUebermitteln(@Valid Praktikumsantrag antrag) {
-        if (!antragVorhanden(antrag.getMatrikelnummer())) {
-            throw new IllegalArgumentException("Kein Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " gefunden.");
-        }
-        if (antrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
-            throw new IllegalStateException("Nur gespeicherte Anträge können übermittelt werden.");
-        }
+    public void antragUebermitteln(Praktikumsantrag antrag) {
+        // Validierung des Start- und Enddatums
         if (antrag.getStartdatum().isAfter(antrag.getEnddatum())) {
             throw new IllegalArgumentException("Das Startdatum darf nicht nach dem Enddatum liegen.");
         }
 
-        antrag.setStatusAntrag(StatusAntrag.READY);
-        pbService.antragUebermitteln(antrag);         //PBService kümmert sich um die Benachrichtigung
+        // Überprüfen, ob Antrag existiert
+        Optional<Praktikumsantrag> existingAntrag = praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer());
 
+        if (existingAntrag.isPresent()) {
+
+            // Antrag existiert: aktualisiere den Status
+            Praktikumsantrag dbAntrag = existingAntrag.get();
+            // Prüfen, ob der Antrag bereits eingereicht wurde
+            if (dbAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
+                throw new IllegalStateException("Ein Antrag kann nur übermittelt werden, wenn er den Status 'GESPEICHERT' hat.");
+            }
+
+            dbAntrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
+            praktikumsantragRepository.save(dbAntrag); // Speichere aktualisierten Antrag
+        } else {
+            // Neuer Antrag: Status setzen und speichern
+            antrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
+            praktikumsantragRepository.save(antrag);
+        }
+
+        // PBService: Benachrichtigung senden
+        pbService.antragUebermitteln(antrag);
     }
+
 
     public List<Praktikumsantrag> getAllAntraege() {
 
         return praktikumsantragRepository.findAll();
     }
+
+    private void updateAntragFields(Praktikumsantrag bestehender, Praktikumsantrag neu) {
+        bestehender.setNameStudentin(neu.getNameStudentin());
+        bestehender.setVornameStudentin(neu.getVornameStudentin());
+        bestehender.setGebDatumStudentin(neu.getGebDatumStudentin());
+        bestehender.setStrasseStudentin(neu.getStrasseStudentin());
+        bestehender.setHausnummerStudentin(neu.getHausnummerStudentin());
+        bestehender.setPlzStudentin(neu.getPlzStudentin());
+        bestehender.setOrtStudentin(neu.getOrtStudentin());
+        bestehender.setTelefonnummerStudentin(neu.getTelefonnummerStudentin());
+        bestehender.setEmailStudentin(neu.getEmailStudentin());
+        bestehender.setVorschlagPraktikumsbetreuerIn(neu.getVorschlagPraktikumsbetreuerIn());
+        bestehender.setPraktikumssemester(neu.getPraktikumssemester());
+        bestehender.setStudiensemester(neu.getStudiensemester());
+        bestehender.setStudiengang(neu.getStudiengang());
+        bestehender.setVoraussetzendeLeistungsnachweise(neu.getVoraussetzendeLeistungsnachweise());
+        bestehender.setFehlendeLeistungsnachweise(neu.getFehlendeLeistungsnachweise());
+        bestehender.setAusnahmeZulassung(neu.getAusnahmeZulassung());
+        bestehender.setDatumAntrag(neu.getDatumAntrag());
+        bestehender.setNamePraktikumsstelle(neu.getNamePraktikumsstelle());
+        bestehender.setStrassePraktikumsstelle(neu.getStrassePraktikumsstelle());
+        bestehender.setPlzPraktikumsstelle(neu.getPlzPraktikumsstelle());
+        bestehender.setOrtPraktikumsstelle(neu.getOrtPraktikumsstelle());
+        bestehender.setLandPraktikumsstelle(neu.getLandPraktikumsstelle());
+        bestehender.setAnsprechpartnerPraktikumsstelle(neu.getAnsprechpartnerPraktikumsstelle());
+        bestehender.setTelefonPraktikumsstelle(neu.getTelefonPraktikumsstelle());
+        bestehender.setEmailPraktikumsstelle(neu.getEmailPraktikumsstelle());
+        bestehender.setAbteilung(neu.getAbteilung());
+        bestehender.setTaetigkeit(neu.getTaetigkeit());
+        bestehender.setStartdatum(neu.getStartdatum());
+        bestehender.setEnddatum(neu.getEnddatum());
+    }
+
 }
 
 
