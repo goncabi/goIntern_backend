@@ -3,17 +3,14 @@ package com.example.application.controller;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @AllArgsConstructor
 @RestController
@@ -24,43 +21,28 @@ public class PraktikumsantragController {
     private final PraktikumsantragService praktikumsantragService;
 
     @PostMapping("/speichern")
-    public ResponseEntity<EntityModel<Praktikumsantrag>> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
-        //Das EntityModel von Spring HATEOAS wird verwendet, um Links in der Antwort einzubinden.
-        //Das Objekt gespeicherterAntrag wird in ein EntityModel eingebettet.
+    public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
         try {
-            if (praktikumsantragService.antragVorhanden(antrag.getMatrikelnummer())) {
-                return ResponseEntity.badRequest()
-                        .build();
-            }
+            // service anrufen, um antrag zu speichern oder zu aktualisieren
             praktikumsantragService.antragSpeichern(antrag);
 
-            EntityModel<Praktikumsantrag> resource = EntityModel.of(antrag, linkTo(methodOn(PraktikumsantragController.class).speichernAntrag(antrag)).withSelfRel(),
-                    //withSelfRel: Erstellt einen Link zur eigenen Methode speichern mit der gleichen Ressource.
-                   linkTo(methodOn(PraktikumsantragController.class).getAlleAntraege()).withRel("alle-antraege")
-                //withRel("alle-antraege"): Fügt einen generischen Link hinzu, um alle Praktikumsantrag-Einträge aufzulisten.*/
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body(resource);
-            //Gibt einen HTTP-Status 201 (CREATED) mit der URI des neu erstellten Ressourcenlinks (SELF-Link) zurück.
+            // antwort erfolgreich
+            return ResponseEntity.ok()
+                                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                 .body(antrag);
+
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                    .body(null);
+            // Validierungsproblem ergibt ein Bad Request
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IllegalStateException e) {
+            // wenn keine änderungen erlaubt sind, ergibt ein forbidden
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            // unerwartete Fehler behandeln
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage());
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<String> update(@PathVariable String matrikelnummer, @RequestBody Praktikumsantrag antrag) {
-
-        try {
-            praktikumsantragService.antragBearbeiten(matrikelnummer, antrag);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Antrag konnte nicht bearbeitet werden" + e.getMessage());
-        }
-        return ResponseEntity.ok("Antrag wurde erfolgreich bearbeitet!");
-    }
 
     //Daten aus der Datenbank löschen mit DeleteMapping
     @DeleteMapping("/{matrikelnummer}")
