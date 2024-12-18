@@ -4,9 +4,7 @@ import com.example.application.models.Praktikumsantrag;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +22,12 @@ public class PraktikumsantragController {
     public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
         try {
             // service anrufen, um antrag zu speichern oder zu aktualisieren
-            praktikumsantragService.antragSpeichern(antrag);
+            // Speichert den Antrag und aktualisiert das Objekt
+         praktikumsantragService.antragSpeichern(antrag);
 
-            // antwort erfolgreich
-            return ResponseEntity.ok()
-                                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                 .body(antrag);
+            return ResponseEntity.ok("Antrag erfolgreich gespeichert!");
+
+
 
         } catch (IllegalArgumentException e) {
             // Validierungsproblem ergibt ein Bad Request
