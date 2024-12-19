@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import com.example.application.repositories.PBRepository;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
 
@@ -24,7 +23,7 @@ public class PBService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN));
+        praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.PRAKTIKUMSBEAUFTRAGTER));
     }
 
     //Methode antragGenehmigen setzt Status auf zugelassen
@@ -51,7 +50,7 @@ public class PBService implements CommandLineRunner {
 
     public void antragUebermitteln(Praktikumsantrag antrag) {
 
-        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.ADMIN)
+        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
                                                                     .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
 
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
