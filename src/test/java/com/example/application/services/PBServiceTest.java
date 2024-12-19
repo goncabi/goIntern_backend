@@ -45,14 +45,14 @@ class PBServiceTest {
     private Praktikumsbeauftragter erzeugePraktikumsbeauftragter() {
         Praktikumsbeauftragter pb = new Praktikumsbeauftragter();
         pb.setUsername("admin_user");
-        pb.setUserRole(AppUserRole.ADMIN);
+        pb.setUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
         return pb;
     }
 
 
     @Test
     void testRun() throws Exception {
-        Praktikumsbeauftragter mockPB = new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.ADMIN);
+        Praktikumsbeauftragter mockPB = new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
 
         pbService.run();
 
@@ -90,11 +90,11 @@ class PBServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         Praktikumsbeauftragter pb = erzeugePraktikumsbeauftragter();
 
-        when(pBRepository.findByUserRole(AppUserRole.ADMIN)).thenReturn(Optional.of(pb));
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)).thenReturn(Optional.of(pb));
 
         pbService.antragUebermitteln(antrag);
 
-        verify(pBRepository, times(1)).findByUserRole(AppUserRole.ADMIN);
+        verify(pBRepository, times(1)).findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
         verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
     }
 
@@ -102,7 +102,7 @@ class PBServiceTest {
     void testAntragUebermittelnKeinAdmin() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
 
-        when(pBRepository.findByUserRole(AppUserRole.ADMIN))
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER))
                 .thenReturn(Optional.empty());
 
 
@@ -119,7 +119,7 @@ class PBServiceTest {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         Praktikumsbeauftragter pb = erzeugePraktikumsbeauftragter();
 
-        when(pBRepository.findByUserRole(AppUserRole.ADMIN))
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER))
                 .thenReturn(Optional.of(pb));
 
         doThrow(new RuntimeException("Fehler beim Speichern der Benachrichtigung"))
@@ -131,7 +131,7 @@ class PBServiceTest {
         assertEquals("Fehler beim Speichern der Benachrichtigung", exception.getMessage()); //sodass wir Fehler beim Speichern der Nachrichten ausschliessen können
 
 
-        verify(pBRepository, times(1)).findByUserRole(AppUserRole.ADMIN);
+        verify(pBRepository, times(1)).findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
         verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
     }
 

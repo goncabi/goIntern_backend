@@ -1,8 +1,10 @@
 package com.example.application.controller;
 
-import com.example.application.models.LoginAnfrageStudentin;
+import com.example.application.models.LoginAnfrage;
 import com.example.application.services.LoginService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +18,18 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginAnfrageStudentin loginAnfrage){
-        if(loginService.login(loginAnfrage)){
-            return "Login OK";
-            //Hier dann weiterleiten zu der Homepage
+    public ResponseEntity<String> login(@RequestBody LoginAnfrage loginAnfrage) {
+        try{
+            if(loginService.login(loginAnfrage)){
+                return new ResponseEntity<>("Login OK", HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>("Login Failed", HttpStatus.BAD_REQUEST);
+            }
         }
-        return "Login Failed: Password is incorrect";
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ein unerwarteter Fehler ist aufgetreten.");
+        }
     }
 }

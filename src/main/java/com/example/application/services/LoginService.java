@@ -1,9 +1,6 @@
 package com.example.application.services;
 
-import com.example.application.models.LoginAnfragePB;
-import com.example.application.models.LoginAnfrageStudentin;
-import com.example.application.models.Praktikumsbeauftragter;
-import com.example.application.models.Studentin;
+import com.example.application.models.*;
 import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
@@ -16,29 +13,36 @@ public class LoginService {
     private final StudentinRepository studentinRepository;
     private final PBRepository praktikumsbeauftragterRepository;
 
-    public boolean login(LoginAnfrageStudentin loginAnfrage) {
+    public boolean login(LoginAnfrage loginAnfrage) {
+        if(loginAnfrage.getRole().equals("Student/in")) {
+            return loginStudentin(loginAnfrage.getUsername(), loginAnfrage.getPassword());
+        }
+        else {
+            return loginPB(loginAnfrage.getUsername(), loginAnfrage.getPassword());
+        }
+    }
+    public boolean loginStudentin(String username, String password) {
         boolean loginSuccessful;
-        if(studentinRepository.findByMatrikelnummer(loginAnfrage.getMatrikelnummer()).isPresent()) {
-            Studentin studentin = studentinRepository.findByMatrikelnummer(loginAnfrage.getMatrikelnummer()).get();
-            loginSuccessful = studentin.getPassword().equals(loginAnfrage.getPasswort());
+        if(studentinRepository.findByMatrikelnummer(username).isPresent()) {
+            Studentin studentin = studentinRepository.findByMatrikelnummer(username).get();
+            loginSuccessful = studentin.getPassword().equals(password);
         }
         else{
-            throw new IllegalStateException("Matrikelnummer falsch oder nicht registriert");
+            loginSuccessful = false;
         }
         return loginSuccessful;
     }
 
-    public boolean login(LoginAnfragePB loginAnfrage) {
+    public boolean loginPB(String username, String password) {
         boolean loginSuccessful;
-        if(praktikumsbeauftragterRepository.findByUsername(loginAnfrage.getUsername()).isPresent()) {
-            Praktikumsbeauftragter praktikumsbeauftragter = praktikumsbeauftragterRepository.findByUsername(loginAnfrage.getUsername()).get();
-            loginSuccessful = praktikumsbeauftragter.getPasswort().equals(loginAnfrage.getPasswort());
+        if(praktikumsbeauftragterRepository.findByUsername(username).isPresent()) {
+            Praktikumsbeauftragter praktikumsbeauftragter = praktikumsbeauftragterRepository.findByUsername(username).get();
+            loginSuccessful = praktikumsbeauftragter.getPasswort().equals(password);
         }
         else{
-            throw new IllegalStateException("Username ist falsch");
+            loginSuccessful = false;
         }
         return loginSuccessful;
     }
-
 
 }

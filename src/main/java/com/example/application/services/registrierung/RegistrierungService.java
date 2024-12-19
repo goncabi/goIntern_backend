@@ -22,7 +22,7 @@ public class RegistrierungService {
         }
         else {
             studentinService.signUpUser(
-                    new Studentin(anfrage.getMatrikelnummer(), anfrage.getPasswort1(), AppUserRole.USER));
+                    new Studentin(anfrage.getMatrikelnummer(), anfrage.getPasswort1(), AppUserRole.STUDENTIN));
             Sicherheitsantwort antwort = new Sicherheitsantwort(anfrage.getFrage(), anfrage.getMatrikelnummer(), anfrage.getAntwort());
             sicherheitsantwortRepository.save(antwort);
         }
