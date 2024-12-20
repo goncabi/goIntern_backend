@@ -4,22 +4,21 @@ import com.example.application.models.RegistrierungsAnfrage;
 import com.example.application.models.Sicherheitsantwort;
 import com.example.application.models.Studentin;
 import com.example.application.repositories.SicherheitsantwortRepository;
-import com.example.application.services.StudentinService;
+import com.example.application.repositories.StudentinRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.never;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class RegistrierungServiceTest {
-
-    @Mock
-    private StudentinService studentinService;
 
     @Mock
     private SicherheitsantwortRepository sicherheitsantwortRepository;
@@ -41,31 +40,44 @@ class RegistrierungServiceTest {
         }
     }
 
-    @Test
-    void testRegistrierenValidenDaten() {
-        // mock-Werte
-        RegistrierungsAnfrage anfrage = new RegistrierungsAnfrage("s0123456", "Password123!", "Password123!", 1, "Berlin");
+    @Mock
+    private StudentinRepository studentinRepository;
 
-        // registrieren mit Mockwerten aufrufen
-        registrierungService.registrieren(anfrage);
 
-        // mit any: Mockito prüft, ob Methode signUpUser irgendwann im Testablauf mit einem Studentin-Objekt aufgerufen wurde
-        verify(studentinService).signUpUser(any(Studentin.class));
-        verify(sicherheitsantwortRepository).save(any(Sicherheitsantwort.class));
-    }
+        @Test
+        void testRegistrieren_PasswoerterNichtIdentisch() {
+            RegistrierungsAnfrage anfrage = new RegistrierungsAnfrage("user1", "password", "password123", "1", "Antwort");
 
-    @Test
-    void testRegistrierenPasswoerterNichtGleich() {
+            boolean result = registrierungService.registrieren(anfrage);
 
-        RegistrierungsAnfrage anfrage = new RegistrierungsAnfrage("s0123456", "Password123!", "blablabla", 1, "Berlin");
+            assertFalse(result, "Die Registrierung sollte fehlschlagen, wenn die Passwörter nicht übereinstimmen.");
+            verifyNoInteractions(studentinRepository);
+            verifyNoInteractions(sicherheitsantwortRepository);
+        }
 
-        // weil beide pw unterschiedlich
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> registrierungService.registrieren(anfrage));
-        assertEquals("Eingegebene Passwörter sind nicht identisch.", exception.getMessage());
+        @Test
+        void testRegistrieren_BenutzernameBereitsVorhanden() {
+            RegistrierungsAnfrage anfrage = new RegistrierungsAnfrage("user1", "password", "password", "1", "Antwort");
+            when(studentinRepository.findByMatrikelnummer("user1")).thenReturn(Optional.of(new Studentin()));
 
-        verify(studentinService, never()).signUpUser(any());
-        verify(sicherheitsantwortRepository, never()).save(any());
-    }
+            boolean result = registrierungService.registrieren(anfrage);
 
-    //Null-Werte werden in Vaadin geprüft
+            assertFalse(result, "Die Registrierung sollte fehlschlagen, wenn der Benutzername bereits existiert.");
+            verify(studentinRepository, times(1)).findByMatrikelnummer("user1");
+            verifyNoInteractions(sicherheitsantwortRepository);
+        }
+
+        @Test
+        void testRegistrieren_ErfolgreicheRegistrierung() {
+            RegistrierungsAnfrage anfrage = new RegistrierungsAnfrage("user1", "password", "password", "1", "Antwort");
+            when(studentinRepository.findByMatrikelnummer("user1")).thenReturn(Optional.empty());
+
+            boolean result = registrierungService.registrieren(anfrage);
+
+            assertTrue(result, "Die Registrierung sollte erfolgreich sein.");
+            verify(studentinRepository, times(1)).findByMatrikelnummer("user1");
+            verify(studentinRepository, times(1)).save(any(Studentin.class));
+            verify(sicherheitsantwortRepository, times(1)).save(any(Sicherheitsantwort.class));
+        }
+
 }

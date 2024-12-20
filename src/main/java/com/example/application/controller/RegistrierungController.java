@@ -20,11 +20,14 @@ public class RegistrierungController {
     @PostMapping("/registrieren")
     public ResponseEntity<String> registrieren(@RequestBody RegistrierungsAnfrage anfrage){
         try {
-            registrierungService.registrieren(anfrage);
-            return ResponseEntity.ok("Registrierung erfolgreich!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Fehler bei der Registrierung: " + e.getMessage());
-        } catch (Exception e) {
+            if(registrierungService.registrieren(anfrage)){
+                return new ResponseEntity<>("Registration OK", HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>("Registration Failed", HttpStatus.BAD_REQUEST);
+            }
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
         }
     }
