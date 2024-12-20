@@ -13,8 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -32,7 +32,7 @@ class LoginServiceTest {
     private LoginService loginService;
 
     @Test
-    void loginStudent_shouldReturnTrue_whenCredentialsAreCorrect() {
+    void loginStudent_shouldReturnMatrikelnummer_whenCredentialsAreCorrect() {
         String matrikelnummer = "s0123456";
         String password = "password1!";
         Studentin studentin = new Studentin(matrikelnummer, password, AppUserRole.STUDENTIN);
@@ -40,14 +40,15 @@ class LoginServiceTest {
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
 
-        boolean result = loginService.login(loginAnfrage);
+        Optional<String> result = loginService.login(loginAnfrage);
 
-        assertTrue(result);
-        verify(studentinRepository, times(2)).findByMatrikelnummer(matrikelnummer);
+        assertTrue(result.isPresent());
+        assertEquals(matrikelnummer, result.get());
+        verify(studentinRepository, times(1)).findByMatrikelnummer(matrikelnummer);
     }
 
     @Test
-    void loginStudent_shouldReturnFalse_whenPasswordIsIncorrect() {
+    void loginStudent_shouldReturnEmptyOptional_whenPasswordIsIncorrect() {
         String matrikelnummer = "s0123456";
         String correctPassword = "correctPassword";
         String wrongPassword = "wrongPassword";
@@ -56,28 +57,28 @@ class LoginServiceTest {
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
 
-        boolean result = loginService.login(loginAnfrage);
+        Optional<String> result = loginService.login(loginAnfrage);
 
-        assertFalse(result);
-        verify(studentinRepository, times(2)).findByMatrikelnummer(matrikelnummer);
+        assertTrue(result.isEmpty());
+        verify(studentinRepository, times(1)).findByMatrikelnummer(matrikelnummer);
     }
 
     @Test
-    void loginStudent_shouldReturnFalse_whenMatrikelnummerDoesNotExist() {
+    void loginStudent_shouldReturnEmptyOptional_whenMatrikelnummerDoesNotExist() {
         String matrikelnummer = "s0123456";
         String password = "password";
         LoginAnfrage loginAnfrage = new LoginAnfrage("Student/in", matrikelnummer, password);
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 
-        boolean result = loginService.login(loginAnfrage);
+        Optional<String> result = loginService.login(loginAnfrage);
 
-        assertFalse(result);
+        assertTrue(result.isEmpty());
         verify(studentinRepository, times(1)).findByMatrikelnummer(matrikelnummer);
     }
 
     @Test
-    void loginPB_ReturnTrueWennAlleLoginDatenRichtigSind() {
+    void loginPB_shouldReturnEmptyOptional_whenCredentialsAreCorrect() {
         String username = "Praktikumsbeauftragter";
         String password = "PB_Passwort";
         Praktikumsbeauftragter pb = new Praktikumsbeauftragter(username, password, AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
@@ -85,37 +86,41 @@ class LoginServiceTest {
 
         when(pbRepository.findByUsername(username)).thenReturn(Optional.of(pb));
 
-        boolean result = loginService.login(loginAnfrage);
-        assertTrue(result);
-        verify(pbRepository, times(2)).findByUsername(username);
+        Optional<String> result = loginService.login(loginAnfrage);
+
+        assertFalse(result.isPresent());
+        verify(pbRepository, times(1)).findByUsername(username);
     }
 
+
     @Test
-    void loginPB_ReturnFalseWennLoginDatenFalschSind() {
+    void loginPB_shouldReturnEmptyOptional_whenPasswordIsIncorrect() {
         String username = "Praktikumsbeauftragter";
-        String correctPassword = "Richtiges Passwort";
-        String wrongPassword = "Falsches Passwort";
+        String correctPassword = "RichtigesPasswort";
+        String wrongPassword = "FalschesPasswort";
         Praktikumsbeauftragter pb = new Praktikumsbeauftragter(username, correctPassword, AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
         LoginAnfrage loginAnfrage = new LoginAnfrage("Praktikumsbeauftragte/r", username, wrongPassword);
 
         when(pbRepository.findByUsername(username)).thenReturn(Optional.of(pb));
 
-        boolean result = loginService.login(loginAnfrage);
+        Optional<String> result = loginService.login(loginAnfrage);
 
-        assertFalse(result);
-        verify(pbRepository, times(2)).findByUsername(username);
+        assertTrue(result.isEmpty());
+        verify(pbRepository, times(1)).findByUsername(username);
     }
 
     @Test
-    void loginPB_ReturnFalse_WennUserNichtExistiert() {
-        String username = "Nicht vorhandener UserName";
-        String password = "irgendeinPasswort";
+    void loginPB_shouldReturnEmptyOptional_whenUserDoesNotExist() {
+        String username = "NonExistentUser";
+        String password = "SomePassword";
         LoginAnfrage loginAnfrage = new LoginAnfrage("Praktikumsbeauftragte/r", username, password);
 
         when(pbRepository.findByUsername(username)).thenReturn(Optional.empty());
 
-        boolean result = loginService.login(loginAnfrage);
-        assertFalse(result);
+        Optional<String> result = loginService.login(loginAnfrage);
+
+        assertTrue(result.isEmpty());
+        verify(pbRepository, times(1)).findByUsername(username);
     }
 }
 
