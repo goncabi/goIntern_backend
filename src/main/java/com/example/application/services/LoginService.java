@@ -6,6 +6,8 @@ import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 @Service
 public class LoginService {
@@ -13,36 +15,25 @@ public class LoginService {
     private final StudentinRepository studentinRepository;
     private final PBRepository praktikumsbeauftragterRepository;
 
-    public boolean login(LoginAnfrage loginAnfrage) {
-        if(loginAnfrage.getRole().equals("Student/in")) {
+
+    public Optional<String> login(LoginAnfrage loginAnfrage) {
+        if (loginAnfrage.getRole().equals("Student/in")) {
             return loginStudentin(loginAnfrage.getUsername(), loginAnfrage.getPassword());
-        }
-        else {
+        } else {
             return loginPB(loginAnfrage.getUsername(), loginAnfrage.getPassword());
         }
     }
-    private boolean loginStudentin(String username, String password) {
-        boolean loginSuccessful;
-        if(studentinRepository.findByMatrikelnummer(username).isPresent()) {
-            Studentin studentin = studentinRepository.findByMatrikelnummer(username).get();
-            loginSuccessful = studentin.getPassword().equals(password);
-        }
-        else{
-            loginSuccessful = false;
-        }
-        return loginSuccessful;
+
+    private Optional<String> loginStudentin(String username, String password) {
+        return studentinRepository.findByMatrikelnummer(username)
+                                  .filter(studentin -> studentin.getPassword().equals(password))
+                                  .map(Studentin::getMatrikelnummer);
     }
 
-    private boolean loginPB(String username, String password) {
-        boolean loginSuccessful;
-        if(praktikumsbeauftragterRepository.findByUsername(username).isPresent()) {
-            Praktikumsbeauftragter praktikumsbeauftragter = praktikumsbeauftragterRepository.findByUsername(username).get();
-            loginSuccessful = praktikumsbeauftragter.getPasswort().equals(password);
-        }
-        else{
-            loginSuccessful = false;
-        }
-        return loginSuccessful;
+    private Optional<String> loginPB(String username, String password) {
+        return praktikumsbeauftragterRepository.findByUsername(username)
+                                               .filter(pb -> pb.getPasswort().equals(password))
+                                               .map(pb -> "PRAKTIKUMSBEAUFTRAGTER"); // Identificador genérico
     }
 
 }

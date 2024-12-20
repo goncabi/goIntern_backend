@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
@@ -17,19 +21,43 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginAnfrage loginAnfrage) {
-        try{
-            if(loginService.login(loginAnfrage)){
-                return new ResponseEntity<>("Login OK", HttpStatus.OK);
+
+    @PostMapping("/login") public ResponseEntity<Map<String, String>> login (@RequestBody LoginAnfrage loginAnfrage)
+        {
+            try {
+                Optional<String> matrikelnummerOptional = loginService.login(loginAnfrage);
+
+                if(matrikelnummerOptional.isPresent()) {
+                    String matrikelnummer = matrikelnummerOptional.get();
+
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message",
+                                 "Login OK");
+
+                    // Füge Matrikelnummer nur für Studenten hinzu
+                    if("Student/in".equals(loginAnfrage.getRole())) {
+                        response.put("matrikelnummer",
+                                     matrikelnummer);
+                    }
+
+                    return ResponseEntity.ok(response);
+                } else {
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message",
+                                 "Login Failed");
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                         .body(response);
+                }
             }
-            else{
-                return new ResponseEntity<>("Login Failed", HttpStatus.BAD_REQUEST);
+            catch(Exception e) {
+                Map<String, String> response = new HashMap<>();
+                response.put("message",
+                             "Ein unerwarteter Fehler ist aufgetreten.");
+
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                     .body(response);
             }
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ein unerwarteter Fehler ist aufgetreten.");
         }
     }
-}
+
