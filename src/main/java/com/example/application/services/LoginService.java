@@ -21,7 +21,7 @@ public class LoginService {
             return loginPB(loginAnfrage.getUsername(), loginAnfrage.getPassword());
         }
     }
-    public boolean loginStudentin(String username, String password) {
+    private boolean loginStudentin(String username, String password) {
         boolean loginSuccessful;
         if(studentinRepository.findByMatrikelnummer(username).isPresent()) {
             Studentin studentin = studentinRepository.findByMatrikelnummer(username).get();
@@ -33,7 +33,7 @@ public class LoginService {
         return loginSuccessful;
     }
 
-    public boolean loginPB(String username, String password) {
+    private boolean loginPB(String username, String password) {
         boolean loginSuccessful;
         if(praktikumsbeauftragterRepository.findByUsername(username).isPresent()) {
             Praktikumsbeauftragter praktikumsbeauftragter = praktikumsbeauftragterRepository.findByUsername(username).get();
