@@ -9,17 +9,17 @@ import lombok.ToString;
 @ToString
 public class RegistrierungsAnfrage {
 
-    private final String matrikelnummer;
-    private final String passwort1;
-    private final String passwort2;
-    private final int frage;
-    private final String antwort;
+    private final String username;
+    private final String password;
+    private final String passwordConfirm;
+    private final String frageId;
+    private final String answer;
 
-    public RegistrierungsAnfrage(String matrikelnummer, String passwort1, String passwort2, int frage, String antwort) {
-        this.matrikelnummer = matrikelnummer;
-        this.passwort1 = passwort1;
-        this.passwort2 = passwort2;
-        this.frage = frage;
-        this.antwort = antwort;
+    public RegistrierungsAnfrage(String matrikelnummer, String passwort1, String passwort2, String frage, String antwort) {
+        this.username = matrikelnummer;
+        this.password = passwort1;
+        this.passwordConfirm = passwort2;
+        this.frageId = frage;
+        this.answer = antwort;
     }
 }
