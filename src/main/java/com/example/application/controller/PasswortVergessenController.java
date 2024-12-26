@@ -1,6 +1,6 @@
 package com.example.application.controller;
 
-import com.example.application.models.Sicherheitsfrage;
+import com.example.application.models.PasswortVergessenAnfrage;
 import com.example.application.services.PasswortVergessenService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ public class PasswortVergessenController {
     public ResponseEntity<String> eingabeMatrikelnummer(@RequestBody String matrikelnummer) {
         try{
             if(passwortVergessenService.eingabeMatrikelnummer(matrikelnummer)){
-                return ResponseEntity.ok("Eingabe korrekt.");
+                return ResponseEntity.ok(passwortVergessenService.getSicherheitsfrage(matrikelnummer));
             }
             else{
                 return ResponseEntity.badRequest().body("User mit Matrikelnummer nicht vorhanden.");
@@ -28,15 +28,13 @@ public class PasswortVergessenController {
         }
     }
 
-    @GetMapping("/passwort-vergessen/{matrikelnummer}")
-    public ResponseEntity<Sicherheitsfrage> ausgabeSicherheitsfrage(@PathVariable String matrikelnummer) {
-        return ResponseEntity.ok(passwortVergessenService.getSicherheitsfrage(matrikelnummer));
-    }
-
-    @PostMapping("/passwort-vergessen/{matrikelnummer}")
-    public ResponseEntity<String> eingabeAntwort(@PathVariable String matrikelnummer, @RequestBody String antwort) {
+    @PostMapping("/passwort-vergessen/frage")
+    public ResponseEntity<String> eingabeAntwort(@RequestBody PasswortVergessenAnfrage anfrage) {
+        String matrikelnummer = anfrage.getMatrikelnummer();
+        String antwort = anfrage.getAntwort();
+        String passwort = anfrage.getPasswort();
         try{
-            if(passwortVergessenService.eingabeAntwort(matrikelnummer, antwort)){
+            if(passwortVergessenService.resetPassword(matrikelnummer, antwort, passwort)){
                 return ResponseEntity.ok("Antwort korrekt.");
             }
             else{
@@ -48,13 +46,4 @@ public class PasswortVergessenController {
         }
     }
 
-    @PutMapping("/passwort-vergessen/{matrikelnummer}/passwort_setzen")
-    public ResponseEntity<String> neuesPasswortSetzen(@PathVariable String matrikelnummer, @RequestBody String passwortNeu, @RequestBody String passwortWdh) {
-        try{
-            return ResponseEntity.ok(passwortVergessenService.neuesPasswortSetzen(matrikelnummer, passwortNeu, passwortWdh));
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
-        }
-    }
 }
