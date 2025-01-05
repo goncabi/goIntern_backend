@@ -1,6 +1,7 @@
 package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
+import com.example.application.models.StatusAntrag;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
@@ -76,8 +77,13 @@ public class PraktikumsantragController {
 
     @GetMapping("/alle")
     public ResponseEntity<List<Praktikumsantrag>> getAlleAntraege() {
-        List<Praktikumsantrag> antraege = praktikumsantragService.getAllAntraege();
-        return ResponseEntity.ok(antraege);
+        try {
+            List<Praktikumsantrag> antraege = praktikumsantragService.getAllAntraege();
+            return ResponseEntity.ok(antraege);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     //Neuer Endpoint:

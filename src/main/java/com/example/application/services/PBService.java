@@ -27,13 +27,17 @@ public class PBService implements CommandLineRunner {
     }
 
     //Methode antragGenehmigen setzt Status auf zugelassen
-    public void antragGenehmigen(Praktikumsantrag antrag) {
-        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+    public Praktikumsantrag antragGenehmigen(String matrikelnummer) {
+        Praktikumsantrag dbAntrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
+                .orElseThrow(() -> new IllegalArgumentException("Antrag wurde nicht gefunden"));
+        dbAntrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+        return praktikumsantragRepository.save(dbAntrag); // Speichert aktualisierten Antrag
     }
 
-    public String antragAblehnen(long antragID, String ablehnenNotiz) {
-        if(praktikumsantragRepository.findById(antragID).isPresent()) {
-            Praktikumsantrag antrag = praktikumsantragRepository.findById(antragID).get();
+
+    public String antragAblehnen(String matrikelnummer, String ablehnenNotiz) {
+        if(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
+            Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).get();
             String begruendung = "Sehr geehrte Frau " + antrag.getNameStudentin() +
                     ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + ablehnenNotiz;
             Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, new Date(), LeseStatus.UNGELESEN, antrag.getMatrikelnummer());

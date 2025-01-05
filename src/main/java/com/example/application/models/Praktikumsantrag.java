@@ -109,5 +109,13 @@ public class Praktikumsantrag {
 
 
     private LocalDate enddatum;
+
+    public StatusAntrag getStatus() {
+        return statusAntrag;
+    }
+
+    public void setStatus(StatusAntrag statusAntrag) {
+        this.statusAntrag = statusAntrag;
+    }
 }
 

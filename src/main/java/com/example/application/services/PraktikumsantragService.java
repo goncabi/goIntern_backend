@@ -145,6 +145,20 @@ public class PraktikumsantragService {
         if (neuerAntrag.getStartdatum() != null) bestehenderAntrag.setStartdatum(neuerAntrag.getStartdatum());
         if (neuerAntrag.getEnddatum() != null) bestehenderAntrag.setEnddatum(neuerAntrag.getEnddatum());
     }
+
+
+
+
+    //methode die eingereichte anträge nach anklicken auf in bearbeitung setzt
+//    public void updateStatusToInBearbeitung(String matrikelnummer) {
+//        Praktikumsantrag praktikumsantrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
+//                .orElseThrow(() -> new RuntimeException("Antrag nicht gefunden"));
+//        if (praktikumsantrag.getStatus() == StatusAntrag.EINGEREICHT) {
+//            praktikumsantrag.setStatus(StatusAntrag.INBEARBEITUNG);
+//            praktikumsantragRepository.save(praktikumsantrag);
+//        }
+//    }
+
 }
 
 /*
