@@ -73,7 +73,7 @@ class PBServiceTest {
         Praktikumsantrag antrag = new Praktikumsantrag();
         antrag.setStatusAntrag(StatusAntrag.INBEARBEITUNG);
 
-        pbService.antragGenehmigen(antrag);
+        pbService.antragGenehmigen(antrag.getMatrikelnummer());
 
         // hier testen
         assertEquals(StatusAntrag.ZUGELASSEN, antrag.getStatusAntrag());
@@ -82,7 +82,7 @@ class PBServiceTest {
     @Test
     void testAntragGenehmigenWithNullAntrag() {
         Praktikumsantrag antrag = null;
-        assertThrows(NullPointerException.class, () -> pbService.antragGenehmigen(antrag)); //wenn der Antrag null ist wird eine Exception geworfen
+        assertThrows(NullPointerException.class, () -> pbService.antragGenehmigen(antrag.getMatrikelnummer())); //wenn der Antrag null ist wird eine Exception geworfen
     }
 
     @Test
@@ -142,7 +142,7 @@ class PBServiceTest {
         antrag.setNameStudentin("Frau Held ");
         when(praktikumsantragRepository.findById(1L)).thenReturn(Optional.of(antrag));
 
-        String result = pbService.antragAblehnen(1, "Falsche Daten");
+        String result = pbService.antragAblehnen("1234567", "Falsche Daten");
 
         assertEquals(StatusAntrag.ABGELEHNT, antrag.getStatusAntrag());
         assertEquals("Der Antrag von Frau Held wurde erfolgreich abgelehnt und die Nachricht übermittelt.", result);
@@ -154,7 +154,7 @@ class PBServiceTest {
     void testAntragAblehnen_AntragNichtGefunden() {
         when(praktikumsantragRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(IllegalStateException.class, () -> pbService.antragAblehnen(1, "Falsche Daten"));
+        Exception exception = assertThrows(IllegalStateException.class, () -> pbService.antragAblehnen("1234567", "Falsche Daten"));
 
         assertEquals("Fehler beim Finden des Praktikumsantrags.", exception.getMessage());
     }
