@@ -26,7 +26,7 @@ public class PBController {
         }
     }
 
-    @PutMapping("/antrag/ablehnen")
+    @PostMapping("/antrag/ablehnen/{matrikelnummer}")
     public ResponseEntity<String> ablehnenAntrag(@PathVariable String matrikelnummer, @RequestBody String ablehnenNotiz) {
         try {
             pbService.antragAblehnen(matrikelnummer, ablehnenNotiz);
