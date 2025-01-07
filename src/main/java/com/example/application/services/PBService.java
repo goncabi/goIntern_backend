@@ -1,5 +1,9 @@
 package com.example.application.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.application.models.*;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.models.benachrichtigung.LeseStatus;
@@ -9,7 +13,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import com.example.application.repositories.PBRepository;
-
 import java.util.Date;
 
 @Service
@@ -38,8 +41,18 @@ public class PBService implements CommandLineRunner {
     public String antragAblehnen(String matrikelnummer, String ablehnenNotiz) {
         if(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
             Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).get();
+
+            //ab hier Bug von Fehlermeldung gefixt:
+           //hier Syntax etwas anders weil anderes Package von JSON Libary und mit jsonNode:
+            ObjectMapper objectMapper = new ObjectMapper();
+            String kommentar = "";
+            try {
+                JsonNode jsonNode = objectMapper.readTree(ablehnenNotiz); //jsonNode statt JsonObject
+                kommentar = jsonNode.get("kommentar").asText(); // kommentar ist ein Feld in dem JSON String
+            }
+            catch (JsonProcessingException ignored) { }
             String begruendung = "Sehr geehrte Frau " + antrag.getNameStudentin() +
-                    ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + ablehnenNotiz;
+                    ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + kommentar; //kommentar ist ein String JSON String vom Frontend
             Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, new Date(), LeseStatus.UNGELESEN, antrag.getMatrikelnummer());
 
             antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
