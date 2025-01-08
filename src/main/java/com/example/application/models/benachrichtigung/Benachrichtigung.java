@@ -32,4 +32,6 @@ public class Benachrichtigung {
         this.leseStatus = leseStatus;
         this.empfaenger = empfaenger_in;
     }
+
+
 }

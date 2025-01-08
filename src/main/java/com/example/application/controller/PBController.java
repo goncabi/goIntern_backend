@@ -26,12 +26,11 @@ public class PBController {
         }
     }
 
-    @PostMapping("/antrag/ablehnen/{matrikelnummer}")
+    @PostMapping("/antrag/ablehnen/{matrikelnummer}") //das ist der Endpunkt der im Frontend verwendet wird. In der Klasse Praktikumsbeauftragter in der ablehnenAntragMitKommentar Methode.
     public ResponseEntity<String> ablehnenAntrag(@PathVariable String matrikelnummer, @RequestBody String ablehnenNotiz) {
         try {
             pbService.antragAblehnen(matrikelnummer, ablehnenNotiz);
             return ResponseEntity.ok("Der Antrag wurde abgelehnt.");
-
         }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fehler beim Ablehnen des Antrags: " + e.getMessage());
