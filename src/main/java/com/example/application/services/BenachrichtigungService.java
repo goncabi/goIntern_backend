@@ -17,22 +17,15 @@ public class BenachrichtigungService {
     private final BenachrichtigungRepository benachrichtigungRepository;
 
     public List<Benachrichtigung> alleLesen(String empfaenger_in){
-        return benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger_in);
+        List<Benachrichtigung> nachrichtenListe = benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger_in);
+        for(Benachrichtigung b : nachrichtenListe){
+            b.setLeseStatus(LeseStatus.GELESEN);
+        }
+        return nachrichtenListe;
     }
 
     public Optional<Benachrichtigung> notizAusgeben(String matrikelnummer){
         return benachrichtigungRepository.findByEmpfaenger(matrikelnummer);
-    }
-
-    public List<Benachrichtigung> ungeleseneLesen(String empfaenger_in){
-        List<Benachrichtigung> nachrichtenListe = benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger_in);
-        List<Benachrichtigung> ungelesene = new ArrayList<>();
-        for(Benachrichtigung b : nachrichtenListe){
-            if(b.getLeseStatus() == LeseStatus.UNGELESEN){
-                ungelesene.add(b);
-            }
-        }
-        return ungelesene;
     }
 
     public boolean existierenUngelesene(String empfaenger_in){

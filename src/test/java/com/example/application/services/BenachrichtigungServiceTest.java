@@ -63,57 +63,6 @@ class BenachrichtigungServiceTest {
     }
 
     @Test
-    void testUngeleseneLesen() {
-        String empfaenger = "testUser";
-        Benachrichtigung b1 = new Benachrichtigung("Test1", new Date(), LeseStatus.UNGELESEN, empfaenger);
-        Benachrichtigung b2 = new Benachrichtigung("Test2", new Date(), LeseStatus.GELESEN, empfaenger);
-        List<Benachrichtigung> mockResult = Arrays.asList(b1, b2);
-
-        when(benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger))
-                .thenReturn(mockResult);
-
-        List<Benachrichtigung> result = benachrichtigungService.ungeleseneLesen(empfaenger);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Test1", result.getFirst().getNachricht());
-
-        verify(benachrichtigungRepository, times(1)).findByEmpfaengerOrderByDatum(empfaenger);
-    }
-
-    @Test
-    void testUngeleseneLesen_KeineUngelesen() {
-        String empfaenger = "testUser";
-        Benachrichtigung b1 = new Benachrichtigung("Test1", new Date(), LeseStatus.GELESEN, empfaenger);
-        Benachrichtigung b2 = new Benachrichtigung("Test2", new Date(), LeseStatus.GELESEN, empfaenger);
-        List<Benachrichtigung> mockResult = Arrays.asList(b1, b2);
-
-        when(benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger))
-                .thenReturn(mockResult);
-
-        List<Benachrichtigung> result = benachrichtigungService.ungeleseneLesen(empfaenger);
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-
-        verify(benachrichtigungRepository, times(1)).findByEmpfaengerOrderByDatum(empfaenger);
-    }
-
-    @Test
-    void testUngeleseneLesen_KeineNachrichten() {
-        String empfaenger = "testUser";
-        when(benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger))
-                .thenReturn(Collections.emptyList());
-
-        List<Benachrichtigung> result = benachrichtigungService.ungeleseneLesen(empfaenger);
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-
-        verify(benachrichtigungRepository, times(1)).findByEmpfaengerOrderByDatum(empfaenger);
-    }
-
-    @Test
     void existierenUngelesene_true() {
         String empfaenger = "testUser";
         Benachrichtigung b1 = new Benachrichtigung("Test1", new Date(), LeseStatus.UNGELESEN, empfaenger);

@@ -3,6 +3,7 @@ package com.example.application.controller;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
 import com.example.application.services.BenachrichtigungService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,19 +18,24 @@ public class BenachrichtigungController {
     private final BenachrichtigungService benachrichtigungService;
 
 
-    @GetMapping("/{nutzername}/nachrichten")
-    public List<Benachrichtigung> getBenachrichtigung(@PathVariable String nutzername) {
-        return benachrichtigungService.alleLesen(nutzername);
+    @GetMapping("/nachrichten/{username}")
+    public List<Benachrichtigung> getBenachrichtigung(@PathVariable String username) {
+        return benachrichtigungService.alleLesen(username);
     }
 
-    @GetMapping("/{nutzername}/nachrichten/ungelesen")
-    public List<Benachrichtigung> getUngeleseneBenachrichtigung(@PathVariable String nutzername) {
-        return benachrichtigungService.ungeleseneLesen(nutzername);
-    }
-
-    @GetMapping("/{nutzername}")
-    public boolean getZeichenBeiUngelesenen(@PathVariable String nutzername) {
-        return benachrichtigungService.existierenUngelesene(nutzername);
+    @GetMapping("/glocke/{nutzername}")
+    public ResponseEntity<String> getZeichenBeiUngelesenen(@PathVariable String nutzername) {
+        try{
+            if(benachrichtigungService.existierenUngelesene(nutzername)){
+                return ResponseEntity.ok("Ungelesene vorhanden.");
+            }
+            else{
+                return ResponseEntity.ok("Ungelesene nicht vorhanden.");
+            }
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
+        }
     }
 
     //Für Studentin
