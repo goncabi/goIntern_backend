@@ -1,9 +1,6 @@
 package com.example.application.models.benachrichtigung;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import java.util.Date;
@@ -20,6 +17,7 @@ public class Benachrichtigung {
 
     private String nachricht;
     private Date datum;
+    @Enumerated(EnumType.STRING)
     private LeseStatus leseStatus;
     private String empfaenger;
 
@@ -31,4 +29,6 @@ public class Benachrichtigung {
         this.leseStatus = leseStatus;
         this.empfaenger = empfaenger_in;
     }
+
+
 }
