@@ -1,12 +1,10 @@
 package com.example.application.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.application.models.*;
 import com.example.application.models.benachrichtigung.Benachrichtigung;
-import com.example.application.models.benachrichtigung.LeseStatus;
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
@@ -53,7 +51,7 @@ public class PBService implements CommandLineRunner {
             catch (JsonProcessingException ignored) { }
             String begruendung = "Sehr geehrte Frau " + antrag.getNameStudentin() +
                     ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + kommentar; //kommentar ist ein String JSON String vom Frontend
-            Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, new Date(), LeseStatus.UNGELESEN, antrag.getMatrikelnummer());
+            Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, new Date(), antrag.getMatrikelnummer());
 
             antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
             benachrichtigungRepository.save(ablehnungsNotiz);
@@ -73,7 +71,6 @@ public class PBService implements CommandLineRunner {
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
                 "Ein neuer Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " wurde übermittelt.",
                 new Date(),
-                LeseStatus.UNGELESEN,
                 pb.getUsername()
         );
         benachrichtigungRepository.save(neueBenachrichtigung);
