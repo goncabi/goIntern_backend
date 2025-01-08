@@ -18,20 +18,16 @@ public class Benachrichtigung {
 
     private String nachricht;
     private String datum;
-    @Enumerated(value = EnumType.STRING)
-    private LeseStatus leseStatus;
     private String empfaenger;
 
     public Benachrichtigung() {}
 
-    public Benachrichtigung(String nachricht, Date datum, LeseStatus leseStatus, String empfaenger_in) {
+    public Benachrichtigung(String nachricht, Date datum, String empfaenger_in) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         String formattedDate = sdf.format(datum);
         this.nachricht = nachricht;
         this.datum = formattedDate;
-        this.leseStatus = leseStatus;
         this.empfaenger = empfaenger_in;
     }
-
 
 }
