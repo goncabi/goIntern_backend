@@ -1,16 +1,14 @@
 package com.example.application.models.benachrichtigung;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "nachricht")
+@Table(name = "benachrichtigung")
 @Getter
 public class Benachrichtigung {
 
@@ -19,15 +17,18 @@ public class Benachrichtigung {
     private Long nachrichtId;
 
     private String nachricht;
-    private Date datum;
+    private String datum;
+    @Enumerated(value = EnumType.STRING)
     private LeseStatus leseStatus;
     private String empfaenger;
 
     public Benachrichtigung() {}
 
     public Benachrichtigung(String nachricht, Date datum, LeseStatus leseStatus, String empfaenger_in) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        String formattedDate = sdf.format(datum);
         this.nachricht = nachricht;
-        this.datum = datum;
+        this.datum = formattedDate;
         this.leseStatus = leseStatus;
         this.empfaenger = empfaenger_in;
     }
