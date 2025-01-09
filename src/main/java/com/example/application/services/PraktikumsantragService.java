@@ -175,14 +175,12 @@ public class PraktikumsantragService {
     //methoden zur berechnung der Arbeitstage
 
     public int berechneArbeitstage(String bundesland, LocalDate startDate, LocalDate endDate, Arbeitswoche arbeitswoche) {
-        switch (arbeitswoche) {
-            case VIERTAGEWOCHE:
-                return ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche(startDate, endDate, bundesland);
-            case FUENFTAGEWOCHE:
-                return ArbeitstageRechner.berechneArbeitstageMitVierfTageWoche(startDate, endDate, bundesland);
-            default:
-                throw new IllegalArgumentException("Fehler in der Bestimmung der" + arbeitswoche);
-        }
+        return switch (arbeitswoche) {
+            case VIERTAGEWOCHE -> ArbeitstageRechner.berechneArbeitstageMitVierTageWoche(startDate, endDate);
+            case FUENFTAGEWOCHE ->
+                    ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche(startDate, endDate, bundesland);
+            default -> throw new IllegalArgumentException("Fehler in der Bestimmung der" + arbeitswoche);
+        };
     }
 
 }

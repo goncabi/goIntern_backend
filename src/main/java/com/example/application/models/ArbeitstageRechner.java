@@ -57,9 +57,8 @@ public class ArbeitstageRechner {
     }
 
 
-    public static int berechneArbeitstageMitVierfTageWoche(LocalDate startDate, LocalDate endDate, String bundesland) {
+    public static int berechneArbeitstageMitVierTageWoche(LocalDate startDate, LocalDate endDate) {
         int workingDays = 0;
-        ArbeitstageRechner rechner = new ArbeitstageRechner();
 
         //wochen zählen, dann mal vier, weil vier tage woche
         long wochen = ChronoUnit.WEEKS.between(startDate, endDate.plusDays(1));
@@ -67,11 +66,7 @@ public class ArbeitstageRechner {
         // Arbeitstage für eine 4-Tage-Woche berechnen
         workingDays = (int) wochen * 4;
 
-        // Feiertage im Zeitraum berechnen
-        int feiertage = rechner.berechneFeiertageInZeitraum(bundesland, startDate, endDate);
-
-
-        return workingDays - feiertage;
+        return workingDays;
     }
 
     public boolean workingDaysAreEnough(int workingDays) {
