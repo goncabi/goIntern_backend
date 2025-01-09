@@ -49,15 +49,4 @@ public class PBController {
         }
     }
 
-
-    //hier ein Endpunkt, um Status von Eingereicht in In Bearbeitung bei Klick auf Antrag anzeigen zu ändern
-//    @PutMapping("/{matrikelnummer}/anzeigen")
-//    public ResponseEntity<String> setInBearbeitung(@PathVariable String matrikelnummer) {
-//        try {
-//            praktikumsantragService.updateStatusToInBearbeitung(matrikelnummer);
-//            return ResponseEntity.ok("Status geändert zu 'in Bearbeitung'");
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fehler: Status konnte nicht geändert werden. " + e.getMessage());
-//        }
-//    }
 }

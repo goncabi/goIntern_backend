@@ -30,16 +30,5 @@ public enum StatusAntrag {
         throw new IllegalArgumentException("Ungültiger Status: " + text);
     }
 
-
-    //hier eine methode, die später bei klickevent gebraucht wird, wenn pb auf antrag
-    //anzeigen klickt ändert sich status bei studentin und pb von eingereicht auf in bearbeitung
-
-    public static StatusAntrag nextStatus(StatusAntrag currentStatus) {
-        if (currentStatus == EINGEREICHT) {
-            return INBEARBEITUNG;
-        }
-        return currentStatus;
-    }
-
 }
 
