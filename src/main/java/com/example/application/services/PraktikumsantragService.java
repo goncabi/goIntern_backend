@@ -57,6 +57,7 @@ public class PraktikumsantragService {
             updateAntragFields(bestehenderAntrag,
                     antrag);
 
+
             praktikumsantragRepository.save(bestehenderAntrag);
         } else {
             // Neuer Antrag speichern
@@ -64,6 +65,7 @@ public class PraktikumsantragService {
             praktikumsantragRepository.save(antrag);
         }
     }
+
 
     public void antragLoeschen(String matrikelnummer) {
         Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
@@ -120,10 +122,8 @@ public class PraktikumsantragService {
             bestehenderAntrag.setVornameStudentin(neuerAntrag.getVornameStudentin());
         if (neuerAntrag.getGebDatumStudentin() != null)
             bestehenderAntrag.setGebDatumStudentin(neuerAntrag.getGebDatumStudentin());
-        if (neuerAntrag.getStrasseStudentin() != null)
-            bestehenderAntrag.setStrasseStudentin(neuerAntrag.getStrasseStudentin());
-        if (neuerAntrag.getHausnummerStudentin() != null)
-            bestehenderAntrag.setHausnummerStudentin(neuerAntrag.getHausnummerStudentin());
+        if (neuerAntrag.getAdresseStudentin() != null)
+            bestehenderAntrag.setAdresseStudentin(neuerAntrag.getAdresseStudentin());
         if (neuerAntrag.getPlzStudentin() != null) bestehenderAntrag.setPlzStudentin(neuerAntrag.getPlzStudentin());
         if (neuerAntrag.getOrtStudentin() != null) bestehenderAntrag.setOrtStudentin(neuerAntrag.getOrtStudentin());
         if (neuerAntrag.getTelefonnummerStudentin() != null)
@@ -137,13 +137,8 @@ public class PraktikumsantragService {
         if (neuerAntrag.getStudiensemester() != null)
             bestehenderAntrag.setStudiensemester(neuerAntrag.getStudiensemester());
         if (neuerAntrag.getStudiengang() != null) bestehenderAntrag.setStudiengang(neuerAntrag.getStudiengang());
-        if (neuerAntrag.getVoraussetzendeLeistungsnachweise() != null)
-            bestehenderAntrag.setVoraussetzendeLeistungsnachweise(neuerAntrag.getVoraussetzendeLeistungsnachweise());
-        if (neuerAntrag.getFehlendeLeistungsnachweise() != null)
-            bestehenderAntrag.setFehlendeLeistungsnachweise(neuerAntrag.getFehlendeLeistungsnachweise());
-        if (neuerAntrag.getAusnahmeZulassung() != null)
-            bestehenderAntrag.setAusnahmeZulassung(neuerAntrag.getAusnahmeZulassung());
         if (neuerAntrag.getDatumAntrag() != null) bestehenderAntrag.setDatumAntrag(neuerAntrag.getDatumAntrag());
+        if (neuerAntrag.getAuslandspraktikum() != null) bestehenderAntrag.setAuslandspraktikum(neuerAntrag.getAuslandspraktikum());
         if (neuerAntrag.getNamePraktikumsstelle() != null)
             bestehenderAntrag.setNamePraktikumsstelle(neuerAntrag.getNamePraktikumsstelle());
         if (neuerAntrag.getStrassePraktikumsstelle() != null)
@@ -152,6 +147,8 @@ public class PraktikumsantragService {
             bestehenderAntrag.setPlzPraktikumsstelle(neuerAntrag.getPlzPraktikumsstelle());
         if (neuerAntrag.getOrtPraktikumsstelle() != null)
             bestehenderAntrag.setOrtPraktikumsstelle(neuerAntrag.getOrtPraktikumsstelle());
+        if(neuerAntrag.getBundesland() != null)
+            bestehenderAntrag.setBundesland(neuerAntrag.getBundesland());
         if (neuerAntrag.getLandPraktikumsstelle() != null)
             bestehenderAntrag.setLandPraktikumsstelle(neuerAntrag.getLandPraktikumsstelle());
         if (neuerAntrag.getAnsprechpartnerPraktikumsstelle() != null)
@@ -164,6 +161,7 @@ public class PraktikumsantragService {
         if (neuerAntrag.getTaetigkeit() != null) bestehenderAntrag.setTaetigkeit(neuerAntrag.getTaetigkeit());
         if (neuerAntrag.getStartdatum() != null) bestehenderAntrag.setStartdatum(neuerAntrag.getStartdatum());
         if (neuerAntrag.getEnddatum() != null) bestehenderAntrag.setEnddatum(neuerAntrag.getEnddatum());
+
     }
 
 }

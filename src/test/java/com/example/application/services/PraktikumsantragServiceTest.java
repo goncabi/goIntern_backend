@@ -39,8 +39,7 @@ class PraktikumsantragServiceTest {
         antrag.setNameStudentin("Hunt");
         antrag.setVornameStudentin("Maria");
         antrag.setGebDatumStudentin(LocalDate.of(1999, 3, 11));
-        antrag.setStrasseStudentin("Friedrichstr.");
-        antrag.setHausnummerStudentin(34);
+        antrag.setAdresseStudentin("Friedrichstr. 15");
         antrag.setPlzStudentin(10598);
         antrag.setOrtStudentin("Berlin");
         antrag.setTelefonnummerStudentin("01478112530");
@@ -53,6 +52,7 @@ class PraktikumsantragServiceTest {
         antrag.setStrassePraktikumsstelle("Hauptstrasse");
         antrag.setPlzPraktikumsstelle(10117);
         antrag.setOrtPraktikumsstelle("Berlin");
+        antrag.setBundesland("Berlin");
         antrag.setLandPraktikumsstelle("Deutschland");
         antrag.setAnsprechpartnerPraktikumsstelle("Herr Schmidt");
         antrag.setTelefonPraktikumsstelle("0123456789");
@@ -62,6 +62,7 @@ class PraktikumsantragServiceTest {
         antrag.setStartdatum(LocalDate.of(2024, 11, 15));
         antrag.setEnddatum(LocalDate.of(2024, 11, 16));
         antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
+        antrag.setAuslandspraktikum(true);
         return antrag;
     }
 
@@ -178,21 +179,7 @@ class PraktikumsantragServiceTest {
         assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
     }
 
-    @Test
-    void testAntragUebermittelnMitMinWert() {
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setHausnummerStudentin(0);
 
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
-    }
-
-    @Test
-    void testAntragUebermittelnMitMaxWert() {
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setHausnummerStudentin(1000);
-
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
-    }
 
     @Test
     void testAntragUebermittelnMitFehlerhaftenDaten() {
