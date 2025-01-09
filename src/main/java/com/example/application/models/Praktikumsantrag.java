@@ -74,7 +74,7 @@ public class Praktikumsantrag {
 
     private LocalDate datumAntrag;
 
-    @Enumerated(EnumType.ORDINAL) // Maps Enum to smallint in the database
+    @Enumerated(EnumType.STRING) // Maps Enum String into the database
     private StatusAntrag statusAntrag;
 
 
@@ -110,12 +110,11 @@ public class Praktikumsantrag {
 
     private LocalDate enddatum;
 
-    public StatusAntrag getStatus() {
-        return statusAntrag;
-    }
+    @Enumerated(EnumType.STRING)
+    private Arbeitswoche arbeitswoche;
 
-    public void setStatus(StatusAntrag statusAntrag) {
-        this.statusAntrag = statusAntrag;
-    }
+    private Integer arbeitsTage;
+
+
 }
 

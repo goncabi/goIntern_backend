@@ -1,13 +1,18 @@
 package com.example.application.services;
 
+import com.example.application.models.ArbeitstageRechner;
+import com.example.application.models.Arbeitswoche;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
+
 
 @Validated
 @AllArgsConstructor
@@ -18,6 +23,7 @@ public class PraktikumsantragService {
 
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final PBService pbService;
+    private final ArbeitstageRechner arbeitstageRechner = new ArbeitstageRechner();
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
     public boolean antragVorhanden(String matrikelnummer) {
@@ -164,6 +170,17 @@ public class PraktikumsantragService {
         if (neuerAntrag.getTaetigkeit() != null) bestehenderAntrag.setTaetigkeit(neuerAntrag.getTaetigkeit());
         if (neuerAntrag.getStartdatum() != null) bestehenderAntrag.setStartdatum(neuerAntrag.getStartdatum());
         if (neuerAntrag.getEnddatum() != null) bestehenderAntrag.setEnddatum(neuerAntrag.getEnddatum());
+    }
+
+    //methoden zur berechnung der Arbeitstage
+
+    public int berechneArbeitstage(String bundesland, LocalDate startDate, LocalDate endDate, Arbeitswoche arbeitswoche) {
+        return switch (arbeitswoche) {
+            case VIERTAGEWOCHE -> ArbeitstageRechner.berechneArbeitstageMitVierTageWoche(startDate, endDate);
+            case FUENFTAGEWOCHE ->
+                    ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche(startDate, endDate, bundesland);
+            default -> throw new IllegalArgumentException("Fehler in der Bestimmung der" + arbeitswoche);
+        };
     }
 
 }
