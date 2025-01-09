@@ -8,11 +8,11 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "praktikumsantrag")
 @Getter
 @Setter
 @EqualsAndHashCode
 @ToString
+@Table (name = "praktikumsantrag")
 public class Praktikumsantrag {
 
     @Id
@@ -38,17 +38,13 @@ public class Praktikumsantrag {
 
     private LocalDate gebDatumStudentin;
 
-    private String strasseStudentin;
-
-
-    private Integer hausnummerStudentin;
-
+    private String adresseStudentin;
 
     private Integer plzStudentin;
 
-
     private String ortStudentin;
 
+    private String bundesland;
 
     private String telefonnummerStudentin;
 
@@ -64,13 +60,7 @@ public class Praktikumsantrag {
 
     private String studiengang;
 
-    private String begleitendeLehrVeranstaltungen;
-
-    private Boolean voraussetzendeLeistungsnachweise;
-
-    private String fehlendeLeistungsnachweise;
-
-    private Boolean ausnahmeZulassung;
+    private Boolean auslandspraktikum;
 
     private LocalDate datumAntrag;
 
