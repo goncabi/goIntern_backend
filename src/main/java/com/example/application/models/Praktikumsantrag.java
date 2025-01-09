@@ -74,7 +74,7 @@ public class Praktikumsantrag {
 
     private LocalDate datumAntrag;
 
-    @Enumerated(EnumType.STRING) // Maps Enum String into the database
+    @Enumerated(EnumType.ORDINAL) // besser in EnumType.STRING ändern, damit es in der Datenbank immer als unklare Zahl gespeichert wird
     private StatusAntrag statusAntrag;
 
 
@@ -110,10 +110,11 @@ public class Praktikumsantrag {
 
     private LocalDate enddatum;
 
-    @Enumerated(EnumType.STRING)
-    private Arbeitswoche arbeitswoche;
-
-    private Integer arbeitsTage;
+    //hinzufügen sobald json geändert wurde und sobald datenbank geändert wurde
+//    @Enumerated(EnumType.STRING)
+//    private Arbeitswoche arbeitswoche;
+//
+//    private Integer arbeitsTage;
 
 
 }
