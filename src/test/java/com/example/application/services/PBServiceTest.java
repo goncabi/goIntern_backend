@@ -71,7 +71,7 @@ class PBServiceTest {
     void testAntragGenehmigen() {
         // Vorbereitung
         Praktikumsantrag antrag = new Praktikumsantrag();
-        antrag.setStatusAntrag(StatusAntrag.INBEARBEITUNG);
+        antrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
 
         pbService.antragGenehmigen(antrag.getMatrikelnummer());
 
