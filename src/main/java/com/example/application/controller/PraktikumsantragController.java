@@ -99,5 +99,15 @@ public class PraktikumsantragController {
         }
     }
 
+    @PutMapping("/updateStatus/{matrikelnummer}")
+    public ResponseEntity<String> updateStatus(@PathVariable String matrikelnummer) {
+        try {
+            praktikumsantragService.statusUpdateImPraktikumOderAbsolviert(matrikelnummer);
+            return ResponseEntity.ok("Status aktualisiert.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
 

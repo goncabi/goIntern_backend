@@ -16,6 +16,7 @@ public class Studentin {
     @Column(name = "matrikelnummer", unique = true, nullable = false)
     private String matrikelnummer;
     private String password;
+    private boolean derzeitImPraktikum;
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;
 
