@@ -38,7 +38,7 @@ public class Praktikumsantrag {
 
     private LocalDate gebDatumStudentin;
 
-    private String adresseStudentin;
+    private String strasseHausnummerStudentin;
 
     private Integer plzStudentin;
 
@@ -100,7 +100,7 @@ public class Praktikumsantrag {
 
     private LocalDate enddatum;
 
-    //hinzufügen sobald json geändert wurde und sobald datenbank geändert wurde
+    //hinzufügen sobald datenbank geändert wurde
 //    @Enumerated(EnumType.STRING)
 //    private Arbeitswoche arbeitswoche;
 //

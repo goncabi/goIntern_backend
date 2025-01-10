@@ -23,7 +23,7 @@ public class PraktikumsantragService {
 
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final PBService pbService;
-    private final ArbeitstageRechner arbeitstageRechner = new ArbeitstageRechner();
+
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
     public boolean antragVorhanden(String matrikelnummer) {
@@ -128,8 +128,8 @@ public class PraktikumsantragService {
             bestehenderAntrag.setVornameStudentin(neuerAntrag.getVornameStudentin());
         if (neuerAntrag.getGebDatumStudentin() != null)
             bestehenderAntrag.setGebDatumStudentin(neuerAntrag.getGebDatumStudentin());
-        if (neuerAntrag.getAdresseStudentin() != null)
-            bestehenderAntrag.setAdresseStudentin(neuerAntrag.getAdresseStudentin());
+        if (neuerAntrag.getStrasseHausnummerStudentin() != null)
+            bestehenderAntrag.setStrasseHausnummerStudentin(neuerAntrag.getStrasseHausnummerStudentin());
         if (neuerAntrag.getPlzStudentin() != null) bestehenderAntrag.setPlzStudentin(neuerAntrag.getPlzStudentin());
         if (neuerAntrag.getOrtStudentin() != null) bestehenderAntrag.setOrtStudentin(neuerAntrag.getOrtStudentin());
         if (neuerAntrag.getTelefonnummerStudentin() != null)
@@ -172,13 +172,36 @@ public class PraktikumsantragService {
 
     //methoden zur berechnung der Arbeitstage
 
-    public int berechneArbeitstage(String bundesland, LocalDate startDate, LocalDate endDate, Arbeitswoche arbeitswoche) {
+    public int berechneArbeitstage(String bundesland, LocalDate startDatum, LocalDate endDatum, Arbeitswoche arbeitswoche) {
         return switch (arbeitswoche) {
-            case VIERTAGEWOCHE -> ArbeitstageRechner.berechneArbeitstageMitVierTageWoche(startDate, endDate);
+            case VIERTAGEWOCHE -> ArbeitstageRechner.berechneArbeitstageMitVierTageWoche(startDatum, endDatum);
             case FUENFTAGEWOCHE ->
-                    ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche(startDate, endDate, bundesland);
+                    ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche(startDatum, endDatum, bundesland);
             default -> throw new IllegalArgumentException("Fehler in der Bestimmung der" + arbeitswoche);
         };
+    }
+
+    //setzt Status auf derzeit Im Praktikum und Absolviert (nach zugelassen), je nach LocalDate
+    public void statusUpdateImPraktikumOderAbsolviert(String matrikelnummer) {
+        Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
+                .orElseThrow(() -> new IllegalArgumentException("Antrag mit Matrikelnummer " + matrikelnummer + " nicht gefunden."));
+
+        LocalDate today = LocalDate.now();
+        if (antrag.getStatusAntrag() == StatusAntrag.ZUGELASSEN) {
+            if (antrag.getStartdatum() != null && antrag.getEnddatum() != null) {
+                if (!today.isBefore(antrag.getStartdatum()) && !today.isAfter(antrag.getEnddatum())) {
+                    antrag.setStatusAntrag(StatusAntrag.IMPRAKTIKUM);
+                } else if (today.isAfter(antrag.getEnddatum())) {
+                    antrag.setStatusAntrag(StatusAntrag.ABSOLVIERT);
+                }
+            } else {
+                throw new IllegalStateException("Ungültige Start- oder Enddaten im Antrag.");
+            }
+
+            praktikumsantragRepository.save(antrag);
+        }
+
+
     }
 
 }

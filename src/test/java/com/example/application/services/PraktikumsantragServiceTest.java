@@ -39,7 +39,7 @@ class PraktikumsantragServiceTest {
         antrag.setNameStudentin("Hunt");
         antrag.setVornameStudentin("Maria");
         antrag.setGebDatumStudentin(LocalDate.of(1999, 3, 11));
-        antrag.setAdresseStudentin("Friedrichstr. 15");
+        antrag.setStrasseHausnummerStudentin("Friedrichstr. 15");
         antrag.setPlzStudentin(10598);
         antrag.setOrtStudentin("Berlin");
         antrag.setTelefonnummerStudentin("01478112530");
