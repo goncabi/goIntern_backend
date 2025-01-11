@@ -37,6 +37,7 @@ public class Praktikumsantrag {
     private String vornameStudentin;
 
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate gebDatumStudentin;
 
     @Column (name = "adresse_studentin")
