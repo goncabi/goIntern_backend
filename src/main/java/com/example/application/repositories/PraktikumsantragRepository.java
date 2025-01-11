@@ -3,11 +3,24 @@ package com.example.application.repositories;
 import com.example.application.models.Praktikumsantrag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
+/**
+ * Repository-Schnittstelle für den Zugriff auf Praktikumsantragsdaten.
+ * <p>
+ * Diese Schnittstelle ermöglicht CRUD-Operationen sowie spezielle Datenbankabfragen
+ * für die Entität {@link Praktikumsantrag}. Sie erweitert {@link JpaRepository},
+ * um eine Vielzahl von Standardmethoden bereitzustellen.
+ * </p>
+ *
+ */
 @Repository
 public interface PraktikumsantragRepository extends JpaRepository<Praktikumsantrag, Long> {
+        /**
+         * Findet den Praktikumsantrag einer bestimmten Studentin.
+         * @param matrikelnummer Die Matrikelnummer der Studentin für die der Antrag abgerufen werden soll.
+         * @return Optional des Praktikumsantrages, der der angegebenen Matrikelnummer zugehörig ist.
+         */
         Optional<Praktikumsantrag> findByMatrikelnummer(String matrikelnummer);
 
 }

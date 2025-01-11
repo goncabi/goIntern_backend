@@ -1,6 +1,6 @@
 package com.example.application.services;
 
-import com.example.application.models.benachrichtigung.Benachrichtigung;
+import com.example.application.models.Benachrichtigung;
 import com.example.application.repositories.BenachrichtigungRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.example.application.controller;
 
-import com.example.application.models.benachrichtigung.Benachrichtigung;
+import com.example.application.models.Benachrichtigung;
 import com.example.application.services.BenachrichtigungService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

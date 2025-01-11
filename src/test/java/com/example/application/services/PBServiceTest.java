@@ -4,7 +4,7 @@ import com.example.application.models.AppUserRole;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.Praktikumsbeauftragter;
 import com.example.application.models.StatusAntrag;
-import com.example.application.models.benachrichtigung.Benachrichtigung;
+import com.example.application.models.Benachrichtigung;
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.PraktikumsantragRepository;

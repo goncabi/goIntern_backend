@@ -5,6 +5,7 @@ import com.example.application.models.Sicherheitsantwort;
 import com.example.application.models.Studentin;
 import com.example.application.repositories.SicherheitsantwortRepository;
 import com.example.application.repositories.StudentinRepository;
+import com.example.application.services.RegistrierungService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

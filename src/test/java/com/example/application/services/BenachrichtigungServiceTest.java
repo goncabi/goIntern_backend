@@ -1,7 +1,6 @@
 package com.example.application.services;
 
-import com.example.application.models.benachrichtigung.Benachrichtigung;
-import com.example.application.models.benachrichtigung.LeseStatus;
+import com.example.application.models.Benachrichtigung;
 import com.example.application.repositories.BenachrichtigungRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
