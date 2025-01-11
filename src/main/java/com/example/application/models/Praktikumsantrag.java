@@ -1,5 +1,6 @@
 package com.example.application.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,15 +37,15 @@ public class Praktikumsantrag {
     private String vornameStudentin;
 
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate gebDatumStudentin;
 
+    @Column (name = "adresse_studentin")
     private String strasseHausnummerStudentin;
 
     private Integer plzStudentin;
 
     private String ortStudentin;
-
-    private String bundesland;
 
     private String telefonnummerStudentin;
 
@@ -62,9 +63,10 @@ public class Praktikumsantrag {
 
     private Boolean auslandspraktikum;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate datumAntrag;
 
-    @Enumerated(EnumType.ORDINAL) // besser in EnumType.STRING ändern, damit es in der Datenbank immer als unklare Zahl gespeichert wird
+    @Enumerated(EnumType.ORDINAL)
     private StatusAntrag statusAntrag;
 
 
@@ -79,6 +81,7 @@ public class Praktikumsantrag {
 
     private String ortPraktikumsstelle;
 
+    private String bundeslandPraktikumsstelle;
 
     private String landPraktikumsstelle;
 
@@ -94,17 +97,11 @@ public class Praktikumsantrag {
 
     private String taetigkeit;
 
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate startdatum;
 
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate enddatum;
-
-    //hinzufügen sobald datenbank geändert wurde
-//    @Enumerated(EnumType.STRING)
-//    private Arbeitswoche arbeitswoche;
-//
-//    private Integer arbeitsTage;
 
 
 }

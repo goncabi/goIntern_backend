@@ -153,8 +153,8 @@ public class PraktikumsantragService {
             bestehenderAntrag.setPlzPraktikumsstelle(neuerAntrag.getPlzPraktikumsstelle());
         if (neuerAntrag.getOrtPraktikumsstelle() != null)
             bestehenderAntrag.setOrtPraktikumsstelle(neuerAntrag.getOrtPraktikumsstelle());
-        if(neuerAntrag.getBundesland() != null)
-            bestehenderAntrag.setBundesland(neuerAntrag.getBundesland());
+        if(neuerAntrag.getBundeslandPraktikumsstelle() != null)
+            bestehenderAntrag.setBundeslandPraktikumsstelle(neuerAntrag.getBundeslandPraktikumsstelle());
         if (neuerAntrag.getLandPraktikumsstelle() != null)
             bestehenderAntrag.setLandPraktikumsstelle(neuerAntrag.getLandPraktikumsstelle());
         if (neuerAntrag.getAnsprechpartnerPraktikumsstelle() != null)

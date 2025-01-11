@@ -52,7 +52,7 @@ class PraktikumsantragServiceTest {
         antrag.setStrassePraktikumsstelle("Hauptstrasse");
         antrag.setPlzPraktikumsstelle(10117);
         antrag.setOrtPraktikumsstelle("Berlin");
-        antrag.setBundesland("Berlin");
+        antrag.setBundeslandPraktikumsstelle("Berlin");
         antrag.setLandPraktikumsstelle("Deutschland");
         antrag.setAnsprechpartnerPraktikumsstelle("Herr Schmidt");
         antrag.setTelefonPraktikumsstelle("0123456789");
