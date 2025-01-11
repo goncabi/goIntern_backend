@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.application.models.*;
-import com.example.application.models.benachrichtigung.Benachrichtigung;
+import com.example.application.models.Benachrichtigung;
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
