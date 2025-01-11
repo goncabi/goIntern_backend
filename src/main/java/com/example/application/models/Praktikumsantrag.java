@@ -65,7 +65,7 @@ public class Praktikumsantrag {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate datumAntrag;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private StatusAntrag statusAntrag;
 
 
