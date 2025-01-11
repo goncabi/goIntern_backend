@@ -10,37 +10,38 @@ import de.jollyday.HolidayManager;
 import java.util.Set;
 
 
+//NOTIZ: ES MÜSSEN 600 ARBEITSSTUNDEN SEIN -> 15 wochen, also 75 Tage
 
 public class ArbeitstageRechner {
-
-    LocalDate startDate;
-    LocalDate endDate;
-    boolean workingDaysAreEnough;
-    boolean fourWorkingDays;
-    boolean fiveWorkingDays;
-
 
     // Methode zur Prüfung, ob ein Datum ein Feiertag ist
     public int berechneFeiertageInZeitraum(String bundesland, LocalDate startDate, LocalDate endDate) {
 
-        // HolidayManager Dependency für Deutschland
         HolidayManager manager = HolidayManager.getInstance(HolidayCalendar.GERMANY);
+        int feiertageAnzahl = 0;
 
-        // Alle Feiertage für jahr und Bundesland berechnen
-        Set<Holiday> feiertage = manager.getHolidays(startDate.getYear(), bundesland);
+        // Iteriert über die Jahre im zeitraum
+        for (int year = startDate.getYear(); year <= endDate.getYear(); year++) {
+            // Feiertage für das aktuelle Jahr und Bundesland abrufen
+            Set<Holiday> feiertage = manager.getHolidays(year, bundesland);
 
-        // Zähle die Feiertage, die im angegebenen Zeitraum liegen
-        long feiertagsAnzahl = feiertage.stream()
-                .filter(holiday -> !holiday.getDate().isBefore(startDate) && !holiday.getDate().isAfter(endDate))
-                .count();
-
-        return (int) feiertagsAnzahl;
+            // Zählt Feiertage im angegebenen Zeitraum
+            feiertageAnzahl += (int) feiertage.stream()
+                    .filter(holiday -> !holiday.getDate().isBefore(startDate) && !holiday.getDate().isAfter(endDate))
+                    .count();
+        }
+        return feiertageAnzahl;
     }
 
 
-    public static int berechneArbeitstageMitFuenfTageWoche(LocalDate startDate, LocalDate endDate, String bundesland) {
+    public static int berechneArbeitstageMitFuenfTageWoche( String bundesland, LocalDate startDate, LocalDate endDate) {
         int workingDays = 0;
         ArbeitstageRechner rechner = new ArbeitstageRechner();
+
+        System.out.println("Berechnung der Arbeitstage:");
+        System.out.println("Startdatum: " + startDate);
+        System.out.println("Enddatum: " + endDate);
+
 
         // Schleife durch die Tage im Zeitraum
 
@@ -52,25 +53,7 @@ public class ArbeitstageRechner {
         }
         // Feiertage im Zeitraum berechnen
         int feiertage = rechner.berechneFeiertageInZeitraum(bundesland, startDate, endDate);
-
         return workingDays - feiertage;
-    }
-
-
-    public static int berechneArbeitstageMitVierTageWoche(LocalDate startDate, LocalDate endDate) {
-        int workingDays = 0;
-
-        //wochen zählen, dann mal vier, weil vier tage woche
-        long wochen = ChronoUnit.WEEKS.between(startDate, endDate.plusDays(1));
-
-        // Arbeitstage für eine 4-Tage-Woche berechnen
-        workingDays = (int) wochen * 4;
-
-        return workingDays;
-    }
-
-    public boolean workingDaysAreEnough(int workingDays) {
-        return workingDays >= 75;
     }
 
 }

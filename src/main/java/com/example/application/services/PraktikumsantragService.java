@@ -1,7 +1,5 @@
 package com.example.application.services;
 
-import com.example.application.models.ArbeitstageRechner;
-import com.example.application.models.Arbeitswoche;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
@@ -12,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
+
+import static com.example.application.models.ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche;
 
 
 @Validated
@@ -166,16 +166,16 @@ public class PraktikumsantragService {
 
     }
 
-    //methoden zur berechnung der Arbeitstage
+    //methode zur berechnung der Arbeitstage
 
-    public int berechneArbeitstage(String bundesland, LocalDate startDatum, LocalDate endDatum, Arbeitswoche arbeitswoche) {
-        return switch (arbeitswoche) {
-            case VIERTAGEWOCHE -> ArbeitstageRechner.berechneArbeitstageMitVierTageWoche(startDatum, endDatum);
-            case FUENFTAGEWOCHE ->
-                    ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche(startDatum, endDatum, bundesland);
-            default -> throw new IllegalArgumentException("Fehler in der Bestimmung der" + arbeitswoche);
-        };
+    public int berechneArbeitstage(String bundesland, LocalDate startDatum, LocalDate endDatum) {
+       try {
+           return berechneArbeitstageMitFuenfTageWoche(bundesland, startDatum, endDatum);
+       } catch (Exception e) {
+           throw new RuntimeException(e);
+       }
     }
+
 
     //setzt Status auf derzeit Im Praktikum und Absolviert (nach zugelassen), je nach LocalDate
     public void statusUpdateImPraktikumOderAbsolviert(String matrikelnummer) {

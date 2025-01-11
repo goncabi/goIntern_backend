@@ -1,14 +1,18 @@
 package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
-import com.example.application.models.StatusAntrag;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,6 +22,8 @@ import java.util.List;
 public class PraktikumsantragController {
 
     private final PraktikumsantragService praktikumsantragService;
+    private static final DateTimeFormatter GERMAN_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final Logger logger = LoggerFactory.getLogger(PraktikumsantragController.class);
 
     @PostMapping("/speichern")
     public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
@@ -96,6 +102,29 @@ public class PraktikumsantragController {
         }
         catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/berechnen")
+    public ResponseEntity<Integer> berechneArbeitstage(@RequestParam String bundesland, @RequestParam String startDatum,
+                                                       @RequestParam String endDatum) {
+        logger.info("Berechnung der Arbeitstage gestartet. Bundesland: {}, Startdatum: {}, Enddatum: {}", bundesland, startDatum, endDatum);
+        try {
+            LocalDate start = LocalDate.parse(startDatum, GERMAN_DATE_FORMAT);
+            LocalDate end = LocalDate.parse(endDatum, GERMAN_DATE_FORMAT);
+
+            int arbeitstage = praktikumsantragService.berechneArbeitstage(bundesland, start, end);
+            logger.info("Arbeitstage berechnet: {}", arbeitstage);
+            return ResponseEntity.ok(arbeitstage);
+        }
+        catch (DateTimeParseException e) {
+            // Fehler bei der Datumskonvertierung
+            logger.error("Fehler bei der Datumskonvertierung: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        }
+        catch (Exception e) {
+            logger.error("Ein unerwarteter Fehler ist aufgetreten: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
