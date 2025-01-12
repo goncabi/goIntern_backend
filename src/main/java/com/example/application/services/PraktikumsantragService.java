@@ -11,8 +11,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 
-import static com.example.application.models.ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche;
-
 
 @Validated
 @AllArgsConstructor
@@ -168,16 +166,6 @@ public class PraktikumsantragService {
         if (neuerAntrag.getStartdatum() != null) bestehenderAntrag.setStartdatum(neuerAntrag.getStartdatum());
         if (neuerAntrag.getEnddatum() != null) bestehenderAntrag.setEnddatum(neuerAntrag.getEnddatum());
 
-    }
-
-    //methode zur berechnung der Arbeitstage
-
-    public int berechneArbeitstage(String bundesland, LocalDate startDatum, LocalDate endDatum) {
-       try {
-           return berechneArbeitstageMitFuenfTageWoche(bundesland, startDatum, endDatum);
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
     }
 
 

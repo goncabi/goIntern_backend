@@ -105,28 +105,28 @@ public class PraktikumsantragController {
         }
     }
 
-    @GetMapping("/berechnen")
-    public ResponseEntity<Integer> berechneArbeitstage(@RequestParam String bundesland, @RequestParam String startDatum,
-                                                       @RequestParam String endDatum) {
-        logger.info("Berechnung der Arbeitstage gestartet. Bundesland: {}, Startdatum: {}, Enddatum: {}", bundesland, startDatum, endDatum);
-        try {
-            LocalDate start = LocalDate.parse(startDatum, GERMAN_DATE_FORMAT);
-            LocalDate end = LocalDate.parse(endDatum, GERMAN_DATE_FORMAT);
-
-            int arbeitstage = praktikumsantragService.berechneArbeitstage(bundesland, start, end);
-            logger.info("Arbeitstage berechnet: {}", arbeitstage);
-            return ResponseEntity.ok(arbeitstage);
-        }
-        catch (DateTimeParseException e) {
-            // Fehler bei der Datumskonvertierung
-            logger.error("Fehler bei der Datumskonvertierung: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(null);
-        }
-        catch (Exception e) {
-            logger.error("Ein unerwarteter Fehler ist aufgetreten: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
-    }
+//    @GetMapping("/berechnen")
+//    public ResponseEntity<Integer> berechneArbeitstage(@RequestParam String bundesland, @RequestParam String startDatum,
+//                                                       @RequestParam String endDatum) {
+//        logger.info("Berechnung der Arbeitstage gestartet. Bundesland: {}, Startdatum: {}, Enddatum: {}", bundesland, startDatum, endDatum);
+//        try {
+//            LocalDate start = LocalDate.parse(startDatum, GERMAN_DATE_FORMAT);
+//            LocalDate end = LocalDate.parse(endDatum, GERMAN_DATE_FORMAT);
+//
+//            int arbeitstage = praktikumsantragService.berechneArbeitstage(bundesland, start, end);
+//            logger.info("Arbeitstage berechnet: {}", arbeitstage);
+//            return ResponseEntity.ok(arbeitstage);
+//        }
+//        catch (DateTimeParseException e) {
+//            // Fehler bei der Datumskonvertierung
+//            logger.error("Fehler bei der Datumskonvertierung: {}", e.getMessage());
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//        catch (Exception e) {
+//            logger.error("Ein unerwarteter Fehler ist aufgetreten: {}", e.getMessage());
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 
     @PutMapping("/updateStatus/{matrikelnummer}")
     public ResponseEntity<String> updateStatus(@PathVariable String matrikelnummer) {

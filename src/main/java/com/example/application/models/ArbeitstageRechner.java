@@ -2,6 +2,7 @@ package com.example.application.models;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import de.jollyday.Holiday;
 import de.jollyday.HolidayCalendar;
@@ -14,46 +15,37 @@ import java.util.Set;
 
 public class ArbeitstageRechner {
 
-    // Methode zur Prüfung, ob ein Datum ein Feiertag ist
-    public int berechneFeiertageInZeitraum(String bundesland, LocalDate startDate, LocalDate endDate) {
+    public static int berechneArbeitstage(String bundesland, String startDatum, String endDatum) {
+        try {
+        // Deutsches Datumsformat
+        DateTimeFormatter germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate startDate = LocalDate.parse(startDatum, germanFormatter);
+        LocalDate endDate = LocalDate.parse(endDatum, germanFormatter);
 
         HolidayManager manager = HolidayManager.getInstance(HolidayCalendar.GERMANY);
-        int feiertageAnzahl = 0;
+        int arbeitstage = 0;
 
-        // Iteriert über die Jahre im zeitraum
-        for (int year = startDate.getYear(); year <= endDate.getYear(); year++) {
-            // Feiertage für das aktuelle Jahr und Bundesland abrufen
-            Set<Holiday> feiertage = manager.getHolidays(year, bundesland);
-
-            // Zählt Feiertage im angegebenen Zeitraum
-            feiertageAnzahl += (int) feiertage.stream()
-                    .filter(holiday -> !holiday.getDate().isBefore(startDate) && !holiday.getDate().isAfter(endDate))
-                    .count();
-        }
-        return feiertageAnzahl;
-    }
-
-
-    public static int berechneArbeitstageMitFuenfTageWoche( String bundesland, LocalDate startDate, LocalDate endDate) {
-        int workingDays = 0;
-        ArbeitstageRechner rechner = new ArbeitstageRechner();
-
-        System.out.println("Berechnung der Arbeitstage:");
-        System.out.println("Startdatum: " + startDate);
-        System.out.println("Enddatum: " + endDate);
-
-
-        // Schleife durch die Tage im Zeitraum
-
+        // Iteration über den Zeitraum
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-            // Überprüfen, ob der Tag ein Wochentag (Montag bis Freitag) ist
+            // Prüfen, ob der Tag ein Arbeitstag ist (Montag bis Freitag)
             if (date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {
-                workingDays++;
+                arbeitstage++;
+            }
+
+            // Prüfen, ob der Tag ein Feiertag ist
+            int year = date.getYear();
+            Set<Holiday> feiertage = manager.getHolidays(year, bundesland);
+            LocalDate finalDate = date;
+            if (feiertage.stream().anyMatch(holiday -> holiday.getDate().equals(finalDate))) {
+                arbeitstage--;
             }
         }
-        // Feiertage im Zeitraum berechnen
-        int feiertage = rechner.berechneFeiertageInZeitraum(bundesland, startDate, endDate);
-        return workingDays - feiertage;
+
+        return arbeitstage;
+    }
+        catch (Exception e) {
+        throw new RuntimeException(e);
     }
 
-}
+
+
