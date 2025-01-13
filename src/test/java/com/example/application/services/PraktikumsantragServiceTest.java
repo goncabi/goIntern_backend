@@ -244,6 +244,7 @@ class PraktikumsantragServiceTest {
     }
 
 
+    // hier in der AntragLoeschen Methode wird auch noch getestet ob die antragZurueckgezogen Methode aufgerufen wird:
     @Test
     void testAntragLoeschenErfolgreich() {
         Long id = 1L;
@@ -254,11 +255,14 @@ class PraktikumsantragServiceTest {
         // MockTeil:
         when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
         doNothing().when(praktikumsantragRepository).deleteById(id);
+        doNothing().when(pbService).antragZurueckgezogen(matrikelnummer);
 
+        //Test Teil:
         praktikumsantragService.antragLoeschen(matrikelnummer);
 
         verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
         verify(praktikumsantragRepository, times(1)).deleteById(id);
+        verify(pbService, times(1)).antragZurueckgezogen(matrikelnummer);
     }
 
     @Test
