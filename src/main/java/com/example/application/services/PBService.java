@@ -63,6 +63,7 @@ public class PBService implements CommandLineRunner {
 
     }
 
+    // die Methode "antragUebermitteln" erstellt eine neue Benachrichtigung fuer den Praktikumbsbeauftragten:
     public void antragUebermitteln(Praktikumsantrag antrag) {
 
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
@@ -70,6 +71,21 @@ public class PBService implements CommandLineRunner {
 
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
                 "Ein neuer Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " wurde übermittelt.",
+                new Date(),
+                pb.getUsername()
+        );
+        benachrichtigungRepository.save(neueBenachrichtigung);
+    }
+
+
+    // die Methode "antragZureckgezogen" erstellt eine neue Benachrichtigung fuer den Praktikumbsbeauftragten,
+    // dass der Antrag zurück gezogen wurde.
+    public void antragZurueckgezogen(String matrikelnummer) {
+        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
+                .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
+
+        Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
+                "Der Antrag mit der Matrikelnummer " + matrikelnummer + " wurde zurückgezogen.",
                 new Date(),
                 pb.getUsername()
         );
