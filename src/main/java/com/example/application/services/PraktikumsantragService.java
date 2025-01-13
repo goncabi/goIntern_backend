@@ -1,7 +1,5 @@
 package com.example.application.services;
 
-import com.example.application.models.ArbeitstageRechner;
-import com.example.application.models.Arbeitswoche;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
@@ -20,10 +18,9 @@ import java.util.List;
 
 public class PraktikumsantragService {
 
-
+//Objektvariablen:
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final PBService pbService;
-
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
     public boolean antragVorhanden(String matrikelnummer) {
@@ -75,6 +72,9 @@ public class PraktikumsantragService {
         }
         praktikumsantragRepository.deleteById(praktikumsantragDB.get()
                 .getAntragsID());
+
+        //Objekt von PB Service mit Spring erstellen und daran Methode aufgerufen
+        pbService.antragZurueckgezogen(matrikelnummer);
     }
 
     public void antragUebermitteln(Praktikumsantrag antrag) {
@@ -164,16 +164,6 @@ public class PraktikumsantragService {
 
     }
 
-    //methoden zur berechnung der Arbeitstage
-
-    public int berechneArbeitstage(String bundesland, LocalDate startDatum, LocalDate endDatum, Arbeitswoche arbeitswoche) {
-        return switch (arbeitswoche) {
-            case VIERTAGEWOCHE -> ArbeitstageRechner.berechneArbeitstageMitVierTageWoche(startDatum, endDatum);
-            case FUENFTAGEWOCHE ->
-                    ArbeitstageRechner.berechneArbeitstageMitFuenfTageWoche(startDatum, endDatum, bundesland);
-            default -> throw new IllegalArgumentException("Fehler in der Bestimmung der" + arbeitswoche);
-        };
-    }
 
     //setzt Status auf derzeit Im Praktikum und Absolviert (nach zugelassen), je nach LocalDate
     public void statusUpdateImPraktikumOderAbsolviert(String matrikelnummer) {

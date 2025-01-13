@@ -1,14 +1,18 @@
 package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
-import com.example.application.models.StatusAntrag;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,6 +22,8 @@ import java.util.List;
 public class PraktikumsantragController {
 
     private final PraktikumsantragService praktikumsantragService;
+    private static final DateTimeFormatter GERMAN_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final Logger logger = LoggerFactory.getLogger(PraktikumsantragController.class);
 
     @PostMapping("/speichern")
     public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
