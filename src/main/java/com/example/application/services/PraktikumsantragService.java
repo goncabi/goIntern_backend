@@ -20,10 +20,9 @@ import java.util.List;
 
 public class PraktikumsantragService {
 
-
+//Objektvariablen:
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final PBService pbService;
-
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
     public boolean antragVorhanden(String matrikelnummer) {
@@ -75,6 +74,9 @@ public class PraktikumsantragService {
         }
         praktikumsantragRepository.deleteById(praktikumsantragDB.get()
                 .getAntragsID());
+
+        //Objekt von PB Service mit Spring erstellen und daran Methode aufgerufen
+        pbService.antragZurueckgezogen(matrikelnummer);
     }
 
     public void antragUebermitteln(Praktikumsantrag antrag) {
