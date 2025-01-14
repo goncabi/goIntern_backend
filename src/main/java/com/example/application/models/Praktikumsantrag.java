@@ -24,9 +24,8 @@ public class Praktikumsantrag {
      Die Strategie GenerationType.IDENTITY ist dabei eine der gebräuchlichsten und sorgt dafür,
      dass jede ID in der Reihenfolge (1, 2, 3, ...) generiert wird.*/
 
-
-    // @ManyToOne
-    // @JoinColumn
+    @Column(name = "antrags_version", nullable = false, columnDefinition = "int default 1")
+    private int antragsVersion = 1;
 
     private String matrikelnummer;
 
