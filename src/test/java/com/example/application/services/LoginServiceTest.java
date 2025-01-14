@@ -32,19 +32,20 @@ class LoginServiceTest {
     private LoginService loginService;
 
     @Test
-    void loginStudent_shouldReturnMatrikelnummer_whenCredentialsAreCorrect() {
-        String matrikelnummer = "s0123456";
-        String password = "password1!";
-        Studentin studentin = new Studentin(matrikelnummer, password, AppUserRole.STUDENTIN);
-        LoginAnfrage loginAnfrage = new LoginAnfrage("Student/in", matrikelnummer, password);
+    void loginPB_shouldReturnMatrikelnummer_whenCredentialsAreCorrect() {
+        String username = "PRAKTIKUMSBEAUFTRAGTER";
+        String password = "PB_Passwort";
+        Praktikumsbeauftragter pb = new Praktikumsbeauftragter(username, password, AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
+        LoginAnfrage loginAnfrage = new LoginAnfrage("Praktikumsbeauftragte/r", username, password);
 
-        when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
+        when(pbRepository.findByUsername(username)).thenReturn(Optional.of(pb));
 
         Optional<String> result = loginService.login(loginAnfrage);
 
+        // Erwartung: Das Optional enthält den Benutzernamen
         assertTrue(result.isPresent());
-        assertEquals(matrikelnummer, result.get());
-        verify(studentinRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+        assertEquals(username, result.get());
+        verify(pbRepository, times(1)).findByUsername(username);
     }
 
     @Test
@@ -78,7 +79,7 @@ class LoginServiceTest {
     }
 
     @Test
-    void loginPB_shouldReturnEmptyOptional_whenCredentialsAreCorrect() {
+    void loginPB_shouldReturnOptional_whenCredentialsAreCorrect() {
         String username = "Praktikumsbeauftragter";
         String password = "PB_Passwort";
         Praktikumsbeauftragter pb = new Praktikumsbeauftragter(username, password, AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
@@ -88,9 +89,11 @@ class LoginServiceTest {
 
         Optional<String> result = loginService.login(loginAnfrage);
 
-        assertFalse(result.isPresent());
+        assertTrue(result.isPresent());
+        assertEquals("PRAKTIKUMSBEAUFTRAGTER", result.get());
         verify(pbRepository, times(1)).findByUsername(username);
     }
+
 
 
     @Test
