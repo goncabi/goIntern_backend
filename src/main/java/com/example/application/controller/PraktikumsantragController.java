@@ -1,6 +1,7 @@
 package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
+import com.example.application.repositories.PraktikumsantragRepository;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
@@ -10,20 +11,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @AllArgsConstructor
 @RestController
 // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
+
 public class PraktikumsantragController {
 
     private final PraktikumsantragService praktikumsantragService;
-    private static final DateTimeFormatter GERMAN_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private static final Logger logger = LoggerFactory.getLogger(PraktikumsantragController.class);
+    private final PraktikumsantragRepository praktikumsantragRepository;
 
     @PostMapping("/speichern")
     public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
@@ -114,6 +113,13 @@ public class PraktikumsantragController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/clear")
+    public String clearMockData() {
+            praktikumsantragRepository.deleteAll();
+            return "Alle Anträge wurden erfolgreich gelöscht.";
+        }
+
 
 }
 
