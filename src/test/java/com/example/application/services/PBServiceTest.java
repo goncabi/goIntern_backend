@@ -9,7 +9,6 @@ import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.PraktikumsantragRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,6 +38,7 @@ class PBServiceTest {
     private Praktikumsantrag erzeugeGueltigenAntrag() {
         Praktikumsantrag antrag = new Praktikumsantrag();
         antrag.setMatrikelnummer("12345678");
+        antrag.setStatusAntrag(StatusAntrag.EINGEREICHT); // Status setzen
         return antrag;
     }
 
@@ -69,21 +69,49 @@ class PBServiceTest {
 
     @Test
     void testAntragGenehmigen() {
-        // Vorbereitung
+        // Vorbereitung: Mock eines gültigen Praktikumsantrags
+        String matrikelnummer = "s1234567";
         Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
         antrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
 
-        pbService.antragGenehmigen(antrag.getMatrikelnummer());
+        // Mock für Repository: Antrag wird gefunden
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer))
+                .thenReturn(Optional.of(antrag));
 
-        // hier testen
-        assertEquals(StatusAntrag.ZUGELASSEN, antrag.getStatusAntrag());
+        // Mock für Speichern: Speichert denselben Antrag und gibt ihn zurück
+        when(praktikumsantragRepository.save(any(Praktikumsantrag.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0)); // Gibt das gespeicherte Objekt zurück
+
+        // Test der Methode
+        Praktikumsantrag result = pbService.antragGenehmigen(matrikelnummer);
+
+        // Überprüfen der Ergebnisse
+        assertNotNull(result, "Result darf nicht null sein"); // Sicherstellen, dass ein Antrag zurückgegeben wird
+        assertEquals(StatusAntrag.ZUGELASSEN, result.getStatusAntrag(), "Status sollte auf ZUGELASSEN gesetzt werden");
+
+        // Verifizieren, dass der Antrag gespeichert wurde
+        verify(praktikumsantragRepository, times(1)).save(antrag);
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
     }
-
     @Test
-    void testAntragGenehmigenWithNullAntrag() {
-        Praktikumsantrag antrag = null;
-        assertThrows(NullPointerException.class, () -> pbService.antragGenehmigen(antrag.getMatrikelnummer())); //wenn der Antrag null ist wird eine Exception geworfen
+    void testAntragGenehmigenMitNullMatrikelnummer() {
+        // Vorbereitung: Matrikelnummer ist null
+        String matrikelnummer = null;
+
+        // Test der Methode und Erwartung einer IllegalArgumentException
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> pbService.antragGenehmigen(matrikelnummer));
+
+        // Überprüfen der Fehlermeldung
+        assertEquals("Antrag wurde nicht gefunden", exception.getMessage());
+
+        // Verifizieren, dass keine Interaktion mit dem Repository erfolgt ist
+        verify(praktikumsantragRepository, never()).save(any(Praktikumsantrag.class));
+        verify(praktikumsantragRepository, never()).findByMatrikelnummer(anyString());
     }
+
+
 
     @Test
     void testAntragUebermittelnErfolgreich() {
@@ -134,21 +162,32 @@ class PBServiceTest {
         verify(pBRepository, times(1)).findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
         verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
     }
-
     @Test
-    void testAntragAblehnen(){
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setAntragsID(1L);
-        antrag.setNameStudentin("Frau Held ");
-        when(praktikumsantragRepository.findById(1L)).thenReturn(Optional.of(antrag));
+    void testAntragAblehnenErfolgreich() {
+        // Vorbereitung: Mock eines Praktikumsantrags
+        String matrikelnummer = "s1234567";
+        String kommentarJson = "{\"kommentar\":\"Die Unterlagen sind unvollständig.\"}";
 
-        String result = pbService.antragAblehnen("1234567", "Falsche Daten");
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setNameStudentin("Müller");
+        antrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
 
+        // Mock für Repository
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer))
+                .thenReturn(Optional.of(antrag));
+
+        // Test der Methode
+        String result = pbService.antragAblehnen(matrikelnummer, kommentarJson);
+
+        // Überprüfen der Ergebnisse
+        assertEquals("Der Antrag von Müller wurde erfolgreich abgelehnt und die Nachricht übermittelt.", result);
         assertEquals(StatusAntrag.ABGELEHNT, antrag.getStatusAntrag());
-        assertEquals("Der Antrag von Frau Held wurde erfolgreich abgelehnt und die Nachricht übermittelt.", result);
-        verify(praktikumsantragRepository, times(2)).findById(1L);
-        verify(benachrichtigungRepository, times(1)).save(Mockito.any());
+
+        // Verifizieren, dass die Benachrichtigung gespeichert wurde
+        verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
     }
+
 
     @Test
     void testAntragAblehnen_AntragNichtGefunden() {
