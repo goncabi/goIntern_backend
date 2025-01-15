@@ -2,16 +2,15 @@ package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.repositories.PraktikumsantragRepository;
+import com.example.application.services.MockDataService;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,6 +22,10 @@ public class PraktikumsantragController {
 
     private final PraktikumsantragService praktikumsantragService;
     private final PraktikumsantragRepository praktikumsantragRepository;
+    @Autowired
+    private MockDataService mockDataService;
+
+
 
     @PostMapping("/speichern")
     public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
@@ -119,7 +122,10 @@ public class PraktikumsantragController {
             praktikumsantragRepository.deleteAll();
             return "Alle Anträge wurden erfolgreich gelöscht.";
         }
-
-
+    @PostMapping("/generate")
+    public String generateMockData(@RequestParam(defaultValue = "20") int count) {
+        mockDataService.generateMockData(count);
+        return count + " mock Praktikumsanträge wurden erfolgreich generiert und gespeichert.";
+    }
 }
 
