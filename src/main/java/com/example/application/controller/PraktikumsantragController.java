@@ -1,5 +1,6 @@
 package com.example.application.controller;
 
+
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import com.example.application.services.MockDataService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -26,7 +28,6 @@ public class PraktikumsantragController {
     private MockDataService mockDataService;
 
 
-
     @PostMapping("/speichern")
     public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
         try {
@@ -35,8 +36,6 @@ public class PraktikumsantragController {
          praktikumsantragService.antragSpeichern(antrag);
 
             return ResponseEntity.ok("Antrag erfolgreich gespeichert!");
-
-
 
         } catch (IllegalArgumentException e) {
             // Validierungsproblem ergibt ein Bad Request
@@ -49,7 +48,6 @@ public class PraktikumsantragController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage());
         }
     }
-
 
     //Daten aus der Datenbank löschen mit DeleteMapping
     @DeleteMapping("/{matrikelnummer}")
@@ -98,13 +96,9 @@ public class PraktikumsantragController {
     //Matrikelnummer wird uebergeben und ein Antrag bekommen
     @GetMapping("getantrag/{matrikelnummer}")
     public ResponseEntity<Praktikumsantrag> getAntrag(@PathVariable String matrikelnummer) {
-        try {
-            Praktikumsantrag antrag = praktikumsantragService.antragAnzeigen(matrikelnummer);
-            return ResponseEntity.ok(antrag);
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+        Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
+        return antrag.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/updateStatus/{matrikelnummer}")
