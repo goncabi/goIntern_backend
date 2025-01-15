@@ -1,6 +1,5 @@
 package com.example.application.controller;
 
-
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import com.example.application.services.MockDataService;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 

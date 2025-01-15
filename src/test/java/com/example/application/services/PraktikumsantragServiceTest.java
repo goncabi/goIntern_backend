@@ -15,6 +15,15 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import java.time.LocalDate;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional // alle Daten Änderungen im Datenbank in Test-Kontext werden automatisch rückgängig gemacht
@@ -389,5 +398,49 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).findAll();
     }
 
+   @Test
+    void testUpdateAntragStatusToImPraktikum() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+        antrag.setStartdatum(LocalDate.of(2025, 1, 1));
+        antrag.setEnddatum(LocalDate.of(2025, 6, 30));
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+
+        assertEquals(StatusAntrag.IMPRAKTIKUM, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository).save(antrag);
+    }
+
+
+    @Test
+    void testUpdateAntragStatusToAbsolviert() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+        antrag.setStartdatum(LocalDate.of(2024, 7, 1));
+        antrag.setEnddatum(LocalDate.of(2024, 12, 31));
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+
+        assertEquals(StatusAntrag.ABSOLVIERT, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository).save(antrag);
+    }
+
+    @Test
+    void testUpdateAntragStatusAntragNotFound() {
+        String matrikelnummer = "123456";
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
+
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+
+        verify(praktikumsantragRepository, never()).save(any(Praktikumsantrag.class));
+    }
 }
 
