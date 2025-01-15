@@ -60,7 +60,10 @@ public class PraktikumsantragService {
 
         if (vorhandenerAntrag.isPresent()) {
             Praktikumsantrag bestehenderAntrag = vorhandenerAntrag.get();
-
+            // Prüfen, ob der Antrag bereits abgelehnt wurde - Version wird erhöht
+            if (bestehenderAntrag.getStatusAntrag() == StatusAntrag.ABGELEHNT) {
+                bestehenderAntrag.setAntragsVersion(bestehenderAntrag.getAntragsVersion() + 1);
+            }
             // Felder aktualisieren
             updateAntragFields(bestehenderAntrag,
                     antrag);
@@ -101,9 +104,9 @@ public class PraktikumsantragService {
 
             // Antrag existiert: aktualisiere den Status
             Praktikumsantrag dbAntrag = existingAntrag.get();
-            // Prüfen, ob der Antrag bereits eingereicht wurde
-            if (dbAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
-                throw new IllegalStateException("Ein Antrag kann nur übermittelt werden, wenn er den Status 'GESPEICHERT' hat.");
+            // Prüfen, ob der Antrag bereits abgelehnt wurde - Version wird erhöht
+            if (dbAntrag.getStatusAntrag() == StatusAntrag.ABGELEHNT) {
+                dbAntrag.setAntragsVersion(dbAntrag.getAntragsVersion() + 1);
             }
 
             dbAntrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
