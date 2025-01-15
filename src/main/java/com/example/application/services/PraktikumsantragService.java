@@ -23,6 +23,7 @@ public class PraktikumsantragService {
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final PBService pbService;
 
+/*
   // Damit IMPRAKTIKUM und ABSOLVIERT automatisch läuft
     @Scheduled(cron = "0 0 0 * * ?") // Läuft immer..
     public void updateAllPraktikumsantraegeStatus() {
@@ -31,7 +32,7 @@ public class PraktikumsantragService {
             statusUpdateImPraktikumOderAbsolviert(antrag.getMatrikelnummer());
         }
     }
-
+*/
 
     // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
     public boolean antragVorhanden(String matrikelnummer) {
