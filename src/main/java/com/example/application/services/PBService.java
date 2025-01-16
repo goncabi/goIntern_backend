@@ -14,7 +14,7 @@ import com.example.application.repositories.PBRepository;
 import java.util.Date;
 
 @Service
-@AllArgsConstructor
+@AllArgsConstructor // <- die Annotation macht einen Konstuktor, sodass ich keinen machen muss.
 
 public class PBService implements CommandLineRunner {
 
@@ -63,7 +63,7 @@ public class PBService implements CommandLineRunner {
 
     }
 
-    // die Methode "antragUebermitteln" erstellt eine neue Benachrichtigung fuer den Praktikumbsbeauftragten:
+    // die Methode "antragUebermitteln" erstellt eine neue Benachrichtigung fuer den Praktikumsbeauftragten:
     public void antragUebermitteln(Praktikumsantrag antrag) {
 
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
@@ -76,7 +76,6 @@ public class PBService implements CommandLineRunner {
         );
         benachrichtigungRepository.save(neueBenachrichtigung);
     }
-
 
     // die Methode "antragZureckgezogen" erstellt eine neue Benachrichtigung fuer den Praktikumbsbeauftragten,
     // dass der Antrag zurück gezogen wurde.

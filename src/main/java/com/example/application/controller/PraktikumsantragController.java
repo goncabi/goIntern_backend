@@ -1,29 +1,30 @@
 package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
+import com.example.application.repositories.PraktikumsantragRepository;
+import com.example.application.services.MockDataService;
 import com.example.application.services.PraktikumsantragService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
 // wandelt Rückgabewerte von Methoden automatisch in JSON um, damit sie über HTTP verwendet werden können.
 @RequestMapping("/api/antrag")//legt die Basis-URL für alle Endpunkte fest.
+
 public class PraktikumsantragController {
 
     private final PraktikumsantragService praktikumsantragService;
-    private static final DateTimeFormatter GERMAN_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private static final Logger logger = LoggerFactory.getLogger(PraktikumsantragController.class);
+    private final PraktikumsantragRepository praktikumsantragRepository;
+    @Autowired
+    private MockDataService mockDataService;
+
 
     @PostMapping("/speichern")
     public ResponseEntity<?> speichernAntrag(@RequestBody Praktikumsantrag antrag) {
@@ -33,8 +34,6 @@ public class PraktikumsantragController {
          praktikumsantragService.antragSpeichern(antrag);
 
             return ResponseEntity.ok("Antrag erfolgreich gespeichert!");
-
-
 
         } catch (IllegalArgumentException e) {
             // Validierungsproblem ergibt ein Bad Request
@@ -47,7 +46,6 @@ public class PraktikumsantragController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage());
         }
     }
-
 
     //Daten aus der Datenbank löschen mit DeleteMapping
     @DeleteMapping("/{matrikelnummer}")
@@ -96,13 +94,9 @@ public class PraktikumsantragController {
     //Matrikelnummer wird uebergeben und ein Antrag bekommen
     @GetMapping("getantrag/{matrikelnummer}")
     public ResponseEntity<Praktikumsantrag> getAntrag(@PathVariable String matrikelnummer) {
-        try {
-            Praktikumsantrag antrag = praktikumsantragService.antragAnzeigen(matrikelnummer);
-            return ResponseEntity.ok(antrag);
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+        Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
+        return antrag.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/updateStatus/{matrikelnummer}")
@@ -115,5 +109,15 @@ public class PraktikumsantragController {
         }
     }
 
+    @DeleteMapping("/clear")
+    public String clearMockData() {
+            praktikumsantragRepository.deleteAll();
+            return "Alle Anträge wurden erfolgreich gelöscht.";
+        }
+    @PostMapping("/generate")
+    public String generateMockData(@RequestParam(defaultValue = "20") int count) {
+        mockDataService.generateMockData(count);
+        return count + " mock Praktikumsanträge wurden erfolgreich generiert und gespeichert.";
+    }
 }
 

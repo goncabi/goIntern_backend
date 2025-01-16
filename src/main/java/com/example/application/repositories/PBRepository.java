@@ -14,6 +14,8 @@ import java.util.Optional;
  * um eine Vielzahl von Standardmethoden bereitzustellen.
  * </p>
  */
+
+// das Jpa Repo von dem geerbt wird bringt z.b. auch delete Methoden etc. mit
 @Repository
 public interface PBRepository extends JpaRepository<Praktikumsbeauftragter, Long> {
     /**

@@ -4,6 +4,7 @@ import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class PraktikumsantragService {
 
-//Objektvariablen:
+    //Objektvariablen:
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final PBService pbService;
 
@@ -49,7 +50,10 @@ public class PraktikumsantragService {
 
         if (vorhandenerAntrag.isPresent()) {
             Praktikumsantrag bestehenderAntrag = vorhandenerAntrag.get();
-
+            // Prüfen, ob der Antrag bereits abgelehnt wurde - Version wird erhöht
+            if (bestehenderAntrag.getStatusAntrag() == StatusAntrag.ABGELEHNT) {
+                bestehenderAntrag.setAntragsVersion(bestehenderAntrag.getAntragsVersion() + 1);
+            }
             // Felder aktualisieren
             updateAntragFields(bestehenderAntrag,
                     antrag);
@@ -62,7 +66,6 @@ public class PraktikumsantragService {
             praktikumsantragRepository.save(antrag);
         }
     }
-
 
     public void antragLoeschen(String matrikelnummer) {
         Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
@@ -91,9 +94,9 @@ public class PraktikumsantragService {
 
             // Antrag existiert: aktualisiere den Status
             Praktikumsantrag dbAntrag = existingAntrag.get();
-            // Prüfen, ob der Antrag bereits eingereicht wurde
-            if (dbAntrag.getStatusAntrag() != StatusAntrag.GESPEICHERT) {
-                throw new IllegalStateException("Ein Antrag kann nur übermittelt werden, wenn er den Status 'GESPEICHERT' hat.");
+            // Prüfen, ob der Antrag bereits abgelehnt wurde - Version wird erhöht
+            if (dbAntrag.getStatusAntrag() == StatusAntrag.ABGELEHNT) {
+                dbAntrag.setAntragsVersion(dbAntrag.getAntragsVersion() + 1);
             }
 
             dbAntrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
@@ -138,7 +141,8 @@ public class PraktikumsantragService {
             bestehenderAntrag.setStudiensemester(neuerAntrag.getStudiensemester());
         if (neuerAntrag.getStudiengang() != null) bestehenderAntrag.setStudiengang(neuerAntrag.getStudiengang());
         if (neuerAntrag.getDatumAntrag() != null) bestehenderAntrag.setDatumAntrag(neuerAntrag.getDatumAntrag());
-        if (neuerAntrag.getAuslandspraktikum() != null) bestehenderAntrag.setAuslandspraktikum(neuerAntrag.getAuslandspraktikum());
+        if (neuerAntrag.getAuslandspraktikum() != null)
+            bestehenderAntrag.setAuslandspraktikum(neuerAntrag.getAuslandspraktikum());
         if (neuerAntrag.getNamePraktikumsstelle() != null)
             bestehenderAntrag.setNamePraktikumsstelle(neuerAntrag.getNamePraktikumsstelle());
         if (neuerAntrag.getStrassePraktikumsstelle() != null)
@@ -147,7 +151,7 @@ public class PraktikumsantragService {
             bestehenderAntrag.setPlzPraktikumsstelle(neuerAntrag.getPlzPraktikumsstelle());
         if (neuerAntrag.getOrtPraktikumsstelle() != null)
             bestehenderAntrag.setOrtPraktikumsstelle(neuerAntrag.getOrtPraktikumsstelle());
-        if(neuerAntrag.getBundeslandPraktikumsstelle() != null)
+        if (neuerAntrag.getBundeslandPraktikumsstelle() != null)
             bestehenderAntrag.setBundeslandPraktikumsstelle(neuerAntrag.getBundeslandPraktikumsstelle());
         if (neuerAntrag.getLandPraktikumsstelle() != null)
             bestehenderAntrag.setLandPraktikumsstelle(neuerAntrag.getLandPraktikumsstelle());
@@ -164,8 +168,8 @@ public class PraktikumsantragService {
 
     }
 
-
-    //setzt Status auf derzeit Im Praktikum und Absolviert (nach zugelassen), je nach LocalDate
+    //Es wird nur der Status geupdatet von Anträgen die bereits ZUGELASSEN sind
+    //setzt Status auf derzeit IMPRAKTIKUM und ABSOLVIERT
     public void statusUpdateImPraktikumOderAbsolviert(String matrikelnummer) {
         Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
                 .orElseThrow(() -> new IllegalArgumentException("Antrag mit Matrikelnummer " + matrikelnummer + " nicht gefunden."));
@@ -178,17 +182,32 @@ public class PraktikumsantragService {
                 } else if (today.isAfter(antrag.getEnddatum())) {
                     antrag.setStatusAntrag(StatusAntrag.ABSOLVIERT);
                 }
+                praktikumsantragRepository.save(antrag);
             } else {
                 throw new IllegalStateException("Ungültige Start- oder Enddaten im Antrag.");
             }
-
-            praktikumsantragRepository.save(antrag);
         }
-
-
+    }
+    public void updateAntragStatus(String matrikelnummer) {
+        Optional<Praktikumsantrag> antragOpt = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
+        if (antragOpt.isPresent()) {
+            Praktikumsantrag antrag = antragOpt.get();
+            LocalDate today = LocalDate.now();
+            if (antrag.getStatusAntrag() == StatusAntrag.ZUGELASSEN) {
+                if (antrag.getStartdatum() != null && antrag.getEnddatum() != null) {
+                    if (!today.isBefore(antrag.getStartdatum()) && !today.isAfter(antrag.getEnddatum())) {
+                        antrag.setStatusAntrag(StatusAntrag.IMPRAKTIKUM);
+                    } else if (today.isAfter(antrag.getEnddatum())) {
+                        antrag.setStatusAntrag(StatusAntrag.ABSOLVIERT);
+                    }
+                    praktikumsantragRepository.save(antrag);
+                }
+            }
+        }
     }
 
 }
+
 
 /*
  Die Service-Schicht übernimmt hier die zentrale Logik und kümmert sich um  die Verwaltung der Praktikumsanträge.

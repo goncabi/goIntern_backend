@@ -9,20 +9,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@AllArgsConstructor
-@RestController
-@RequestMapping("/api/auth")
+@AllArgsConstructor //erstellt automatisch ein Konstruktor
+@RestController //@RestController ermöglicht das Versenden und Empfangen von JSON und XML-Daten.
+@RequestMapping("/api/auth") //definiert den Basis-Pfad für alle Endpunkte in dem Controller
 public class LoginController {
 
     private final LoginService loginService;
 
-
-    @PostMapping("/login") public ResponseEntity<Map<String, String>> login (@RequestBody LoginAnfrage loginAnfrage)
+// Durch PostMapping Annotation ist die Methode ResponseEntity() ein Endpunkt.
+    // Post heißt, es darf von Frontend mit Post Backend zugegriffen werden.
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login (@RequestBody LoginAnfrage loginAnfrage)
         {
             try {
                 Optional<String> matrikelnummerOptional = loginService.login(loginAnfrage);

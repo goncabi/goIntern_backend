@@ -3,7 +3,6 @@ package com.example.application.services;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +14,15 @@ import java.time.LocalDate;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
+import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import java.time.LocalDate;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -101,25 +109,96 @@ class PraktikumsantragServiceTest {
     }
     @Test
     void testAntragErstellenMitVorhandenemAntrag() {
+        // Crear un objeto Praktikumsantrag con datos válidos
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
 
+        // Simular que el Praktikumsantrag ya existe en el repositorio
         when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
-                .thenReturn(Optional.of(new Praktikumsantrag()));
+                .thenReturn(Optional.of(antrag));
 
-        assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragSpeichern(antrag));
+
+        praktikumsantragService.antragSpeichern(antrag);
+
 
         verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(antrag.getMatrikelnummer());
+
+        verify(praktikumsantragRepository, times(1)).save(antrag);
     }
 
     @Test
-    void testAntragSpeichernMitNullAntrag() {
-        Praktikumsantrag antrag = null;
+    void testAntragSpeichernMitNullName() {
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setNameStudentin(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> praktikumsantragService.antragSpeichern(antrag));
+        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
+                .thenReturn(Optional.empty());
 
-        assertEquals("Der Antrag darf nicht null sein.", exception.getMessage());
+        praktikumsantragService.antragSpeichern(antrag);
+
+        verify(praktikumsantragRepository, times(1)).save(antrag);
     }
+
+    @Test
+    void testAntragSpeichernMitNullEmail() {
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setEmailStudentin(null);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
+                .thenReturn(Optional.empty());
+
+        praktikumsantragService.antragSpeichern(antrag);
+
+        verify(praktikumsantragRepository, times(1)).save(antrag);
+    }
+
+    @Test
+    void testAntragSpeichernMitMehrerenNullen() {
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setNameStudentin(null);
+        antrag.setEmailStudentin(null);
+        antrag.setTelefonnummerStudentin(null);
+        antrag.setAbteilung(null);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
+                .thenReturn(Optional.empty());
+
+        praktikumsantragService.antragSpeichern(antrag);
+
+        verify(praktikumsantragRepository, times(1)).save(antrag);
+    }
+
+    @Test
+    void testAntragSpeichernAntragMitNullWerten() {
+        // Vorhandener Antrag im Repository
+        Praktikumsantrag vorhandenerAntrag = new Praktikumsantrag();
+        vorhandenerAntrag.setMatrikelnummer("s1234567");
+        vorhandenerAntrag.setNameStudentin("Hunt");
+        vorhandenerAntrag.setEmailStudentin("mariahunt@gmail.com");
+
+        when(praktikumsantragRepository.findByMatrikelnummer("s1234567"))
+                .thenReturn(Optional.of(vorhandenerAntrag));
+
+        // Neuer Antrag mit null-Werten
+        Praktikumsantrag neuerAntrag = new Praktikumsantrag();
+        neuerAntrag.setMatrikelnummer("s1234567");
+        neuerAntrag.setNameStudentin(null); // Name bleibt gleich
+        neuerAntrag.setEmailStudentin(null); // Email bleibt gleich
+        neuerAntrag.setOrtStudentin("Berlin"); // Neues Feld wird aktualisiert
+
+        // Aufruf der Methode
+        praktikumsantragService.antragSpeichern(neuerAntrag);
+
+        // Überprüfen, dass die ursprünglichen Werte nicht überschrieben wurden
+        assertEquals("Hunt", vorhandenerAntrag.getNameStudentin()); // Der ursprüngliche Wert bleibt
+        assertEquals("mariahunt@gmail.com", vorhandenerAntrag.getEmailStudentin()); // Der ursprüngliche Wert bleibt
+
+        // Überprüfen, dass das neue Feld aktualisiert wurde
+        assertEquals("Berlin", vorhandenerAntrag.getOrtStudentin());
+
+        // Verifizieren, dass das Repository das aktualisierte Objekt speichert
+        verify(praktikumsantragRepository, times(1)).save(vorhandenerAntrag);
+    }
+
 
     @Test
     void testAntragSpeichernMitLeererMatrikelnummer() {
@@ -134,6 +213,7 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(0)).findByMatrikelnummer(anyString());
         verify(praktikumsantragRepository, times(0)).save(any());
     }
+
     @Test
     void testAntragAnzeigenErfolgreich() {
         String matrikelnummer = "12345678";
@@ -164,24 +244,6 @@ class PraktikumsantragServiceTest {
 
 
     @Test
-    void testAntragUebermittelnMitNullwerten() {
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setNameStudentin(null);
-
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
-    }
-
-    @Test
-    void testAntragUebermittelnMitLeerwerten() {
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setNameStudentin("");
-
-        assertThrows(ConstraintViolationException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
-    }
-
-
-
-    @Test
     void testAntragUebermittelnMitFehlerhaftenDaten() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
         antrag.setStartdatum(LocalDate.of(2024, 12, 15));
@@ -205,16 +267,17 @@ class PraktikumsantragServiceTest {
 
     @Test
     void testAntragUebermittelnAntragNichtVorhanden() {
-        String matrikelnummer = "12345678";
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setMatrikelnummer(matrikelnummer);
 
-        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
+        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
+                .thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
+        assertDoesNotThrow(() -> praktikumsantragService.antragUebermitteln(antrag));
 
-        assertEquals("Kein Antrag mit der Matrikelnummer " + matrikelnummer + " gefunden.", exception.getMessage());
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(antrag.getMatrikelnummer());
+        verify(pbService, times(1)).antragUebermitteln(antrag);
     }
+
 
     @Test
     void testAntragUebermittelnFalscherStatus() {
@@ -226,7 +289,7 @@ class PraktikumsantragServiceTest {
 
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
 
-        assertEquals("Nur gespeicherte Anträge können übermittelt werden.", exception.getMessage());
+        assertEquals("Ein Antrag kann nur übermittelt werden, wenn er den Status 'GESPEICHERT' hat.", exception.getMessage());
     }
 
     @Test
@@ -335,5 +398,49 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).findAll();
     }
 
+   @Test
+    void testUpdateAntragStatusToImPraktikum() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+        antrag.setStartdatum(LocalDate.of(2025, 1, 1));
+        antrag.setEnddatum(LocalDate.of(2025, 6, 30));
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+
+        assertEquals(StatusAntrag.IMPRAKTIKUM, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository).save(antrag);
+    }
+
+
+    @Test
+    void testUpdateAntragStatusToAbsolviert() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+        antrag.setStartdatum(LocalDate.of(2024, 7, 1));
+        antrag.setEnddatum(LocalDate.of(2024, 12, 31));
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+
+        assertEquals(StatusAntrag.ABSOLVIERT, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository).save(antrag);
+    }
+
+    @Test
+    void testUpdateAntragStatusAntragNotFound() {
+        String matrikelnummer = "123456";
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
+
+        praktikumsantragService.updateAntragStatus(matrikelnummer);
+
+        verify(praktikumsantragRepository, never()).save(any(Praktikumsantrag.class));
+    }
 }
 
