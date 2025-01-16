@@ -78,13 +78,13 @@ public class PBService implements CommandLineRunner {
     }
 
     // die Methode "antragZureckgezogen" erstellt eine neue Benachrichtigung fuer den Praktikumbsbeauftragten,
-    // dass der Antrag zurück gezogen wurde.
+    // dass der Antrag zurückgezogen wurde.
     public void antragZurueckgezogen(String matrikelnummer) {
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
                 .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
 
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
-                "Der Antrag mit der Matrikelnummer " + matrikelnummer + " wurde zurückgezogen.",
+                "Der bereits zugelassene Antrag mit der Matrikelnummer " + matrikelnummer + " wurde zurückgezogen.",
                 new Date(),
                 pb.getUsername()
         );
