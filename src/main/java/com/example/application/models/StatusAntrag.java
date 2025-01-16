@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum StatusAntrag {
-    GESPEICHERT ("Gespeichert"), EINGEREICHT("Antrag eingereicht"),
-    ABGELEHNT("Abgelehnt"), ZUGELASSEN("Zugelassen"), IMPRAKTIKUM("Derzeit im Praktikum"),
-    ABSOLVIERT("Absolviert");
+    GESPEICHERT ("Gespeichert"),
+    EINGEREICHT("Antrag eingereicht"),
+    ABGELEHNT("Abgelehnt"),
+    ZUGELASSEN("Zugelassen"),
+    IMPRAKTIKUM("Derzeit im Praktikum"),
+    ABSOLVIERT("Absolviert"),
+    ABGEBROCHEN("Praktikum abgebrochen");
 
 
     private final String leserlicherStatus;
