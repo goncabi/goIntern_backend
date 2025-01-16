@@ -13,7 +13,49 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Locale;
-
+/**
+ * Service für die Generierung von Mock-Daten für Praktikumsanträge.
+ * <p>
+ * Diese Klasse verwendet die Bibliothek {@link Faker}, um realistische, aber zufällige Daten
+ * für Praktikumsanträge zu generieren. Die generierten Daten umfassen persönliche Informationen
+ * der Studentinnen, Details zur Praktikumsstelle und relevante Statusinformationen.
+ * </p>
+ *
+ * <h2>Hauptfunktionen</h2>
+ * <ul>
+ *   <li>Generiert eine definierte Anzahl von zufälligen Praktikumsanträgen.</li>
+ *   <li>Speichert die generierten Anträge in der Datenbank.</li>
+ *   <li>Unterstützt Daten für Inlands- und Auslandspraktika.</li>
+ * </ul>
+ *
+ * <h2>Verwendung</h2>
+ * <p>
+ * Diese Klasse wird normalerweise über den Controller aufgerufen, um Testdaten für
+ * Entwicklungs- oder Testzwecke zu generieren.
+ * </p>
+ *
+ * <h2>Beispiel</h2>
+ * <pre>
+ * MockDataService mockDataService = new MockDataService(praktikumsantragRepository);
+ * mockDataService.generateMockData(20);
+ * </pre>
+ *
+ * <h2>Details zur Generierung</h2>
+ * <ul>
+ *   <li>Persönliche Daten: Matrikelnummer, Name, Vorname, Geburtsdatum, Kontaktinformationen.</li>
+ *   <li>Praktikumsdetails: Name und Adresse der Praktikumsstelle, Ansprechpartner, Tätigkeiten.</li>
+ *   <li>Praktikumstyp: Inland oder Ausland mit entsprechenden Ländern und Bundesländern.</li>
+ * </ul>
+ *
+ * <h2>Abhängigkeiten</h2>
+ * <ul>
+ *   <li>{@link PraktikumsantragRepository}: Schnittstelle zur Datenbank, um Anträge zu speichern.</li>
+ *   <li>{@link Faker}: Bibliothek zur Generierung von zufälligen Daten.</li>
+ * </ul>
+ *
+ * <h2>Autor</h2>
+ * <p>Gabriela Goncalvez</p>
+ */
 @AllArgsConstructor
 @Service
 public class MockDataService {
@@ -21,7 +63,12 @@ public class MockDataService {
     @Autowired
     private PraktikumsantragRepository praktikumsantragRepository;
 
-
+    /**
+     * Generiert eine definierte Anzahl von Praktikumsanträgen mit zufälligen Daten
+     * und speichert diese in der Datenbank.
+     *
+     * @param count Anzahl der zu generierenden Anträge.
+     */
     public void generateMockData(int count) {
         // Faker inisialisieren mit deutschen daten
         Faker faker = new Faker(new Locale("de"));
@@ -34,7 +81,7 @@ public class MockDataService {
             antrag.setNameStudentin(faker.name().lastName());
             antrag.setVornameStudentin(faker.name().firstName());
 
-            antrag.setGebDatumStudentin(faker.date().birthday(20, 30).toInstant()
+            antrag.setGebDatumStudentin(faker.date().birthday(20, 40).toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate());
 
@@ -57,15 +104,15 @@ public class MockDataService {
 
             // Studiengang (Programas de estudio ficticios)
             antrag.setStudiengang(faker.options().option(
-                    "Informatik", "Wirtschaftsinformatik", "Maschinenbau",
-                    "Elektrotechnik", "Medieninformatik"
+                    "Informatik", "Wirtschaftsinformatik", "Umweltinformatik",
+                    "Angwandte Informatik", "Medieninformatik"
             ));
 
             boolean auslandspraktikum = faker.bool().bool();
             if (auslandspraktikum) {
                 // Für Ausland: Land und ein generisches Bundesland
                 antrag.setLandPraktikumsstelle(faker.country().name());
-                antrag.setBundeslandPraktikumsstelle("Keine (Ausland)");
+                antrag.setBundeslandPraktikumsstelle("Keine Angaben notwendig");
             } else {
                 // Für Deutschland: Ein deutsches Bundesland
                 antrag.setLandPraktikumsstelle("Deutschland");

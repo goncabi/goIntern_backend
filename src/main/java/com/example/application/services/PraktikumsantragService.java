@@ -4,7 +4,6 @@ import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -12,7 +11,27 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 
-
+/**
+ * Service-Schicht zur Verwaltung von Praktikumsanträgen.
+ * <p>
+ * Diese Klasse enthält die zentrale Geschäftslogik für die Bearbeitung und Verwaltung
+ * von Praktikumsanträgen. Sie ermöglicht das Speichern, Aktualisieren, Übermitteln,
+ * Löschen und Abrufen von Anträgen sowie die Aktualisierung des Antragsstatus.
+ * </p>
+ * <h2>Hauptfunktionen</h2>
+ * <ul>
+ *   <li>Speichern oder Aktualisieren von Anträgen, einschließlich Versionierung.</li>
+ *   <li>Löschen von Anträgen basierend auf der Matrikelnummer.</li>
+ *   <li>Übermitteln von Anträgen mit Validierung von Zeiträumen.</li>
+ *   <li>Aktualisieren des Antragsstatus basierend auf Start- und Enddatum.</li>
+ *   <li>Abrufen aller gespeicherten Anträge aus der Datenbank.</li>
+ * </ul>
+ * <h2>Abhängigkeiten</h2>
+ * <ul>
+ *   <li>{@link PraktikumsantragRepository}: Schnittstelle für den Datenbankzugriff.</li>
+ *   <li>{@link PBService}: Service für Benachrichtigungen und Validierungen.</li>
+ * </ul>
+ */
 @Validated
 @AllArgsConstructor
 @Service
@@ -22,24 +41,15 @@ public class PraktikumsantragService {
     //Objektvariablen:
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final PBService pbService;
-
-    // Methode zur Überprüfung, ob ein Antrag mit der Matrikelnummer bereits existiert
-    public boolean antragVorhanden(String matrikelnummer) {
-        return praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
-                .isPresent();
-    }
-
-    public Praktikumsantrag antragAnzeigen(String matrikelnummer) {
-        Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
-        if (antrag.isEmpty()) {
-            throw new RuntimeException("Kein Antrag mit der Matrikelnummer " + matrikelnummer +
-                    " vorhanden. Lege zuerst einen Antrag an.");
-        }
-        return antrag.get();
-    }
-
-    // Methode zur Erstellung eines neuen Antrags, wenn keiner vorhanden ist
-    //oder: update der Daten, wenn Antrag schon vorhanden ist
+    /**
+     * Speichert oder aktualisiert einen Praktikumsantrag.
+     * <p>
+     * Wenn ein Antrag mit derselben Matrikelnummer existiert, wird er aktualisiert.
+     * Abgelehnte Anträge werden versioniert. Neue Anträge werden erstellt und gespeichert.
+     * </p>
+     * @param antrag Der zu speichernde oder zu aktualisierende Antrag.
+     * @throws IllegalArgumentException Wenn die Matrikelnummer fehlt oder leer ist.
+     */
     public void antragSpeichern(Praktikumsantrag antrag) {
         if (antrag.getMatrikelnummer() == null || antrag.getMatrikelnummer()
                 .isBlank()) {
@@ -67,6 +77,15 @@ public class PraktikumsantragService {
         }
     }
 
+    /**
+     * Löscht einen Praktikumsantrag basierend auf der Matrikelnummer.
+     * <p>
+     * Wenn der Antrag existiert, wird er gelöscht. Zusätzlich wird eine Benachrichtigung
+     * über den {@link PBService} gesendet, dass der Antrag zurückgezogen wurde.
+     * </p>
+     * @param matrikelnummer Die Matrikelnummer des zu löschenden Antrags.
+     * @throws RuntimeException Wenn kein Antrag mit der angegebenen Matrikelnummer gefunden wurde.
+     */
     public void antragLoeschen(String matrikelnummer) {
         Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
         if (praktikumsantragDB.isEmpty()) {
@@ -79,7 +98,17 @@ public class PraktikumsantragService {
         //Objekt von PB Service mit Spring erstellen und daran Methode aufgerufen
         pbService.antragZurueckgezogen(matrikelnummer);
     }
-
+    /**
+     * Übermittelt (speichert) einen Praktikumsantrag nach Validierung.
+     * <p>
+     * Überprüft, ob Start- und Enddatum korrekt sind, und setzt den Status des Antrags
+     * auf "Eingereicht". Wenn der Antrag bereits existiert, wird er aktualisiert. Diese Methode
+     * ruft zudem die Methode {@code antragUebermitteln} von {@link PBService} auf, um weitere
+     * Benachrichtigungen zu senden.
+     * </p>
+     * @param antrag Der zu übermittelnde Antrag.
+     * @throws IllegalArgumentException Wenn das Startdatum nach dem Enddatum liegt.
+     */
     public void antragUebermitteln(Praktikumsantrag antrag) {
         // Validierung des Start- und Enddatums
         if (antrag.getStartdatum()
@@ -110,15 +139,22 @@ public class PraktikumsantragService {
         // PBService: Benachrichtigung senden
         pbService.antragUebermitteln(antrag);
     }
-
-
+    /**
+     * Gibt alle gespeicherten Praktikumsanträge zurück.
+     * @return Eine Liste aller Anträge in der Datenbank.
+     */
     public List<Praktikumsantrag> getAllAntraege() {
-
         return praktikumsantragRepository.findAll();
     }
 
-
-    // aktuakisiert Felder, die im Formular nicht null sind. Hilfmethode für antragSpeichern, um Antrag bearbeiten zu können
+    /**
+     * Hilfsmethode zur Aktualisierung der Felder eines bestehenden Antrags.
+     * <p>
+     * Aktualisiert nur die Felder, die im neuen Antrag nicht null sind.
+     * </p>
+     * @param bestehenderAntrag Der bestehende Antrag, der aktualisiert werden soll.
+     * @param neuerAntrag Der neue Antrag mit den zu übernehmenden Werten.
+     */
     private void updateAntragFields(Praktikumsantrag bestehenderAntrag, Praktikumsantrag neuerAntrag) {
         if (neuerAntrag.getNameStudentin() != null) bestehenderAntrag.setNameStudentin(neuerAntrag.getNameStudentin());
         if (neuerAntrag.getVornameStudentin() != null)
@@ -168,8 +204,16 @@ public class PraktikumsantragService {
 
     }
 
-    //Es wird nur der Status geupdatet von Anträgen die bereits ZUGELASSEN sind
-    //setzt Status auf derzeit IMPRAKTIKUM und ABSOLVIERT
+    /**
+     * Aktualisiert den Status eines Antrags basierend auf seinem Zeitraum.
+     * <p>
+     * Der Status wird auf "Im Praktikum" gesetzt, wenn das aktuelle Datum innerhalb
+     * des Zeitraums liegt, oder auf "Absolviert", wenn das Praktikum abgeschlossen ist.
+     * </p>
+     * @param matrikelnummer Die Matrikelnummer des Antrags, dessen Status aktualisiert werden soll.
+     * @throws IllegalArgumentException Wenn kein Antrag mit der angegebenen Matrikelnummer gefunden wurde.
+     * @throws IllegalStateException Wenn ungültige Start- oder Enddaten vorliegen.
+     */
     public void statusUpdateImPraktikumOderAbsolviert(String matrikelnummer) {
         Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
                 .orElseThrow(() -> new IllegalArgumentException("Antrag mit Matrikelnummer " + matrikelnummer + " nicht gefunden."));
@@ -188,6 +232,25 @@ public class PraktikumsantragService {
             }
         }
     }
+
+    /**
+     * Aktualisiert den Status eines Praktikumsantrags basierend auf dem aktuellen Datum.
+     * <p>
+     * Diese Methode überprüft, ob der Antrag den Status "Zugelassen" hat und ob die Start- und Enddaten
+     * korrekt gesetzt sind. Basierend auf dem aktuellen Datum wird der Status des Antrags wie folgt aktualisiert:
+     * <ul>
+     *   <li><b>Im Praktikum:</b> Wenn das aktuelle Datum innerhalb des Praktikumszeitraums liegt.</li>
+     *   <li><b>Absolviert:</b> Wenn das aktuelle Datum nach dem Praktikumsenddatum liegt.</li>
+     * </ul>
+     * </p>
+     * <p>
+     * Wenn keine passenden Start- oder Enddaten vorhanden sind, wird der Status nicht geändert.
+     * </p>
+     *
+     * @param matrikelnummer Die Matrikelnummer des Antrags, dessen Status aktualisiert werden soll.
+     * @throws IllegalArgumentException Wenn kein Antrag mit der angegebenen Matrikelnummer gefunden wurde.
+     */
+
     public void updateAntragStatus(String matrikelnummer) {
         Optional<Praktikumsantrag> antragOpt = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
         if (antragOpt.isPresent()) {
