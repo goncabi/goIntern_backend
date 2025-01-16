@@ -32,6 +32,12 @@ import org.springframework.web.bind.annotation.*;
 public class PasswortVergessenController {
     private final PasswortVergessenService passwortVergessenService;
 
+    /**
+     * Überprüft die Matrikelnummer und gibt die Sicherheitsfrage zurück.
+     * @param matrikelnummer Die Matrikelnummer des nutzers.
+     * @return Die Sicherheitsfragen wenn die Matrikelnummer existiert oder eine Fehlermeldung.
+     */
+
     @PostMapping("/passwort-vergessen")
     public ResponseEntity<String> eingabeMatrikelnummer(@RequestBody String matrikelnummer) {
         try{
@@ -46,6 +52,12 @@ public class PasswortVergessenController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
         }
     }
+
+    /**
+     * Überprüft die Antwort auf die Sicherheitsfrage und setzt das Passwort zurück.
+     * @param anfrage Die anfrage mit matrikelnummer, antwort und neuem Passwort.
+     * @return Eine Bestätigung wenn die Antwort korrekt war, oder eine Fehlermeldung.
+     */
 
     @PostMapping("/passwort-vergessen/frage")
     public ResponseEntity<String> eingabeAntwort(@RequestBody PasswortVergessenAnfrage anfrage) {
