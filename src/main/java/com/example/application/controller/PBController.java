@@ -38,6 +38,14 @@ public class PBController {
 
     private final PBService pbService;
 
+    /**
+     * Genehmigt einen Praktikumsantrag
+     *
+     *
+     * @param antrag Der Antrag der genehmigt werden soll.
+     * @return Erfolgs- oder Fehlermeldung als ResponseEntity.
+     */
+
     //diese Methode gibt nur einen aktualisierten Antrag zurück - Endpunkt für Studentin-ANsicht
     @PostMapping("/antrag/genehmigen")
     public ResponseEntity<String> genehmigenAntrag(@RequestBody Praktikumsantrag antrag) {
@@ -49,6 +57,14 @@ public class PBController {
         }
     }
 
+    /**
+     * Lehnt einen Praktikumsantrag ab und fügt eine Ablehnnotitz hinzu.
+     *
+     * @param matrikelnummer Die Matrikelnummer des abzulehnenden Antrags.
+     * @param ablehnenNotiz die Begründung für die Ablehnung.
+     * @return Erfolgs- und Fehlermeldung als ResponseEntity
+     */
+
     @PostMapping("/antrag/ablehnen/{matrikelnummer}") //das ist der Endpunkt der im Frontend verwendet wird. In der Klasse Praktikumsbeauftragter in der ablehnenAntragMitKommentar Methode.
     public ResponseEntity<String> ablehnenAntrag(@PathVariable String matrikelnummer, @RequestBody String ablehnenNotiz) {
         try {
@@ -59,6 +75,13 @@ public class PBController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fehler beim Ablehnen des Antrags: " + e.getMessage());
         }
     }
+
+    /**
+     * Übermittelt einen Praktikumsantrag zur eiteren Verarbeitung.
+     *
+     * @param antrag Der zu übermittelnde antrag
+     * @return erfolgs- oder fehlermeldung als ResponseEntity
+     */
 
     @PostMapping("/antrag/uebermitteln")
     public ResponseEntity<String> uebermittelnAntrag(@RequestBody Praktikumsantrag antrag) {
