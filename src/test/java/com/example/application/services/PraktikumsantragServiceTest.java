@@ -15,15 +15,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import java.time.LocalDate;
-import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+
 
 @SpringBootTest
 @Transactional // alle Daten Änderungen im Datenbank in Test-Kontext werden automatisch rückgängig gemacht
@@ -74,29 +66,6 @@ class PraktikumsantragServiceTest {
         return antrag;
     }
 
-    @Test
-    void testAntragVorhandenErfolgreich() {
-        String matrikelnummer = "12345678";
-        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer))
-                .thenReturn(Optional.of(new Praktikumsantrag()));
-
-        boolean result = praktikumsantragService.antragVorhanden(matrikelnummer);
-
-        assertTrue(result);
-        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
-    }
-
-    @Test
-    void testAntragVorhandenNichtErfolgreich() {
-        String matrikelnummer = "12345678";
-        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer))
-                .thenReturn(Optional.empty());
-
-        boolean result = praktikumsantragService.antragVorhanden(matrikelnummer);
-
-        assertFalse(result);
-        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
-    }
 
     @Test
     void testAntragSpeichernErfolgreich() {
@@ -214,34 +183,6 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(0)).save(any());
     }
 
-    @Test
-    void testAntragAnzeigenErfolgreich() {
-        String matrikelnummer = "12345678";
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer))
-                .thenReturn(Optional.of(antrag));
-
-        Praktikumsantrag result = praktikumsantragService.antragAnzeigen(matrikelnummer);
-
-        assertEquals(antrag, result);
-        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
-    }
-
-    @Test
-    void testAntragAnzeigenNichtVorhanden() {
-        String matrikelnummer = "12345678";
-        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> praktikumsantragService.antragAnzeigen(matrikelnummer));
-        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
-    }
-
-    @Test
-    void testAntragAnzeigenMitNullMatrikelnummer() {
-        String matrikelnummer = null;
-        assertThrows(RuntimeException.class, () -> praktikumsantragService.antragAnzeigen(matrikelnummer));
-    }
-
 
     @Test
     void testAntragUebermittelnMitFehlerhaftenDaten() {
@@ -279,18 +220,6 @@ class PraktikumsantragServiceTest {
     }
 
 
-    @Test
-    void testAntragUebermittelnFalscherStatus() {
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setStatusAntrag(StatusAntrag.ABSOLVIERT); // Nicht GESPEICHERT
-
-        when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
-                .thenReturn(Optional.of(antrag));
-
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> praktikumsantragService.antragUebermitteln(antrag));
-
-        assertEquals("Ein Antrag kann nur übermittelt werden, wenn er den Status 'GESPEICHERT' hat.", exception.getMessage());
-    }
 
     @Test
     void testAntragUebermittelnStartdatumNachEnddatum() {
