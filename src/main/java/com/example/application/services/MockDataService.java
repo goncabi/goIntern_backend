@@ -53,8 +53,6 @@ import java.util.Locale;
  *   <li>{@link Faker}: Bibliothek zur Generierung von zufälligen Daten.</li>
  * </ul>
  *
- * <h2>Autor</h2>
- * <p>Gabriela Goncalvez</p>
  */
 @AllArgsConstructor
 @Service

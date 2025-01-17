@@ -48,8 +48,6 @@ import java.util.Optional;
  *   <li>{@link MockDataService}: Generierung von Testdaten für Anträge.</li>
  * </ul>
  *
- * <h2>Autor</h2>
- * <p>Gabriela Goncalvez</p>
  */
 @AllArgsConstructor
 @RestController

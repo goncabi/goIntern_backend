@@ -34,9 +34,6 @@ import java.time.LocalDate;
  *   <li>Ermöglicht die Verwaltung des Status eines Antrags (z. B. "In Bearbeitung", "Akzeptiert").</li>
  *   <li>Speichert Informationen zu Zeiträumen und Tätigkeiten des Praktikums.</li>
  * </ul>
-
- * <h2>Autor</h2>
- * <p>Gabriela Goncalvez</p>
  */
 
 
