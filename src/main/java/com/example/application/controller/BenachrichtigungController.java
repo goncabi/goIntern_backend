@@ -9,17 +9,59 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * BenachrichtigungController verwaltet API-Endpunkte für Benachrichtigungen.
+ * <p>
+ * Dieser Controller bietet Methoden, um Benachrichtigungen für Benutzer abzurufen
+ * und zu löschen. Die Endpunkte sind unter dem Basis-Pfad "/api" verfügbar.
+ * </p>
+ *
+ * <ul>
+ *   <li>Verwendet die {@link BenachrichtigungService}, um die Geschäftslogik auszuführen.</li>
+ *   <li>Unterstützt die JSON-Verarbeitung und RESTful-Methoden durch {@code @RestController}.</li>
+ * </ul>
+ *
+ * @author Beyza Nur Acikgöz
+ * @version 1.0
+ */
+
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
 public class BenachrichtigungController {
+    /**
+     * Service, der die Geschäftslogik für Benachrichtigungen bereitstellt.
+     */
     private final BenachrichtigungService benachrichtigungService;
 
+    /**
+     * Ruft alle Benachrichtigungen eines bestimmten Benutzers ab.
+     * <p>
+     * Dieser Endpunkt liefert eine Liste von Benachrichtigungen, die mit dem Benutzernamen
+     * verknüpft sind. Es wird die Methode {@link BenachrichtigungService#alleLesen(String)}
+     * verwendet, um die Daten abzurufen.
+     * </p>
+     *
+     * @param username Der Benutzername, für den die Benachrichtigungen abgerufen werden sollen.
+     * @return Eine Liste von {@link Benachrichtigung} Objekten.
+     */
 
     @GetMapping("/nachrichten/{username}")
     public List<Benachrichtigung> getBenachrichtigung(@PathVariable String username) {
         return benachrichtigungService.alleLesen(username);
     }
+
+    /**
+     * Löscht alle Benachrichtigungen eines bestimmten Benutzers.
+     * <p>
+     * Dieser Endpunkt entfernt alle Benachrichtigungen, die mit dem Benutzernamen verknüpft sind.
+     * Wenn ein Fehler auftritt, wird eine entsprechende HTTP-Fehlermeldung zurückgegeben.
+     * </p>
+     *
+     * @param username Der Benutzername, dessen Benachrichtigungen gelöscht werden sollen.
+     * @return Eine {@link ResponseEntity}, die entweder eine Erfolgsmeldung oder
+     *         eine Fehlermeldung mit entsprechendem HTTP-Status zurückgibt.
+     */
 
     @DeleteMapping("/nachrichtenLoeschen/{username}")
     public ResponseEntity<String> deleteNachrichten(@PathVariable String username) {
