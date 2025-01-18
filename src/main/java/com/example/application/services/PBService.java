@@ -90,4 +90,18 @@ public class PBService implements CommandLineRunner {
         );
         benachrichtigungRepository.save(neueBenachrichtigung);
     }
+
+
+    //Methode tut eine neue Benachrichtung für den PB erstellen, wenn ein Poster hochgeladen wurde
+    public void posterNachrichtUebermitteln(String matrikelnummer) {
+        Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
+                .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
+
+        Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
+                "Ein neues Poster mit der Matrikelnummer " + matrikelnummer + " wurde übermittelt.",
+                new Date(),
+                pb.getUsername()
+        );
+        benachrichtigungRepository.save(neueBenachrichtigung);
+    }
 }
