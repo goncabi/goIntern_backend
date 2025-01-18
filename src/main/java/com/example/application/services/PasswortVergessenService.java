@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
  *     <li></li>Sicherheitsfragen fpr eine Matrikelnummer abrufen.</li>
  *     <li> Passwort zurücksetzten, wenn die Antwort stimmt.</li>
  * </ul>
+ *
  */
 
 @Service
@@ -29,9 +30,22 @@ public class PasswortVergessenService {
     private final StudentinRepository studentinRepository;
     private final SicherheitsfrageRepository sicherheitsfrageRepository;
 
+    /**
+     *  Prüft, ob ein Nutzer mit der Matrikelnummer existiert.
+     * @param matrikelnummer Die Matrikelnummer des Nutzers.
+     * @return true, wenn der Nutzer gefunden wurde, sonst false.
+     */
+
     public boolean eingabeMatrikelnummer(String matrikelnummer) {
         return studentinRepository.findByMatrikelnummer(matrikelnummer).isPresent();
     }
+
+    /**
+     * Holt die Sicherheitsfrage für eine Matrikelnummer.
+     *
+     * @param matrikelnummer Die Matrikelnummer des Nutzers.
+     * @return die Sicherheitsfrage
+     */
 
     public String getSicherheitsfrage(String matrikelnummer) {
         if(sicherheitsantwortRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
@@ -47,6 +61,15 @@ public class PasswortVergessenService {
             throw new IllegalStateException("Fehler beim Finden der Sicherheitsantwort.");
         }
     }
+
+    /**
+     * Setzt das Passwort zurück, wenn die Antwort auf die Sicherheitsfrage übereinstimmt.
+     *
+     * @param matrikelnummer Die Matrikelnummer des Nutzers
+     * @param enteredAnswer Die eingegebene Antwort
+     * @param passwort Das neue Passwort
+     * @return true wenn Passwort geändert wurde sonst false.
+     */
 
     public boolean resetPassword(String matrikelnummer, String enteredAnswer, String passwort) {
         if(sicherheitsantwortRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
