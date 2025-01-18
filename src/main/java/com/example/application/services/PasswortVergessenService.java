@@ -8,6 +8,19 @@ import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service-Klasse für das Zurücksetzten von Passwörtern.
+ *
+ * <p></p>Diese Klasse hilft dabei, Nutzern ihre Passwörter zurückzusetzten. Hier prüfen wir, ob ein Nutzer existiert, geben die passende Sicherheitsfrage aus und ändern das Passwort, wenn die Antwort korrekt ist.</p>
+ *
+ * <h2>Hauptfunktionen:</h2>
+ * <ul>
+ *     <li></li>Prüfen, ob eine Matrikelnummer existiert.</li>
+ *     <li></li>Sicherheitsfragen fpr eine Matrikelnummer abrufen.</li>
+ *     <li> Passwort zurücksetzten, wenn die Antwort stimmt.</li>
+ * </ul>
+ */
+
 @Service
 @AllArgsConstructor
 public class PasswortVergessenService {
