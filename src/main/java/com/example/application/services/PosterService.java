@@ -1,25 +1,41 @@
 package com.example.application.services;
 
+import com.example.application.models.Poster;
+import com.example.application.repositories.PosterRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
 public class PosterService {
 
-    //Objektvariable:
-    private PBService pbService;
+    private final PosterRepository posterRepository;
 
-    //Methode die das Poster speichert
-    public void posterSpeichern(MultipartFile poster, String matrikelnummer){
-       pbService.posterNachrichtUebermitteln(matrikelnummer);
+    public void savePoster(MultipartFile file, String matrikelnummer) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
+        if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(".pdf")) {
+            throw new IllegalArgumentException("Nur PDFs erlaubt!");
+        }
+
+        Poster poster = new Poster(
+                matrikelnummer,
+                file.getOriginalFilename(),
+                file.getBytes()
+        );
+        posterRepository.save(poster);
     }
 
-    //Methode ruft das Poster aus der Datenbank ab und gibt es zurück:
-    public byte[] posterAbrufen(String matrikelnummer) {
-        return null;
+    public Poster getPoster(String matrikelnummer) throws Exception {
+        if(posterRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
+            return posterRepository.findByMatrikelnummer(matrikelnummer).get();
+        }
+        else{
+            throw new Exception("Fehler beim Finden des Posters.");
+        }
     }
-
-
 }

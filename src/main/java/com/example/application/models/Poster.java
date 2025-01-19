@@ -1,18 +1,33 @@
 package com.example.application.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-//Hier eine Tabelle für Poster erstellt, damit das Poster gespeichert werden kann:
 @Entity
-@Table(name="poster2")
+@Table(name = "posters")
+@Setter @Getter
 public class Poster {
-    // Hier Objektvariablen als Spalten erstellen und Primary Key zuweisen
+
     @Id
-    @Column(name = "matrikelnummer", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String matrikelnummer;
     private String fileName;
+    private String uploadTime;
 
-    //Lob heiß Large Objekt
     @Lob
     private byte[] posterPDF;
+
+    public Poster() { }
+
+    public Poster(String matrikelnummer, String fileName, byte[] posterPDF) {
+        this.matrikelnummer = matrikelnummer;
+        this.fileName = fileName;
+        this.posterPDF = posterPDF;
+        this.uploadTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+    }
 }

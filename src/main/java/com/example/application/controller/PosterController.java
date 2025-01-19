@@ -1,61 +1,53 @@
 package com.example.application.controller;
 
+import com.example.application.models.Poster;
 import com.example.application.services.PosterService;
-import org.springframework.http.*;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/poster")
-
+@RequestMapping("/poster")
+@AllArgsConstructor
 public class PosterController {
 
-    //Objektvaribale für PosterService
-    private PosterService posterService;
+    private final PosterService posterService;
 
-    @GetMapping("/{matrikelnummer}")
-    //Annotation für die methode. Wenn der Endpunkt aufgerufen wird, wird die Methode getPoster aufgerufen.
-    public ResponseEntity<byte[]> getPoster(@PathVariable String matrikelnummer) {
-        try {
-            // Hier Poster abrufen
-
-            byte[] poster = posterService.posterAbrufen(matrikelnummer);
-
-             if (poster == null) {
-                  return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF); // Poster als PDF
-            headers.setContentDisposition(ContentDisposition.inline()
-                    .filename("poster_" + matrikelnummer + ".pdf")
-                    .build());
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(poster);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    // Poster speichern Methode: (Path Variable heißt dass in dem Pfad eine PathVariable drin ist)
-    // Beispielweise: localhost:3000/api/poster/s0190191
-    @PostMapping("/{matrikelnummer}")
-    public ResponseEntity<String> posterSpeichern(@PathVariable String matrikelnummer, @RequestParam MultipartFile poster) {
+    @PostMapping("/upload/{matrikelnummer}")
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file, @PathVariable String matrikelnummer) {
         try{
-            //Poster Service speichert die Datei
-            posterService.posterSpeichern(poster, matrikelnummer);
+            posterService.savePoster(file, matrikelnummer);
+            return ResponseEntity.ok("Poster erfolgreich gespeichert.");
         }
-     catch (Exception e){
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fehler beim Speichern der Datei.");
         }
-       return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // http://localhost:3000/api/poster/ablehnen/%s
-    // http://localhost:3000/api/poster/genehmigen
-    //weitere controller, die wir benötigen maybe
+    @GetMapping("/pdf/{matrikelnummer}")
+    public ResponseEntity<byte[]> getPdf(@PathVariable String matrikelnummer) {
+        try{
+            Poster poster = posterService.getPoster(matrikelnummer);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(poster.getPosterPDF());
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-
+    @GetMapping("infos/{matrikelnummer}")
+    public ResponseEntity<Poster> posterInfos(@PathVariable String matrikelnummer) {
+        try{
+            Poster poster = posterService.getPoster(matrikelnummer);
+            return ResponseEntity.ok(poster);
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
