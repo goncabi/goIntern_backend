@@ -18,6 +18,8 @@ public class Poster {
     private String matrikelnummer;
     private String fileName;
     private String uploadTime;
+    @Enumerated(EnumType.STRING)
+    private StatusPoster status;
 
     @Lob
     private byte[] posterPDF;
