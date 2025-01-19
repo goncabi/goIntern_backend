@@ -1,7 +1,9 @@
 package com.example.application.services;
 
 import com.example.application.models.Poster;
+import com.example.application.models.StatusPoster;
 import com.example.application.repositories.PosterRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +15,7 @@ import java.util.Objects;
 public class PosterService {
 
     private final PosterRepository posterRepository;
+    private final PBService pbService;
 
     public void savePoster(MultipartFile file, String matrikelnummer) throws IOException {
         if (file == null || file.isEmpty()) {
@@ -27,15 +30,14 @@ public class PosterService {
                 file.getOriginalFilename(),
                 file.getBytes()
         );
+        poster.setStatus(StatusPoster.EINGEREICHT);
         posterRepository.save(poster);
+        pbService.posterNachrichtUebermitteln(matrikelnummer);
     }
 
-    public Poster getPoster(String matrikelnummer) throws Exception {
-        if(posterRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
-            return posterRepository.findByMatrikelnummer(matrikelnummer).get();
-        }
-        else{
-            throw new Exception("Fehler beim Finden des Posters.");
-        }
+    @Transactional
+    public Poster getPoster(String matrikelnummer) {
+        return posterRepository.findByMatrikelnummer(matrikelnummer)
+                .orElseThrow(() -> new RuntimeException("Poster nicht gefunden"));
     }
 }
