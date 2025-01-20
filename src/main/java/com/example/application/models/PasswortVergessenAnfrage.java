@@ -3,7 +3,7 @@ package com.example.application.models;
 /**
  * Diese Klasse speichert die Daten für das Zurücksetzten eines Passworts.
  *
- * Sie enthält die Matrikelnumer, die Antwort auf die Sicherheitsfrage und das neue Passwort des Nutzers.
+ * Sie enthält die Matrikelnummer, die Antwort auf die Sicherheitsfrage und das neue Passwort des Nutzers.
  */
 
 import lombok.Getter;
