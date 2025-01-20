@@ -58,21 +58,4 @@ public class PosterController {
         }
     }
 
-    /**
-     * Ruft den Status des Posters anhand der Matrikelnummer ab.
-     * @param matrikelnummer Matrikelnummer der Studentin
-     * @return ResponseEntity mit dem Status des Posters oder einer Fehlermeldung
-     */
-    @GetMapping("status/{matrikelnummer}")
-    public ResponseEntity<String> getStatus(@PathVariable String matrikelnummer) {
-        try{
-            Poster poster = posterService.getPoster(matrikelnummer);
-            String status = poster.getStatus().toString();
-            return ResponseEntity.ok(status);
-        }
-        catch (Exception e){
-            return ResponseEntity.badRequest().body("Fehler beim Abrufen der Datei.");
-        }
-    }
-
 }
