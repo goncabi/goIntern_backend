@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import com.example.application.repositories.PBRepository;
 import java.util.Date;
 
-
+/**
+ * PBService dient der Verwaltung von Praktikumsanträgen und Benachrichtigungen für
+ * den Praktikumsbeauftragten.
+ */
 
 @Service
 @AllArgsConstructor // <- die Annotation macht einen Konstuktor, sodass ich keinen machen muss.
@@ -24,6 +27,13 @@ public class PBService implements CommandLineRunner {
     private final BenachrichtigungRepository benachrichtigungRepository;
     private final PraktikumsantragRepository praktikumsantragRepository;
 
+
+    /**
+     * Führt eine Initialisierungsaktion aus, indem ein Standard-Praktikumsbeauftragter in der Datenbank gespeichert wird.
+     *
+     * @param args Kommandozeilenargumente
+     * @throws Exception wenn ein Fehler während der Ausführung auftritt
+     */
     @Override
     public void run(String... args) throws Exception {
         praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.PRAKTIKUMSBEAUFTRAGTER));
@@ -31,7 +41,13 @@ public class PBService implements CommandLineRunner {
 
 
 
-    //Methode antragGenehmigen setzt Status auf zugelassen
+    /**
+     * Genehmigt einen Praktikumsantrag, indem der Status auf "ZUGELASSEN" gesetzt wird.
+     *
+     * @param matrikelnummer Matrikelnummer des Antragsstellers
+     * @return der aktualisierte Praktikumsantrag nach der Statusänderung
+     * @throws IllegalArgumentException falls der Antrag nicht gefunden wird
+     */
     public Praktikumsantrag antragGenehmigen(String matrikelnummer) {
         Praktikumsantrag dbAntrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
                 .orElseThrow(() -> new IllegalArgumentException("Antrag wurde nicht gefunden"));
@@ -39,7 +55,14 @@ public class PBService implements CommandLineRunner {
         return praktikumsantragRepository.save(dbAntrag); // Speichert aktualisierten Antrag
     }
 
-
+    /**
+     * Lehnt einen Praktikumsantrag ab und erstellt eine Notiz mit der Begründung.
+     *
+     * @param matrikelnummer Matrikelnummer des Antragsstellers
+     * @param ablehnenNotiz  JSON-String mit der Begründung für die Ablehnung
+     * @return ein Erfolgs-PopUp
+     * @throws IllegalStateException falls der Antrag nicht gefunden wird
+     */
     public String antragAblehnen(String matrikelnummer, String ablehnenNotiz) {
         if(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
             Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).get();
@@ -67,7 +90,11 @@ public class PBService implements CommandLineRunner {
 
     }
 
-    // die Methode "antragUebermitteln" erstellt eine neue Benachrichtigung fuer den Praktikumsbeauftragten:
+    /**
+     * Erstellt eine Benachrichtigung für den Praktikumsbeauftragten, dass ein neuer Antrag eingegangen ist.
+     *
+     * @param antrag der eingereichte Praktikumsantrag
+     */
     public void antragUebermitteln(Praktikumsantrag antrag) {
 
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
@@ -81,8 +108,11 @@ public class PBService implements CommandLineRunner {
         benachrichtigungRepository.save(neueBenachrichtigung);
     }
 
-    // die Methode "antragZureckgezogen" erstellt eine neue Benachrichtigung fuer den Praktikumbsbeauftragten,
-    // dass der Antrag zurückgezogen wurde.
+    /**
+     * Erstellt eine Benachrichtigung für den Praktikumsbeauftragten, dass ein zugelassener Antrag zurückgezogen wurde.
+     *
+     * @param matrikelnummer Matrikelnummer des Antrags
+     */
     public void antragZurueckgezogen(String matrikelnummer) {
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
                 .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
@@ -96,7 +126,11 @@ public class PBService implements CommandLineRunner {
     }
 
 
-    //Methode tut eine neue Benachrichtung für den PB erstellen, wenn ein Poster hochgeladen wurde
+    /**
+     * Erstellt eine Benachrichtigung für den Praktikumsbeauftragten, dass ein neues Poster hochgeladen wurde.
+     *
+     * @param matrikelnummer Matrikelnummer des Antragsstellers
+     */
     public void posterNachrichtUebermitteln(String matrikelnummer) {
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
                 .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
