@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.example.application.repositories.PBRepository;
 import java.util.Date;
 
+
+
 @Service
 @AllArgsConstructor // <- die Annotation macht einen Konstuktor, sodass ich keinen machen muss.
 
@@ -26,6 +28,8 @@ public class PBService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.PRAKTIKUMSBEAUFTRAGTER));
     }
+
+
 
     //Methode antragGenehmigen setzt Status auf zugelassen
     public Praktikumsantrag antragGenehmigen(String matrikelnummer) {
