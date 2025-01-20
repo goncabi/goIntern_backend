@@ -1,7 +1,6 @@
 package com.example.application.services;
 
 import com.example.application.models.Poster;
-import com.example.application.models.StatusPoster;
 import com.example.application.repositories.PosterRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,7 @@ public class PosterService {
     private final PBService pbService;
 
     /**
-     * Speichert ein Poster, setzt den Status auf eingereicht und sendet dem PB eine Nachricht.
+     * Speichert ein Poster und sendet dem PB eine Nachricht.
      * @param file die hochgeladene Datei
      * @param matrikelnummer die Matrikelnummer der Studentin
      * @throws IOException falls ein Fehler beim Speichern der Datei auftritt
@@ -41,7 +40,6 @@ public class PosterService {
                 file.getOriginalFilename(),
                 file.getBytes()
         );
-        poster.setStatus(StatusPoster.EINGEREICHT);
         posterRepository.save(poster);
         pbService.posterNachrichtUebermitteln(matrikelnummer);
     }

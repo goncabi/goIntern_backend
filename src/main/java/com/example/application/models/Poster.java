@@ -34,11 +34,6 @@ public class Poster {
      */
     private String uploadTime;
     /**
-     * Status, um erkenntlich zu machen, ob das Poster eingereicht, abgelehnt oder genehmigt wurde
-     */
-    @Enumerated(EnumType.STRING)
-    private StatusPoster status;
-    /**
      * Pdf-Datei
      */
     @Lob
