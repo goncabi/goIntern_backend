@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Dieser Controller ist mit dem Frontend über die Route ("/poster") verknüpft.
  */
 @RestController
-@RequestMapping("/poster")
+@RequestMapping("/api/poster")
 @AllArgsConstructor
 public class PosterController {
 
