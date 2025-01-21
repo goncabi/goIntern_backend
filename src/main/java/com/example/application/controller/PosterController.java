@@ -3,10 +3,7 @@ package com.example.application.controller;
 import com.example.application.models.Poster;
 import com.example.application.services.PosterService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,10 +45,12 @@ public class PosterController {
     public ResponseEntity<byte[]> getPdf(@PathVariable String matrikelnummer) {
         try{
             Poster poster = posterService.getPoster(matrikelnummer);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + poster.getFileName() + "\"")
-                    .body(poster.getPosterPDF());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.inline().filename("poster.pdf").build()); //wichtig, damit es im frontend angezeigt wird
+
+            return new ResponseEntity<>(poster.getPosterPDF(), headers, HttpStatus.OK);
         }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
