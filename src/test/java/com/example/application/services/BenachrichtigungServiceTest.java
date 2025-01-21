@@ -34,7 +34,7 @@ class BenachrichtigungServiceTest {
         Benachrichtigung b2 = new Benachrichtigung("Test2", new Date(), empfaenger);
         List<Benachrichtigung> mockResult = Arrays.asList(b1, b2);
         //Repository verhalten mocken
-        when(benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger))
+        when(benachrichtigungRepository.findByEmpfaengerOrderByDatumDesc(empfaenger))
                 .thenReturn(mockResult);
         //Methode aufrufen
         List<Benachrichtigung> result = benachrichtigungService.alleLesen(empfaenger);
@@ -44,13 +44,13 @@ class BenachrichtigungServiceTest {
         assertEquals("Test1", result.get(0).getNachricht());
         assertEquals("Test2", result.get(1).getNachricht());
         // Verifizieren, dass das Repository korrekt aufgerufen wurde
-        verify(benachrichtigungRepository, times(1)).findByEmpfaengerOrderByDatum(empfaenger);
+        verify(benachrichtigungRepository, times(1)).findByEmpfaengerOrderByDatumDesc(empfaenger);
     }
 
     @Test
     void testAlleLesen_KeineNachrichten() {
         String empfaenger = "testUser";
-        when(benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger))
+        when(benachrichtigungRepository.findByEmpfaengerOrderByDatumDesc(empfaenger))
                 .thenReturn(Collections.emptyList());
 
         List<Benachrichtigung> result = benachrichtigungService.alleLesen(empfaenger);
@@ -58,6 +58,6 @@ class BenachrichtigungServiceTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
-        verify(benachrichtigungRepository, times(1)).findByEmpfaengerOrderByDatum(empfaenger);
+        verify(benachrichtigungRepository, times(1)).findByEmpfaengerOrderByDatumDesc(empfaenger);
     }
 }

@@ -25,7 +25,7 @@ public class BenachrichtigungService {
      */
 
     public List<Benachrichtigung> alleLesen(String empfaenger_in){
-        return benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger_in);
+        return benachrichtigungRepository.findByEmpfaengerOrderByDatumDesc(empfaenger_in);
     }
 
     /**
@@ -34,7 +34,7 @@ public class BenachrichtigungService {
      */
 
     public void nachrichtenLoeschen(String empfaenger_in){
-        List<Benachrichtigung> nachrichtenListe = benachrichtigungRepository.findByEmpfaengerOrderByDatum(empfaenger_in);
+        List<Benachrichtigung> nachrichtenListe = benachrichtigungRepository.findByEmpfaengerOrderByDatumDesc(empfaenger_in);
         benachrichtigungRepository.deleteAll(nachrichtenListe);
     }
 }

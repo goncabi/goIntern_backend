@@ -24,6 +24,6 @@ public interface BenachrichtigungRepository extends JpaRepository<Benachrichtigu
      * @return Eine Liste von Benachrichtigungen, die dem angegebenen Empfänger zugeordnet sind,
      *         sortiert nach dem Datum in aufsteigender Reihenfolge.
      */
-    List<Benachrichtigung> findByEmpfaengerOrderByDatum(String empfaenger);
+    List<Benachrichtigung> findByEmpfaengerOrderByDatumDesc(String empfaenger);
 
 }

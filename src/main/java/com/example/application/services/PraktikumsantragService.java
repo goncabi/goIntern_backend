@@ -99,7 +99,7 @@ public class PraktikumsantragService {
         }
         praktikumsantragRepository.deleteById(praktikumsantragDB.get()
                 .getAntragsID());
-        List<Benachrichtigung> kommentare = benachrichtigungRepository.findByEmpfaengerOrderByDatum(matrikelnummer);
+        List<Benachrichtigung> kommentare = benachrichtigungRepository.findByEmpfaengerOrderByDatumDesc(matrikelnummer);
         if(!kommentare.isEmpty()){
             benachrichtigungRepository.deleteAll(kommentare);
         }
