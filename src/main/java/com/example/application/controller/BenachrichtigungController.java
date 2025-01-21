@@ -1,12 +1,12 @@
 package com.example.application.controller;
 
 import com.example.application.models.Benachrichtigung;
+import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.services.BenachrichtigungService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 /**
@@ -33,6 +33,7 @@ public class BenachrichtigungController {
      * Service, der die Geschäftslogik für Benachrichtigungen bereitstellt.
      */
     private final BenachrichtigungService benachrichtigungService;
+    private final BenachrichtigungRepository benachrichtigungRepository;
 
     /**
      * Ruft alle Benachrichtigungen eines bestimmten Benutzers ab.
@@ -72,6 +73,18 @@ public class BenachrichtigungController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Fehler beim Löschen des Antrags: " + e.getMessage());
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ein unerwarteter Fehler ist aufgetreten.");
+        }
+    }
+
+    @PostMapping("/arbeitstageNachricht/{matrikelnummer}")
+    public ResponseEntity<String> arbeitstageNachricht(@PathVariable String matrikelnummer, @RequestBody Benachrichtigung benachrichtigung) {
+        try{
+            benachrichtigungRepository.save(benachrichtigung);
+            return ResponseEntity.ok("Absolvierte Arbeitstage wurde an Studentin und PB übermittelt.");
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ein unerwarteter Fehler ist aufgetreten.");
         }
