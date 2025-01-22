@@ -151,10 +151,10 @@ public class PraktikumsantragController {
      * @param matrikelnummer Die Matrikelnummer des Antrags, dessen Status aktualisiert werden soll.
      * @return Erfolgs- oder Fehlermeldung als ResponseEntity.
      */
-    @PutMapping("/updateStatus/{matrikelnummer}")
-    public ResponseEntity<String> updateStatus(@PathVariable String matrikelnummer) {
+    @PutMapping("/updateStatusAbgebrochen/{matrikelnummer}")
+    public ResponseEntity<String> updateStatusAbgebrochen(@PathVariable String matrikelnummer) {
         try {
-            praktikumsantragService.statusUpdateImPraktikumOderAbsolviert(matrikelnummer);
+            praktikumsantragService.updateStatusZuAbgebrochen(matrikelnummer);
             return ResponseEntity.ok("Status aktualisiert.");
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

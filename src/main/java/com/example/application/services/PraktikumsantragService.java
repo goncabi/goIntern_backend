@@ -215,34 +215,18 @@ public class PraktikumsantragService {
 
     }
 
-    /**
-     * Aktualisiert den Status eines Antrags basierend auf seinem Zeitraum.
-     * <p>
-     * Der Status wird auf "Im Praktikum" gesetzt, wenn das aktuelle Datum innerhalb
-     * des Zeitraums liegt, oder auf "Absolviert", wenn das Praktikum abgeschlossen ist.
-     * </p>
-     * @param matrikelnummer Die Matrikelnummer des Antrags, dessen Status aktualisiert werden soll.
-     * @throws IllegalArgumentException Wenn kein Antrag mit der angegebenen Matrikelnummer gefunden wurde.
-     * @throws IllegalStateException Wenn ungültige Start- oder Enddaten vorliegen.
-     */
-    public void statusUpdateImPraktikumOderAbsolviert(String matrikelnummer) {
-        Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
-                .orElseThrow(() -> new IllegalArgumentException("Antrag mit Matrikelnummer " + matrikelnummer + " nicht gefunden."));
-
-        LocalDate today = LocalDate.now();
-        if (antrag.getStatusAntrag() == StatusAntrag.ZUGELASSEN) {
-            if (antrag.getStartdatum() != null && antrag.getEnddatum() != null) {
-                if (!today.isBefore(antrag.getStartdatum()) && !today.isAfter(antrag.getEnddatum())) {
-                    antrag.setStatusAntrag(StatusAntrag.IMPRAKTIKUM);
-                } else if (today.isAfter(antrag.getEnddatum())) {
-                    antrag.setStatusAntrag(StatusAntrag.ABSOLVIERT);
-                }
-                praktikumsantragRepository.save(antrag);
-            } else {
-                throw new IllegalStateException("Ungültige Start- oder Enddaten im Antrag.");
-            }
+    public void updateStatusZuAbgebrochen(String matrikelnummer) {
+        Optional <Praktikumsantrag>  antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
+        if(antrag.isPresent()) {
+            Praktikumsantrag praktikumsantrag = antrag.get();
+            praktikumsantrag.setStatusAntrag(StatusAntrag.ABGEBROCHEN);
+            praktikumsantragRepository.save(praktikumsantrag);
+        }
+        else {
+            throw new RuntimeException("Fehler beim Aufrufen des Antrags.");
         }
     }
+
 
     /**
      * Aktualisiert den Status eines Praktikumsantrags basierend auf dem aktuellen Datum.
@@ -276,6 +260,8 @@ public class PraktikumsantragService {
                     praktikumsantragRepository.save(antrag);
                 }
             }
+        } else {
+            throw new RuntimeException("Fehler beim Aufrufen des Antrags.");
         }
     }
 
