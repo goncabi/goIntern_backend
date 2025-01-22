@@ -1,12 +1,17 @@
 package com.example.application.controller;
 
+import com.example.application.models.AppUserRole;
 import com.example.application.models.Benachrichtigung;
+import com.example.application.models.Praktikumsbeauftragter;
 import com.example.application.repositories.BenachrichtigungRepository;
+import com.example.application.repositories.PBRepository;
 import com.example.application.services.BenachrichtigungService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +39,7 @@ public class BenachrichtigungController {
      */
     private final BenachrichtigungService benachrichtigungService;
     private final BenachrichtigungRepository benachrichtigungRepository;
+    private final PBRepository pbRepository;
 
     /**
      * Ruft alle Benachrichtigungen eines bestimmten Benutzers ab.
@@ -78,10 +84,22 @@ public class BenachrichtigungController {
         }
     }
 
-    @PostMapping("/arbeitstageNachricht/{matrikelnummer}")
-    public ResponseEntity<String> arbeitstageNachricht(@PathVariable String matrikelnummer, @RequestBody Benachrichtigung benachrichtigung) {
+    @PostMapping("/arbeitstageNachricht")
+    public ResponseEntity<String> arbeitstageNachricht(@RequestBody Benachrichtigung benachrichtigung) {
         try{
+            //Nachricht an Studentin
             benachrichtigungRepository.save(benachrichtigung);
+            //Nachricht an PB
+            Praktikumsbeauftragter pb = pbRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
+                    .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
+
+            Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
+                    benachrichtigung.getEmpfaenger() + ": " + benachrichtigung.getNachricht(),
+                    new Date(),
+                    pb.getUsername()
+            );
+            benachrichtigungRepository.save(neueBenachrichtigung);
+
             return ResponseEntity.ok("Absolvierte Arbeitstage wurde an Studentin und PB übermittelt.");
         }
         catch (Exception e) {
