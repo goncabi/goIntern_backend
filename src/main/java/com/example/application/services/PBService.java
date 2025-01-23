@@ -26,6 +26,7 @@ public class PBService implements CommandLineRunner {
     private final PBRepository praktikumsbeauftragterRepository;
     private final BenachrichtigungRepository benachrichtigungRepository;
     private final PraktikumsantragRepository praktikumsantragRepository;
+    private final BenachrichtigungService benachrichtigungService;
 
 
     /**
@@ -42,7 +43,8 @@ public class PBService implements CommandLineRunner {
 
 
     /**
-     * Genehmigt einen Praktikumsantrag, indem der Status auf "ZUGELASSEN" gesetzt wird.
+     * Genehmigt einen Praktikumsantrag, indem der Status auf "ZUGELASSEN" gesetzt wird
+     * und löscht alle unwichtig gewordenen Nachrichten der Studentin.
      *
      * @param matrikelnummer Matrikelnummer des Antragsstellers
      * @return der aktualisierte Praktikumsantrag nach der Statusänderung
@@ -52,7 +54,10 @@ public class PBService implements CommandLineRunner {
         Praktikumsantrag dbAntrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)
                 .orElseThrow(() -> new IllegalArgumentException("Antrag wurde nicht gefunden"));
         dbAntrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
-        return praktikumsantragRepository.save(dbAntrag); // Speichert aktualisierten Antrag
+        // Eventuelle Ablehnungsnachrichten, die die Studentin in der Vergangenheit erhalten hat, werden hier wieder gelöscht
+        benachrichtigungService.unwichtigeNachrichtenLoeschen(matrikelnummer);
+        // Speichert aktualisierten Antrag
+        return praktikumsantragRepository.save(dbAntrag);
     }
 
     /**
