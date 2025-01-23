@@ -67,7 +67,7 @@ public class LoginController {
                                  "Login OK");
 
                     // Füge Matrikelnummer nur für Studenten hinzu
-                    if("Student/in".equals(loginAnfrage.getRole())) {
+                    if("Studentin".equals(loginAnfrage.getRole())) {
                         response.put("matrikelnummer",
                                      matrikelnummer);
                     }

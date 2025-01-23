@@ -50,7 +50,7 @@ public class LoginService {
      * @return Eine {@link Optional} Matrikelnummer oder Identifikator, wenn die Authentifizierung erfolgreich war.
      */
     public Optional<String> login(LoginAnfrage loginAnfrage) {
-        if (loginAnfrage.getRole().equals("Student/in")) {
+        if (loginAnfrage.getRole().equals("Studentin")) {
             return loginStudentin(loginAnfrage.getUsername(), loginAnfrage.getPassword());
         } else {
             return loginPB(loginAnfrage.getUsername(), loginAnfrage.getPassword());
@@ -86,7 +86,7 @@ public class LoginService {
     private Optional<String> loginPB(String username, String password) {
         return praktikumsbeauftragterRepository.findByUsername(username)
                                                .filter(pb -> pb.getPasswort().equals(password))
-                                               .map(pb -> "PRAKTIKUMSBEAUFTRAGTER"); // Identificador genérico
+                                               .map(pb -> "PRAKTIKUMSBEAUFTRAGTER"); //
     }
 
 }
