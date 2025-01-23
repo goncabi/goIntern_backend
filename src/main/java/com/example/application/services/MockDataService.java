@@ -89,21 +89,16 @@ public class MockDataService {
             antrag.setTelefonnummerStudentin(faker.phoneNumber().phoneNumber());
             antrag.setEmailStudentin(faker.internet().emailAddress());
             antrag.setDatumAntrag(LocalDate.now());
-            antrag.setStatusAntrag(StatusAntrag.EINGEREICHT);
-
             // Vorschlag für Praktikumsbetreuer*in
-            antrag.setVorschlagPraktikumsbetreuerIn(faker.name().fullName()); // Generar un nombre ficticio
-
+            antrag.setVorschlagPraktikumsbetreuerIn(faker.name().fullName());
             // Praktikumssemester (SoSe / WiSe)
             antrag.setPraktikumssemester(faker.options().option("SoSe", "WiSe"));
-
-            // Studiensemester (Entre 1 y 10, por ejemplo)
+            // Studiensemester
             antrag.setStudiensemester(faker.number().numberBetween(1, 10));
-
-            // Studiengang (Programas de estudio ficticios)
+            // Studiengang
             antrag.setStudiengang(faker.options().option(
                     "Informatik", "Wirtschaftsinformatik", "Umweltinformatik",
-                    "Angwandte Informatik", "Medieninformatik"
+                    "Angewandte Informatik", "Medieninformatik"
             ));
 
             boolean auslandspraktikum = faker.bool().bool();
@@ -120,8 +115,6 @@ public class MockDataService {
             }
             antrag.setAuslandspraktikum(auslandspraktikum);
 
-
-
             //Praktikumstelle
             antrag.setNamePraktikumsstelle(faker.company().name());
             antrag.setStrassePraktikumsstelle(faker.address().streetAddress());
@@ -132,8 +125,22 @@ public class MockDataService {
             antrag.setEmailPraktikumsstelle(faker.internet().emailAddress());
             antrag.setAbteilung("IT");
             antrag.setTaetigkeit("Entwicklung");
-            antrag.setStartdatum(LocalDate.now().plusDays(faker.number().numberBetween(1, 30)));
-            antrag.setEnddatum(LocalDate.now().plusMonths(3));
+            LocalDate startDate = LocalDate.now().plusDays(faker.number().numberBetween(1, 30));
+            LocalDate endDate = startDate.plusMonths(faker.number().numberBetween(2, 6));
+
+            antrag.setStartdatum(startDate);
+            antrag.setEnddatum(endDate);
+            // Antrag-Status wird nach Datum generiert
+            StatusAntrag status;
+            if (endDate.isBefore(LocalDate.now())) {
+                status = StatusAntrag.ABSOLVIERT;  //
+            } else if (startDate.isBefore(LocalDate.now()) && endDate.isAfter(LocalDate.now())) {
+                status = StatusAntrag.IMPRAKTIKUM;
+            } else {
+                status = StatusAntrag.EINGEREICHT;
+            }
+
+            antrag.setStatusAntrag(status);
 
             praktikumsantragRepository.save(antrag);
         }
