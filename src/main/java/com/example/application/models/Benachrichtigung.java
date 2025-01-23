@@ -3,6 +3,8 @@ package com.example.application.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,6 +38,12 @@ public class Benachrichtigung {
      * Der Empfänger der Benachrichtigung.
      */
     private String empfaenger;
+    /**
+     * Wichtigkeit der Benachrichtigung - differenziert, welche automatisch gelöscht werden sollen und welche nicht.
+     */
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private BenachrichtigungWichtigkeit wichtigkeit;
 
     /**
      * Standardkonstruktor für die JPA.
@@ -58,6 +66,7 @@ public class Benachrichtigung {
         this.nachricht = nachricht;
         this.datum = formattedDate;
         this.empfaenger = empfaenger_in;
+        this.wichtigkeit = BenachrichtigungWichtigkeit.UNWICHTIG;
     }
 
 }

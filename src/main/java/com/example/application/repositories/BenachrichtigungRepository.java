@@ -1,6 +1,7 @@
 package com.example.application.repositories;
 
 import com.example.application.models.Benachrichtigung;
+import com.example.application.models.BenachrichtigungWichtigkeit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -25,5 +26,19 @@ public interface BenachrichtigungRepository extends JpaRepository<Benachrichtigu
      *         sortiert nach dem Datum in aufsteigender Reihenfolge.
      */
     List<Benachrichtigung> findByEmpfaengerOrderByDatumDesc(String empfaenger);
+
+    /**
+     * Findet alle Benachrichtigungen eines bestimmten Empfängers selektiert nach ihrer Wichtigkeit.
+     * @param wichtigkeit Wichtigkeit der Nachricht, entweder wichtig oder unwichtig
+     * @return Liste mit allen Nachrichten, die die entsprechende Wichtigkeit haben und dem Empfänger zugeordnet sind
+     */
+    List<Benachrichtigung> findByWichtigkeitAndEmpfaenger(BenachrichtigungWichtigkeit wichtigkeit, String empfaenger);
+
+    /**
+     * Findet alle Benachrichtigungen selektiert nach ihrer Wichtigkeit.
+     * @param wichtigkeit Wichtigkeit der Nachricht, entweder wichtig oder unwichtig
+     * @return Liste mit allen Nachrichten, die die entsprechende Wichtigkeit haben
+     */
+    List<Benachrichtigung> findByWichtigkeit(BenachrichtigungWichtigkeit wichtigkeit);
 
 }

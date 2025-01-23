@@ -1,17 +1,11 @@
 package com.example.application.controller;
 
-import com.example.application.models.AppUserRole;
 import com.example.application.models.Benachrichtigung;
-import com.example.application.models.Praktikumsbeauftragter;
-import com.example.application.repositories.BenachrichtigungRepository;
-import com.example.application.repositories.PBRepository;
 import com.example.application.services.BenachrichtigungService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,8 +32,6 @@ public class BenachrichtigungController {
      * Service, der die Geschäftslogik für Benachrichtigungen bereitstellt.
      */
     private final BenachrichtigungService benachrichtigungService;
-    private final BenachrichtigungRepository benachrichtigungRepository;
-    private final PBRepository pbRepository;
 
     /**
      * Ruft alle Benachrichtigungen eines bestimmten Benutzers ab.
@@ -52,7 +44,6 @@ public class BenachrichtigungController {
      * @param username Der Benutzername, für den die Benachrichtigungen abgerufen werden sollen.
      * @return Eine Liste von {@link Benachrichtigung} Objekten.
      */
-
     @GetMapping("/nachrichten/{username}")
     public List<Benachrichtigung> getBenachrichtigung(@PathVariable String username) {
         return benachrichtigungService.alleLesen(username);
@@ -69,11 +60,10 @@ public class BenachrichtigungController {
      * @return Eine {@link ResponseEntity}, die entweder eine Erfolgsmeldung oder
      *         eine Fehlermeldung mit entsprechendem HTTP-Status zurückgibt.
      */
-
     @DeleteMapping("/nachrichtenLoeschen/{username}")
     public ResponseEntity<String> deleteNachrichten(@PathVariable String username) {
         try {
-            benachrichtigungService.nachrichtenLoeschen(username);
+            benachrichtigungService.unwichtigeNachrichtenLoeschen(username);
             return ResponseEntity.ok("Praktikumsantrag wurde erfolgreich gelöscht.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -84,22 +74,17 @@ public class BenachrichtigungController {
         }
     }
 
+    /**
+     *
+     * @param benachrichtigung Nachricht mit der Matrikelnummer der Studentin als Empfänger
+     *                         und der bereits absolvierten Anzahl der Arbeitstage - erstellt im Frontend.
+     * @return eine ResponseEntity, die entweder eine Erfolgsmeldung (bei erfolgreicher Speicherung)
+     *         oder eine Fehlermeldung mit entsprechendem HTTP-Status zurückgibt.
+     */
     @PostMapping("/arbeitstageNachricht")
     public ResponseEntity<String> arbeitstageNachricht(@RequestBody Benachrichtigung benachrichtigung) {
         try{
-            //Nachricht an Studentin
-            benachrichtigungRepository.save(benachrichtigung);
-            //Nachricht an PB
-            Praktikumsbeauftragter pb = pbRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
-                    .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
-
-            Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
-                    benachrichtigung.getEmpfaenger() + ": " + benachrichtigung.getNachricht(),
-                    new Date(),
-                    pb.getUsername()
-            );
-            benachrichtigungRepository.save(neueBenachrichtigung);
-
+            benachrichtigungService.arbeitstageNachrichtenSpeichern(benachrichtigung);
             return ResponseEntity.ok("Absolvierte Arbeitstage wurde an Studentin und PB übermittelt.");
         }
         catch (Exception e) {

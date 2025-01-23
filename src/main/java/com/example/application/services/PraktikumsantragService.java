@@ -44,6 +44,7 @@ public class PraktikumsantragService {
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final BenachrichtigungRepository benachrichtigungRepository;
     private final PBService pbService;
+    private final BenachrichtigungService benachrichtigungService;
 
     /**
      * Speichert oder aktualisiert einen Praktikumsantrag.
@@ -241,6 +242,8 @@ public class PraktikumsantragService {
      * <p>
      * Wenn keine passenden Start- oder Enddaten vorhanden sind, wird der Status nicht geändert.
      * </p>
+     * Wenn der Status auf 'Absolviert' geändert wurde, werden, falls vorhanden, die Nachrichten an den PB und die Studentin
+     * über die bereits absolvierten Arbeitstage der Studentin gelöscht.
      *
      * @param matrikelnummer Die Matrikelnummer des Antrags, dessen Status aktualisiert werden soll.
      * @throws IllegalArgumentException Wenn kein Antrag mit der angegebenen Matrikelnummer gefunden wurde.
@@ -256,6 +259,8 @@ public class PraktikumsantragService {
                         antrag.setStatusAntrag(StatusAntrag.IMPRAKTIKUM);
                     } else if (today.isAfter(antrag.getEnddatum())) {
                         antrag.setStatusAntrag(StatusAntrag.ABSOLVIERT);
+                        //Arbeitstagenachricht wird bei absolviert bei Studentin und PB gelöscht
+                        benachrichtigungService.arbeitstagenachrichtenLoeschen(antrag.getMatrikelnummer());
                     }
                     praktikumsantragRepository.save(antrag);
                 }
