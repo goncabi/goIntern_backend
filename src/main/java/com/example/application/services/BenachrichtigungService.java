@@ -44,6 +44,22 @@ public class BenachrichtigungService {
     }
 
     /**
+     * Löscht die Nachricht mit den Arbeitstagen für eine bestimmte Studentin bei der Studentin und dem PB.
+     * @param empfaenger_in Matrikelnummer der Studentin
+     */
+    public void arbeitstagenachrichtenLoeschen(String empfaenger_in){
+        List<Benachrichtigung> nachrichtenListe = benachrichtigungRepository.findByWichtigkeit(BenachrichtigungWichtigkeit.WICHTIG);
+        for (Benachrichtigung b : nachrichtenListe) {
+            if(b.getEmpfaenger().equals(empfaenger_in)){
+                benachrichtigungRepository.delete(b);
+            }
+            if(b.getNachricht().startsWith(b.getEmpfaenger())){
+                benachrichtigungRepository.delete(b);
+            }
+        }
+    }
+
+    /**
      * Speichert die Nachricht mit den bereits absolvierten Arbeitstagen für die Studentin und für den PB.
      * @param benachrichtigung Nachricht mit der Matrikelnummer der Studentin als Empfänger
      *                         und der bereits absolvierten Anzahl der Arbeitstage.
