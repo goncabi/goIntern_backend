@@ -84,7 +84,10 @@ public class PraktikumsantragController {
      * @param matrikelnummer Die Matrikelnummer des zu löschenden Antrags.
      * @return Erfolgs- oder Fehlermeldung als ResponseEntity.
      */
+    //DeleteMapping ist der hintere Endpunktteil
     @DeleteMapping("/{matrikelnummer}")
+    //antragLoeschen hier macht vorallem Errorhandling. Die eigentliche Löschfunktion
+    // ist im praktikumsantragService mit der gleichnamigen Methode antragLoeschen.
     public ResponseEntity<String> antragLoeschen(@PathVariable String matrikelnummer) {
         try {
             praktikumsantragService.antragLoeschen(matrikelnummer);
@@ -141,10 +144,15 @@ public class PraktikumsantragController {
      */
     @GetMapping("/getantrag/{matrikelnummer}")
     public ResponseEntity<Praktikumsantrag> getAntrag(@PathVariable String matrikelnummer) {
-        praktikumsantragService.updateAntragStatus(matrikelnummer);
+
         Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
-        return antrag.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        if (antrag.isPresent()) {
+            praktikumsantragService.updateAntragStatus(matrikelnummer);
+            return ResponseEntity.ok(antrag.get());
+        }
+        return ResponseEntity.notFound().build();
     }
+
 
     /**
      * Aktualisiert den Status eines Antrags basierend auf der Matrikelnummer.
