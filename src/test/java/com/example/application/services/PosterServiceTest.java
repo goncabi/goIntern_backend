@@ -12,10 +12,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -93,4 +93,34 @@ class PosterServiceTest {
                 () -> posterService.getPoster(matrikelnummer));
         assertEquals("Poster nicht gefunden", exception.getMessage());
     }
+
+
+    @Test
+    void testSpeicherPoster_BenachrichtigungWirdAnPBGesendet() throws IOException {
+        String matrikelnummer = "123456";
+
+        posterService.savePoster(validFile, matrikelnummer);
+
+        verify(posterRepository, times(1)).save(any(Poster.class));
+        verify(pbService, times(1)).posterNachrichtUebermitteln(matrikelnummer);
+    }
+
+    @Test
+    void testSpeicherPoster_mitMehrerenAufrufenSichertUndBenachrichtigtJeweils() throws IOException {
+        String matrikelnummer1 = "111111";
+        String matrikelnummer2 = "222222";
+
+        posterService.savePoster(validFile, matrikelnummer1);
+        posterService.savePoster(validFile, matrikelnummer2);
+
+        verify(posterRepository, times(2)).save(any(Poster.class));
+        verify(pbService).posterNachrichtUebermitteln(matrikelnummer1);
+        verify(pbService).posterNachrichtUebermitteln(matrikelnummer2);
+    }
+
+
+
 }
+
+
+
