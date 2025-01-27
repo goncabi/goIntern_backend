@@ -1,10 +1,7 @@
 package com.example.application.services;
 
-import com.example.application.models.Benachrichtigung;
-import com.example.application.models.BenachrichtigungWichtigkeit;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
-import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,7 +40,6 @@ public class PraktikumsantragService {
 
     //Objektvariablen:
     private final PraktikumsantragRepository praktikumsantragRepository;
-    private final BenachrichtigungRepository benachrichtigungRepository;
     private final PBService pbService;
     private final BenachrichtigungService benachrichtigungService;
 
@@ -214,7 +210,7 @@ public class PraktikumsantragService {
 
     }
 
-    public void updateStatusZuAbgebrochen(String matrikelnummer) {
+   /* public void updateStatusZuAbgebrochen(String matrikelnummer) {
         Optional <Praktikumsantrag>  antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
         if(antrag.isPresent()) {
             Praktikumsantrag praktikumsantrag = antrag.get();
@@ -224,7 +220,7 @@ public class PraktikumsantragService {
         else {
             throw new RuntimeException("Fehler beim Aufrufen des Antrags.");
         }
-    }
+    }*/
 
 
     /**
@@ -263,6 +259,17 @@ public class PraktikumsantragService {
                     praktikumsantragRepository.save(antrag);
                 }
             }
+        } else {
+            throw new RuntimeException("Fehler beim Aufrufen des Antrags.");
+        }
+    }
+
+    public void updateStatus(String matrikelnummer, StatusAntrag neuerStatus) {
+        Optional<Praktikumsantrag> antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
+        if (antrag.isPresent()) {
+            Praktikumsantrag praktikumsantrag = antrag.get();
+            praktikumsantrag.setStatusAntrag(neuerStatus);
+            praktikumsantragRepository.save(praktikumsantrag);
         } else {
             throw new RuntimeException("Fehler beim Aufrufen des Antrags.");
         }

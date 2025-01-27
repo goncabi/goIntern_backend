@@ -1,6 +1,7 @@
 package com.example.application.controller;
 
 import com.example.application.models.Praktikumsantrag;
+import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.PraktikumsantragRepository;
 import com.example.application.services.MockDataService;
 import com.example.application.services.PraktikumsantragService;
@@ -154,12 +155,8 @@ public class PraktikumsantragController {
     }
 
 
-    /**
-     * Aktualisiert den Status eines Antrags basierend auf der Matrikelnummer.
-     * @param matrikelnummer Die Matrikelnummer des Antrags, dessen Status aktualisiert werden soll.
-     * @return Erfolgs- oder Fehlermeldung als ResponseEntity.
-     */
-    @PutMapping("/updateStatusAbgebrochen/{matrikelnummer}")
+
+    /*@PutMapping("/updateStatusAbgebrochen/{matrikelnummer}")
     public ResponseEntity<String> updateStatusAbgebrochen(@PathVariable String matrikelnummer) {
         try {
             praktikumsantragService.updateStatusZuAbgebrochen(matrikelnummer);
@@ -167,7 +164,7 @@ public class PraktikumsantragController {
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
+    }*/
 
     /**
      * Löscht alle Anträge aus der Datenbank.
@@ -185,9 +182,22 @@ public class PraktikumsantragController {
      * @return Erfolgsnachricht.
      */
     @PostMapping("/generate")
-    public String generateMockData(@RequestParam(defaultValue = "20") int count) {
+    public String generateMockData(@RequestParam(defaultValue = "1") int count) {
         mockDataService.generateMockData(count);
         return count + " mock Praktikumsanträge wurden erfolgreich generiert und gespeichert.";
     }
+    @PutMapping("/updateStatus/{matrikelnummer}/{status}")
+    public ResponseEntity<String> updateStatus(@PathVariable String matrikelnummer, @PathVariable String status) {
+        try {
+            StatusAntrag neuerStatus = StatusAntrag.fromString(status);
+            praktikumsantragService.updateStatus(matrikelnummer, neuerStatus);
+            return ResponseEntity.ok("Status aktualisiert auf: " + neuerStatus);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Ungültiger Status: " + status);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Fehler beim Aktualisieren des Status: " + e.getMessage());
+        }
+    }
 }
+
 
