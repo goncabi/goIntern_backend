@@ -1,6 +1,7 @@
 package com.example.application.services;
 
 import com.example.application.models.Benachrichtigung;
+import com.example.application.models.BenachrichtigungWichtigkeit;
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
 import com.example.application.repositories.BenachrichtigungRepository;
@@ -100,10 +101,7 @@ public class PraktikumsantragService {
         }
         praktikumsantragRepository.deleteById(praktikumsantragDB.get()
                 .getAntragsID());
-        List<Benachrichtigung> kommentare = benachrichtigungRepository.findByEmpfaengerOrderByDatumDesc(matrikelnummer);
-        if(!kommentare.isEmpty()){
-            benachrichtigungRepository.deleteAll(kommentare);
-        }
+        benachrichtigungService.unwichtigeNachrichtenLoeschen(matrikelnummer);
         if(praktikumsantragDB.get().getStatusAntrag() == StatusAntrag.ZUGELASSEN){
             pbService.antragZurueckgezogen(matrikelnummer);
         }
