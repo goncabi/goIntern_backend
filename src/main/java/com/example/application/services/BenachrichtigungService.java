@@ -53,7 +53,7 @@ public class BenachrichtigungService {
             if(b.getEmpfaenger().equals(empfaenger_in)){
                 benachrichtigungRepository.delete(b);
             }
-            if(b.getNachricht().startsWith(b.getEmpfaenger())){
+            if(b.getNachricht().startsWith(empfaenger_in)){
                 benachrichtigungRepository.delete(b);
             }
         }
