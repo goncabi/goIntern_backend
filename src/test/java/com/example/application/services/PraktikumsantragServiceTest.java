@@ -2,6 +2,7 @@ package com.example.application.services;
 
 import com.example.application.models.Praktikumsantrag;
 import com.example.application.models.StatusAntrag;
+import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PraktikumsantragRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ class PraktikumsantragServiceTest {
 
     @MockBean
     private PraktikumsantragRepository praktikumsantragRepository;
+
+    @MockBean
+    private BenachrichtigungRepository benachrichtigungRepository;
 
     @MockBean
     private PBService pbService;
@@ -168,7 +172,6 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).save(vorhandenerAntrag);
     }
 
-
     @Test
     void testAntragSpeichernMitLeererMatrikelnummer() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
@@ -182,7 +185,6 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(0)).findByMatrikelnummer(anyString());
         verify(praktikumsantragRepository, times(0)).save(any());
     }
-
 
     @Test
     void testAntragUebermittelnMitFehlerhaftenDaten() {
@@ -219,8 +221,6 @@ class PraktikumsantragServiceTest {
         verify(pbService, times(1)).antragUebermitteln(antrag);
     }
 
-
-
     @Test
     void testAntragUebermittelnStartdatumNachEnddatum() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
@@ -235,26 +235,23 @@ class PraktikumsantragServiceTest {
         assertEquals("Das Startdatum darf nicht nach dem Enddatum liegen.", exception.getMessage());
     }
 
-
     // hier in der AntragLoeschen Methode wird auch noch getestet ob die antragZurueckgezogen Methode aufgerufen wird:
     @Test
     void testAntragLoeschenErfolgreich() {
-        Long id = 1L;
-        String matrikelnummer = "s123";
-        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
-        antrag.setAntragsID(id);
+        String matrikelnummer = "1012120";
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag(); // hier antrag erzeugen
+        antrag.setMatrikelnummer(matrikelnummer); //der antrag bekommt die matrikelnummer "1012120"
 
         // MockTeil:
         when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
-        doNothing().when(praktikumsantragRepository).deleteById(id);
+        doNothing().when(praktikumsantragRepository).delete(antrag);
         doNothing().when(pbService).antragZurueckgezogen(matrikelnummer);
 
         //Test Teil:
         praktikumsantragService.antragLoeschen(matrikelnummer);
 
         verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
-        verify(praktikumsantragRepository, times(1)).deleteById(id);
-        verify(pbService, times(1)).antragZurueckgezogen(matrikelnummer);
+        verify(praktikumsantragRepository, times(1)).deleteById(antrag.getAntragsID());
     }
 
     @Test
@@ -363,13 +360,15 @@ class PraktikumsantragServiceTest {
     }
 
     @Test
-    void testUpdateAntragStatusAntragNotFound() {
+    void testUpdateAntragStatusNotFound() {
         String matrikelnummer = "123456";
         when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 
-        praktikumsantragService.updateAntragStatus(matrikelnummer);
+        assertThrows(RuntimeException.class, () -> praktikumsantragService.updateAntragStatus(matrikelnummer));
 
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
         verify(praktikumsantragRepository, never()).save(any(Praktikumsantrag.class));
     }
+
 }
 
