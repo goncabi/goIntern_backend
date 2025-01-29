@@ -71,6 +71,112 @@ class PraktikumsantragServiceTest {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+//3tests
+    @Test
+    void testUpdateStatusErfolgreich() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateStatus(matrikelnummer, StatusAntrag.ZUGELASSEN);
+
+        assertEquals(StatusAntrag.ZUGELASSEN, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+        verify(praktikumsantragRepository, times(1)).save(antrag);
+    }
+
+
+    @Test
+    void testUpdateStatus_AntragNichtGefunden() {
+        String matrikelnummer = "123456";
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                praktikumsantragService.updateStatus(matrikelnummer, StatusAntrag.ZUGELASSEN));
+        assertEquals("Fehler beim Aufrufen des Antrags.", exception.getMessage());
+
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+    }
+
+    @Test
+    void testUpdateStatus_StatusWirdAktualisiert() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.GESPEICHERT);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateStatus(matrikelnummer, StatusAntrag.ZUGELASSEN);
+
+        assertEquals(StatusAntrag.ZUGELASSEN, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository, times(1)).save(antrag);
+    }
+
+
+    @Test
+    void testUpdateStatus_AbgelehnterAntrag() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateStatus(matrikelnummer, StatusAntrag.GESPEICHERT);
+
+        assertEquals(StatusAntrag.GESPEICHERT, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository, times(1)).save(antrag);
+    }
+
+
+    @Test
+    void testUpdateStatus_UnveraenderterStatus() {
+        String matrikelnummer = "123456";
+        Praktikumsantrag antrag = new Praktikumsantrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+
+        praktikumsantragService.updateStatus(matrikelnummer, StatusAntrag.ZUGELASSEN);
+
+        assertEquals(StatusAntrag.ZUGELASSEN, antrag.getStatusAntrag());
+        verify(praktikumsantragRepository, times(1)).save(antrag);
+    }
+
+    @Test
+    void testAntragSpeichernErfolgreichmitAbgelehnt() {
+        String matrikelnummer = "12345678";
+        Praktikumsantrag praktikumsantrag = erzeugeGueltigenAntrag();
+        praktikumsantrag.setMatrikelnummer(matrikelnummer);
+        praktikumsantrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(praktikumsantrag));
+
+        praktikumsantragService.antragSpeichern(praktikumsantrag);
+
+        assertEquals(2, praktikumsantrag.getAntragsVersion());
+
+        verify(praktikumsantragRepository, times(1)).save(any(Praktikumsantrag.class));
+    }
+
+
+
     @Test
     void testAntragSpeichernErfolgreich() {
         String matrikelnummer = "12345678";
@@ -89,9 +195,7 @@ class PraktikumsantragServiceTest {
         when(praktikumsantragRepository.findByMatrikelnummer(antrag.getMatrikelnummer()))
                 .thenReturn(Optional.of(antrag));
 
-
         praktikumsantragService.antragSpeichern(antrag);
-
 
         verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(antrag.getMatrikelnummer());
 
