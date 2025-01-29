@@ -1,10 +1,6 @@
 package com.example.application.services;
 
-import com.example.application.models.AppUserRole;
-import com.example.application.models.Praktikumsantrag;
-import com.example.application.models.Praktikumsbeauftragter;
-import com.example.application.models.StatusAntrag;
-import com.example.application.models.Benachrichtigung;
+import com.example.application.models.*;
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.PraktikumsantragRepository;
@@ -14,7 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
@@ -32,6 +31,7 @@ class PBServiceTest {
 
     @MockBean
     private BenachrichtigungRepository benachrichtigungRepository;
+
     @MockBean
     private PraktikumsantragRepository praktikumsantragRepository;
 
@@ -49,6 +49,16 @@ class PBServiceTest {
         return pb;
     }
 
+    @Test
+    void posterNachrichtUebermitteln() {
+
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER))
+                .thenReturn(Optional.of(erzeugePraktikumsbeauftragter()));
+
+        pbService.posterNachrichtUebermitteln("123456");
+
+        verify(benachrichtigungRepository, times(1)).save(isA(Benachrichtigung.class));
+    }
 
     @Test
     void testRun() throws Exception {
@@ -62,7 +72,7 @@ class PBServiceTest {
     @Test
     void testRunThrowsException() {
         doThrow(new RuntimeException("Fehler beim Speichern")).when(pBRepository)
-                                                              .save(any(Praktikumsbeauftragter.class));
+                .save(any(Praktikumsbeauftragter.class));
 
         assertThrows(RuntimeException.class, () -> pbService.run());
     }
@@ -94,6 +104,7 @@ class PBServiceTest {
         verify(praktikumsantragRepository, times(1)).save(antrag);
         verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
     }
+
     @Test
     void testAntragGenehmigenMitNullMatrikelnummer() {
         // Vorbereitung: Matrikelnummer ist null
@@ -110,8 +121,6 @@ class PBServiceTest {
         verify(praktikumsantragRepository, never()).save(any(Praktikumsantrag.class));
         verify(praktikumsantragRepository, never()).findByMatrikelnummer(anyString());
     }
-
-
 
     @Test
     void testAntragUebermittelnErfolgreich() {
@@ -133,15 +142,14 @@ class PBServiceTest {
         when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER))
                 .thenReturn(Optional.empty());
 
-
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> pbService.antragUebermitteln(antrag));
 
         assertEquals("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden.", exception.getMessage());
 
-
         verify(benachrichtigungRepository, never()).save(any());
     }
+
     @Test
     void testAntragUebermittelnSpeichernFehler() {
         Praktikumsantrag antrag = erzeugeGueltigenAntrag();
@@ -158,10 +166,10 @@ class PBServiceTest {
 
         assertEquals("Fehler beim Speichern der Benachrichtigung", exception.getMessage()); //sodass wir Fehler beim Speichern der Nachrichten ausschliessen können
 
-
         verify(pBRepository, times(1)).findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
         verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
     }
+
     @Test
     void testAntragAblehnenErfolgreich() {
         // Vorbereitung: Mock eines Praktikumsantrags
@@ -188,7 +196,6 @@ class PBServiceTest {
         verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
     }
 
-
     @Test
     void testAntragAblehnen_AntragNichtGefunden() {
         when(praktikumsantragRepository.findById(1L)).thenReturn(Optional.empty());
@@ -197,9 +204,5 @@ class PBServiceTest {
 
         assertEquals("Fehler beim Finden des Praktikumsantrags.", exception.getMessage());
     }
-
-
-
-
 
 }
