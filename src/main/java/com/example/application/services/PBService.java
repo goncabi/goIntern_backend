@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import com.example.application.repositories.PBRepository;
+
 import java.util.Date;
 
 /**
@@ -28,7 +29,6 @@ public class PBService implements CommandLineRunner {
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final BenachrichtigungService benachrichtigungService;
 
-
     /**
      * Führt eine Initialisierungsaktion aus, indem ein Standard-Praktikumsbeauftragter in der Datenbank gespeichert wird.
      *
@@ -39,8 +39,6 @@ public class PBService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.PRAKTIKUMSBEAUFTRAGTER));
     }
-
-
 
     /**
      * Genehmigt einen Praktikumsantrag, indem der Status auf "ZUGELASSEN" gesetzt wird
@@ -69,18 +67,18 @@ public class PBService implements CommandLineRunner {
      * @throws IllegalStateException falls der Antrag nicht gefunden wird
      */
     public String antragAblehnen(String matrikelnummer, String ablehnenNotiz) {
-        if(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
+        if (praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
             Praktikumsantrag antrag = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer).get();
 
             //ab hier Bug von Fehlermeldung gefixt:
-           //hier Syntax etwas anders weil anderes Package von JSON Libary und mit jsonNode:
-            ObjectMapper objectMapper = new ObjectMapper();
+            //hier Syntax etwas anders weil anderes Package von JSON Libary und mit jsonNode:
+            ObjectMapper objectMapper = new ObjectMapper(); // der objectMapper kann einen JSON String lesen
             String kommentar = "";
             try {
                 JsonNode jsonNode = objectMapper.readTree(ablehnenNotiz); //jsonNode statt JsonObject
                 kommentar = jsonNode.get("kommentar").asText(); // kommentar ist ein Feld in dem JSON String
+            } catch (JsonProcessingException ignored) {
             }
-            catch (JsonProcessingException ignored) { }
             String begruendung = "Sehr geehrte Frau " + antrag.getNameStudentin() +
                     ", Ihr Praktikumsantrag wurde mit folgender Begründung abgelehnt: " + kommentar; //kommentar ist ein String JSON String vom Frontend
             Benachrichtigung ablehnungsNotiz = new Benachrichtigung(begruendung, new Date(), antrag.getMatrikelnummer());
@@ -88,8 +86,7 @@ public class PBService implements CommandLineRunner {
             antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
             benachrichtigungRepository.save(ablehnungsNotiz);
             return "Der Antrag von " + antrag.getNameStudentin() + " wurde erfolgreich abgelehnt und die Nachricht übermittelt.";
-        }
-        else{
+        } else {
             throw new IllegalStateException("Fehler beim Finden des Praktikumsantrags.");
         }
 
@@ -103,7 +100,7 @@ public class PBService implements CommandLineRunner {
     public void antragUebermitteln(Praktikumsantrag antrag) {
 
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
-                                                                    .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
+                .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
 
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
                 "Ein neuer Antrag mit der Matrikelnummer " + antrag.getMatrikelnummer() + " wurde übermittelt.",
@@ -130,21 +127,32 @@ public class PBService implements CommandLineRunner {
         benachrichtigungRepository.save(neueBenachrichtigung);
     }
 
-
     /**
      * Erstellt eine Benachrichtigung für den Praktikumsbeauftragten, dass ein neues Poster hochgeladen wurde.
      *
      * @param matrikelnummer Matrikelnummer des Antragsstellers
      */
     public void posterNachrichtUebermitteln(String matrikelnummer) {
+        //Praktikumsbeauftragter Objekt wird erstellt
+        //findbyUserRolle ist eine Obejktmethode vom praktikumsbeauftragterRepository
+        // Weil in Spring eine Klasse automatisch erzeugt wird die das Interface implentiert, kann von dieser Klasse ein Objekt erzeugt werden.
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
+                //wenn das Optional leer ist, was von der findbyUserRole Methode zurück gegegben wird, dann wird die Exception geworfen.
                 .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
 
+        //wenn alles passt dann wird eine Benachrichtigung erstellt:
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
                 "Ein neues Poster mit der Matrikelnummer " + matrikelnummer + " wurde übermittelt.",
+
+                //der Benachrichtigung muss ein Datum übergeben werden und das wird hier erzeugt.
                 new Date(),
+
+                // der Benachrichtigung muss gesagt werden, wer der Empfänger ist
+                //deswegen wird getUsername() aufgerufen.
                 pb.getUsername()
         );
+        // die neue Benachichtigung wird im benachrichtigungRepository gespeichert, weil
+        //das benachrichtigungRepository dafür zuständig zu speichern, zu holen und zu verändern.
         benachrichtigungRepository.save(neueBenachrichtigung);
     }
 }

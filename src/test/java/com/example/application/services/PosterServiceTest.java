@@ -16,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+
 class PosterServiceTest {
+
     @Mock
     private PosterRepository posterRepository;
 
@@ -29,7 +30,6 @@ class PosterServiceTest {
 
     @InjectMocks
     private PosterService posterService;
-
     private MockMultipartFile validFile;
     private MockMultipartFile invalidFile;
 
