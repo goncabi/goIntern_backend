@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import static org.mockito.Mockito.*;
 
-
 @SpringBootTest
 @Transactional // alle Daten Änderungen im Datenbank in Test-Kontext werden automatisch rückgängig gemacht
 @Validated //Aktiviert die Validierung, sodass @Valid funktioniert
@@ -70,19 +69,6 @@ class PraktikumsantragServiceTest {
         return antrag;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-//3tests
     @Test
     void testUpdateStatusErfolgreich() {
         String matrikelnummer = "123456";
@@ -98,7 +84,6 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
         verify(praktikumsantragRepository, times(1)).save(antrag);
     }
-
 
     @Test
     void testUpdateStatus_AntragNichtGefunden() {
@@ -127,7 +112,6 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).save(antrag);
     }
 
-
     @Test
     void testUpdateStatus_AbgelehnterAntrag() {
         String matrikelnummer = "123456";
@@ -142,7 +126,6 @@ class PraktikumsantragServiceTest {
         assertEquals(StatusAntrag.GESPEICHERT, antrag.getStatusAntrag());
         verify(praktikumsantragRepository, times(1)).save(antrag);
     }
-
 
     @Test
     void testUpdateStatus_UnveraenderterStatus() {
@@ -175,8 +158,6 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).save(any(Praktikumsantrag.class));
     }
 
-
-
     @Test
     void testAntragSpeichernErfolgreich() {
         String matrikelnummer = "12345678";
@@ -186,6 +167,8 @@ class PraktikumsantragServiceTest {
 
         verify(praktikumsantragRepository, times(1)).save(any(Praktikumsantrag.class));
     }
+
+
     @Test
     void testAntragErstellenMitVorhandenemAntrag() {
         // Crear un objeto Praktikumsantrag con datos válidos
