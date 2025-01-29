@@ -54,7 +54,7 @@ class LoginServiceTest {
         String correctPassword = "correctPassword";
         String wrongPassword = "wrongPassword";
         Studentin studentin = new Studentin(matrikelnummer, correctPassword, AppUserRole.STUDENTIN);
-        LoginAnfrage loginAnfrage = new LoginAnfrage("Student/in", matrikelnummer, wrongPassword);
+        LoginAnfrage loginAnfrage = new LoginAnfrage("Studentin", matrikelnummer, wrongPassword);
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(studentin));
 
@@ -68,7 +68,7 @@ class LoginServiceTest {
     void loginStudent_shouldReturnEmptyOptional_whenMatrikelnummerDoesNotExist() {
         String matrikelnummer = "s0123456";
         String password = "password";
-        LoginAnfrage loginAnfrage = new LoginAnfrage("Student/in", matrikelnummer, password);
+        LoginAnfrage loginAnfrage = new LoginAnfrage("Studentin", matrikelnummer, password);
 
         when(studentinRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.empty());
 
