@@ -198,8 +198,37 @@ class PBServiceTest {
         assertEquals("Fehler beim Finden des Praktikumsantrags.", exception.getMessage());
     }
 
+    @Test
+    void testAntragZurueckGezogen_success(){
+        Praktikumsbeauftragter pb = erzeugePraktikumsbeauftragter();
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)).thenReturn(Optional.of(pb));
+        pbService.antragZurueckgezogen("1234567");
+        verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
+    }
 
+    @Test
+    void testAntragZurueckGezogen_keinPB(){
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)).thenReturn(Optional.empty());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> pbService.antragZurueckgezogen("1234567"));
+        assertEquals("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden.", exception.getMessage());
+        verify(benachrichtigungRepository, never()).save(any());
+    }
 
+    @Test
+    void testPosterNachrichtUebermitteln_success(){
+        Praktikumsbeauftragter pb = erzeugePraktikumsbeauftragter();
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)).thenReturn(Optional.of(pb));
+        pbService.posterNachrichtUebermitteln("1234567");
+        verify(benachrichtigungRepository, times(1)).save(any(Benachrichtigung.class));
+    }
 
-
+    @Test
+    void testPosterNachrichtUebermitteln_keinPB(){
+        when(pBRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)).thenReturn(Optional.empty());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> pbService.antragZurueckgezogen("1234567"));
+        assertEquals("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden.", exception.getMessage());
+        verify(benachrichtigungRepository, never()).save(any());
+    }
 }
