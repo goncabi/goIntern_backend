@@ -87,7 +87,7 @@ public class PBService implements CommandLineRunner {
 
             antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
             benachrichtigungRepository.save(ablehnungsNotiz);
-            return "Der Antrag von " + antrag.getNameStudentin() + "wurde erfolgreich abgelehnt und die Nachricht übermittelt.";
+            return "Der Antrag von " + antrag.getNameStudentin() + " wurde erfolgreich abgelehnt und die Nachricht übermittelt.";
         }
         else{
             throw new IllegalStateException("Fehler beim Finden des Praktikumsantrags.");

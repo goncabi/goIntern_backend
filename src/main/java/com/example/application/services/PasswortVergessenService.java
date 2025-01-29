@@ -1,6 +1,5 @@
 package com.example.application.services;
 
-import com.example.application.models.Sicherheitsantwort;
 import com.example.application.models.Studentin;
 import com.example.application.repositories.SicherheitsantwortRepository;
 import com.example.application.repositories.SicherheitsfrageRepository;
