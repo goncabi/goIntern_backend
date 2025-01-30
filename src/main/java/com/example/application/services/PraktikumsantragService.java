@@ -90,14 +90,18 @@ public class PraktikumsantragService {
      * @throws RuntimeException Falls kein Antrag mit der angegebenen Matrikelnummer gefunden wurde.
      */
     public void antragLoeschen(String matrikelnummer) {
-        Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);// Es wird aus der Datenbank der Praktikumsantrag mit der ID <id> geholt
+        // Es wird aus der Datenbank der Praktikumsantrag mit der Matrikelnummer geholt.
+        Optional<Praktikumsantrag> praktikumsantragDB = praktikumsantragRepository.findByMatrikelnummer(matrikelnummer);
         if (praktikumsantragDB.isEmpty()) {
+            //Exception falls die Studentin kein Antrag hat.
             throw new RuntimeException("Praktikumsantrag für die Matrikelnummer: " + matrikelnummer +
                     " ist nicht vorhanden und kann nicht gelöscht werden");
         }
+        //hier wird der Antrag gelöscht
         praktikumsantragRepository.deleteById(praktikumsantragDB.get()
                 .getAntragsID());
         benachrichtigungService.unwichtigeNachrichtenLoeschen(matrikelnummer);
+        // wenn der Antrag zugelassen war, dann wird antragZurueckgezogen() aufgerufen.
         if(praktikumsantragDB.get().getStatusAntrag() == StatusAntrag.ZUGELASSEN){
             pbService.antragZurueckgezogen(matrikelnummer);
         }

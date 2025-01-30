@@ -116,9 +116,12 @@ public class PBService implements CommandLineRunner {
      * @param matrikelnummer Matrikelnummer des Antrags
      */
     public void antragZurueckgezogen(String matrikelnummer) {
+       // hier wird der pb erstellt und sich aus der Datenbank geholt. Wegen orElseThrow muss es kein Optional sein.
         Praktikumsbeauftragter pb = praktikumsbeauftragterRepository.findByUserRole(AppUserRole.PRAKTIKUMSBEAUFTRAGTER)
                 .orElseThrow(() -> new IllegalArgumentException("Kein Praktikumsbeauftragter mit der Rolle ADMIN gefunden."));
 
+        //hier wird eine Benachrichtigung erstellt und der Konstruktor aufgerufen
+        //und es werden Nachrichtentext, Datum und Username übergeben.
         Benachrichtigung neueBenachrichtigung = new Benachrichtigung(
                 "Der bereits zugelassene Antrag mit der Matrikelnummer " + matrikelnummer + " wurde zurückgezogen.",
                 new Date(),
