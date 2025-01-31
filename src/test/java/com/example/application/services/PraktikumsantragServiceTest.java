@@ -168,7 +168,6 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).save(any(Praktikumsantrag.class));
     }
 
-
     @Test
     void testAntragErstellenMitVorhandenemAntrag() {
         // Crear un objeto Praktikumsantrag con datos válidos
@@ -372,6 +371,41 @@ class PraktikumsantragServiceTest {
     }
 
     @Test
+    void testAntragLoeschenMitZugelassenemAntrag() {
+        String matrikelnummer = "1012120";
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ZUGELASSEN);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+        doNothing().when(praktikumsantragRepository).delete(antrag);
+        doNothing().when(pbService).antragZurueckgezogen(matrikelnummer);
+
+        praktikumsantragService.antragLoeschen(matrikelnummer);
+
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+        verify(praktikumsantragRepository, times(1)).deleteById(antrag.getAntragsID());
+        verify(pbService, times(1)).antragZurueckgezogen(matrikelnummer);
+    }
+
+    @Test
+    void testAntragLoeschenMitAbgelehntemAntrag() {
+        String matrikelnummer = "1012120";
+        Praktikumsantrag antrag = erzeugeGueltigenAntrag();
+        antrag.setMatrikelnummer(matrikelnummer);
+        antrag.setStatusAntrag(StatusAntrag.ABGELEHNT);
+
+        when(praktikumsantragRepository.findByMatrikelnummer(matrikelnummer)).thenReturn(Optional.of(antrag));
+        doNothing().when(praktikumsantragRepository).delete(antrag);
+
+        praktikumsantragService.antragLoeschen(matrikelnummer);
+
+        verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
+        verify(praktikumsantragRepository, times(1)).deleteById(antrag.getAntragsID());
+        verify(pbService, never()).antragZurueckgezogen(matrikelnummer);
+    }
+
+    @Test
     void testGetAllAntraege() {
         List<Praktikumsantrag> antraege = List.of(erzeugeGueltigenAntrag());
         when(praktikumsantragRepository.findAll()).thenReturn(antraege);
@@ -456,6 +490,5 @@ class PraktikumsantragServiceTest {
         verify(praktikumsantragRepository, times(1)).findByMatrikelnummer(matrikelnummer);
         verify(praktikumsantragRepository, never()).save(any(Praktikumsantrag.class));
     }
-
 }
 
