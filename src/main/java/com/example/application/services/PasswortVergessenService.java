@@ -5,6 +5,7 @@ import com.example.application.repositories.SicherheitsantwortRepository;
 import com.example.application.repositories.SicherheitsfrageRepository;
 import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class PasswortVergessenService {
 
+    private final PasswordEncoder passwordEncoder;
     private final SicherheitsantwortRepository sicherheitsantwortRepository;
     private final StudentinRepository studentinRepository;
     private final SicherheitsfrageRepository sicherheitsfrageRepository;
@@ -63,6 +65,7 @@ public class PasswortVergessenService {
 
     /**
      * Setzt das Passwort zurück, wenn die Antwort auf die Sicherheitsfrage übereinstimmt.
+     * Passwort wird mit BCrypt verschlüsselt.
      *
      * @param matrikelnummer Die Matrikelnummer des Nutzers
      * @param enteredAnswer Die eingegebene Antwort
@@ -76,7 +79,7 @@ public class PasswortVergessenService {
             if(requiredAnswer.equals(enteredAnswer)){
                 if(studentinRepository.findByMatrikelnummer(matrikelnummer).isPresent()) {
                     Studentin studentin = studentinRepository.findByMatrikelnummer(matrikelnummer).get();
-                    studentin.setPassword(passwort);
+                    studentin.setPassword(passwordEncoder.encode(passwort));
                     studentinRepository.save(studentin);
                     return true;
                 }

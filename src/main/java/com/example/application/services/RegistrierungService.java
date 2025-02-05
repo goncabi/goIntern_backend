@@ -18,6 +18,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class RegistrierungService {
 
+    /**
+     * Passwortverschlüsselung mit BCrypt
+     */
     private final PasswordEncoder passwordEncoder;
     /**
      * Repository für den Zugriff auf Studentin-Datensätze in der Datenbank.

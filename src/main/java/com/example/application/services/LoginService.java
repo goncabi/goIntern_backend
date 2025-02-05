@@ -40,6 +40,9 @@ public class LoginService {
      */
     private final PBRepository praktikumsbeauftragterRepository;
 
+    /**
+     * PasswortEncoder mit BCrypt
+     */
     private final PasswordEncoder passwordEncoder;
 
     /**
