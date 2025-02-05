@@ -4,6 +4,7 @@ import com.example.application.models.*;
 import com.example.application.repositories.PBRepository;
 import com.example.application.repositories.StudentinRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -39,6 +40,8 @@ public class LoginService {
      */
     private final PBRepository praktikumsbeauftragterRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     /**
      * Führt den Login-Vorgang basierend auf der Benutzerrolle durch.
      * <p>
@@ -69,7 +72,7 @@ public class LoginService {
      */
     private Optional<String> loginStudentin(String username, String password) {
         return studentinRepository.findByMatrikelnummer(username)
-                                  .filter(studentin -> studentin.getPassword().equals(password))
+                                  .filter(studentin -> passwordEncoder.matches(password, studentin.getPassword()))
                                   .map(Studentin::getMatrikelnummer);
     }
 
@@ -85,7 +88,7 @@ public class LoginService {
      */
     private Optional<String> loginPB(String username, String password) {
         return praktikumsbeauftragterRepository.findByUsername(username)
-                                               .filter(pb -> pb.getPasswort().equals(password))
+                                               .filter(pb -> passwordEncoder.matches(password, pb.getPasswort()))
                                                .map(pb -> "PRAKTIKUMSBEAUFTRAGTER"); //
     }
 
