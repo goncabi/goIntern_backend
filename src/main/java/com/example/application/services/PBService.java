@@ -22,23 +22,13 @@ import java.util.Date;
 @Service
 @AllArgsConstructor // <- die Annotation macht einen Konstuktor, sodass ich keinen machen muss.
 
-public class PBService implements CommandLineRunner {
+public class PBService {
 
     private final PBRepository praktikumsbeauftragterRepository;
     private final BenachrichtigungRepository benachrichtigungRepository;
     private final PraktikumsantragRepository praktikumsantragRepository;
     private final BenachrichtigungService benachrichtigungService;
 
-    /**
-     * Führt eine Initialisierungsaktion aus, indem ein Standard-Praktikumsbeauftragter in der Datenbank gespeichert wird.
-     *
-     * @param args Kommandozeilenargumente
-     * @throws Exception wenn ein Fehler während der Ausführung auftritt
-     */
-    @Override
-    public void run(String... args) throws Exception {
-        praktikumsbeauftragterRepository.save(new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.PRAKTIKUMSBEAUFTRAGTER));
-    }
 
     /**
      * Genehmigt einen Praktikumsantrag, indem der Status auf "ZUGELASSEN" gesetzt wird

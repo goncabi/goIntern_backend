@@ -61,23 +61,6 @@ class PBServiceTest {
     }
 
     @Test
-    void testRun() throws Exception {
-        Praktikumsbeauftragter mockPB = new Praktikumsbeauftragter("Jörn Freiheit", "AbInDieFreiheit13579!", AppUserRole.PRAKTIKUMSBEAUFTRAGTER);
-
-        pbService.run();
-
-        verify(pBRepository, atLeastOnce()).save(mockPB);
-    }
-
-    @Test
-    void testRunThrowsException() {
-        doThrow(new RuntimeException("Fehler beim Speichern")).when(pBRepository)
-                .save(any(Praktikumsbeauftragter.class));
-
-        assertThrows(RuntimeException.class, () -> pbService.run());
-    }
-
-    @Test
     void testAntragGenehmigen() {
         // Vorbereitung: Mock eines gültigen Praktikumsantrags
         String matrikelnummer = "s1234567";
