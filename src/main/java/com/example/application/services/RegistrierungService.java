@@ -5,6 +5,7 @@ import com.example.application.repositories.StudentinRepository;
 import com.example.application.models.RegistrierungsAnfrage;
 import com.example.application.repositories.SicherheitsantwortRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Objects;
 
@@ -16,6 +17,8 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class RegistrierungService {
+
+    private final PasswordEncoder passwordEncoder;
     /**
      * Repository für den Zugriff auf Studentin-Datensätze in der Datenbank.
      */
@@ -32,7 +35,7 @@ public class RegistrierungService {
      * <ul>
      *     <li>Prüft, ob die angegebenen Passwörter übereinstimmen.</li>
      *     <li>Überprüft, ob die Matrikelnummer (Benutzername) bereits existiert.</li>
-     *     <li>Speichert die neue Studentin in der Datenbank, falls die Matrikelnummer noch nicht existiert.</li>
+     *     <li>Speichert die neue Studentin in der Datenbank mit verschlüsseltem Passwort, falls die Matrikelnummer noch nicht existiert.</li>
      *     <li>Speichert die Sicherheitsantwort für die Authentifizierung in der Datenbank.</li>
      * </ul>
      * </p>
@@ -55,6 +58,7 @@ public class RegistrierungService {
             }
             else {
                 Studentin studentin = new Studentin(anfrage.getUsername(), anfrage.getPassword(), AppUserRole.STUDENTIN);
+                studentin.setPassword(passwordEncoder.encode(anfrage.getPassword()));
                 studentinRepository.save(studentin);
 
                 int frageId = Integer.parseInt(anfrage.getFrageId());
