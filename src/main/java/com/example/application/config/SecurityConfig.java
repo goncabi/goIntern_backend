@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 public class SecurityConfig {
 
@@ -24,7 +25,14 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form.disable()) // Kein Login-Formular
-                .httpBasic(httpBasic -> httpBasic.disable()); // Kein Basic-Auth
+                .httpBasic(httpBasic -> httpBasic.disable()) // Kein Basic-Auth
+                .formLogin(form -> form.disable()) // No usar formularios de login
+                .httpBasic(httpBasic -> httpBasic.disable()) // No usar autenticación básica
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.disable()) // 🔥 SOLUCIÓN: Deshabilitar bloqueos de iframe
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("frame-ancestors *")) // Permitir iframes desde cualquier origen
+                );
+
 
         return http.build();
     }
