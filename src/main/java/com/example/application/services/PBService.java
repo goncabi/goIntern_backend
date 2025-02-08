@@ -8,7 +8,6 @@ import com.example.application.models.Benachrichtigung;
 import com.example.application.repositories.BenachrichtigungRepository;
 import com.example.application.repositories.PraktikumsantragRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import com.example.application.repositories.PBRepository;
 
