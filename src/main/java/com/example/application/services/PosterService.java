@@ -57,4 +57,10 @@ public class PosterService {
         return posterRepository.findByMatrikelnummer(matrikelnummer)
                 .orElseThrow(() -> new RuntimeException("Poster nicht gefunden"));
     }
+
+    public boolean isPosterAvailable(String matrikelnummer) {
+        return posterRepository.existsByMatrikelnummer(matrikelnummer);
+    }
+
+
 }

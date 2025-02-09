@@ -7,6 +7,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Der PosterController stellt Rest-Endpunkte zur Verfügung,
  * die den Upload und Download von Pdf-Dokumenten ermöglichen.
@@ -55,6 +59,12 @@ public class PosterController {
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @GetMapping("/exists/{matrikelnummer}")
+    public ResponseEntity<Boolean> checkIfPosterExists(@PathVariable String matrikelnummer) {
+        boolean exists = posterService.isPosterAvailable(matrikelnummer);
+        return ResponseEntity.ok(exists);
     }
 
 }
