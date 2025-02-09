@@ -47,4 +47,6 @@ public interface PosterRepository extends JpaRepository<Poster, Long> {
     Rückgabewert: Ein Optional<Poster> (leer, wenn kein Eintrag gefunden wurde).
   */
     Optional<Poster> findByMatrikelnummer(String matrikelnummer);
+    boolean existsByMatrikelnummer(String matrikelnummer);
+
 }
