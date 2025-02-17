@@ -19,30 +19,24 @@ Java JDK 21 (Backend)
 Installation Steps
 Clone the repositories:
 
-bash
 git clone https://github.com/goncabi/goIntern_frontend
 git clone https://github.com/goncabi/goIntern_backend
 
 ### Navigate to the project directories:
 
-bash
 cd goIntern_frontend
 cd goIntern_backend
 
 ### Install Dependencies
 
 Backend:
-bash
 mvn clean install
 
 Frontend:
-bash
 npm install
 
 ### Run the Application
 To run both frontend and backend simultaneously:
-
-bash
 
 mvn spring-boot:run
 
@@ -51,6 +45,7 @@ The application will be available at http://localhost:8080.
 The project can also be imported into your preferred IDE (Eclipse, IntelliJ IDEA, NetBeans, or VS Code). For more details, check the Vaadin Documentation.
 
 ## 🚀 Usage and Main Features
+
 ### Key Features
 Registration and Authentication (Login): Students can register and log in to the system.
 Internship Management: Allows students to fill in internship details, save drafts, delete, and submit applications.
@@ -60,9 +55,10 @@ Status Management: Applications have different statuses (Open, Approved, Rejecte
 Poster Upload: After completing the internship, students can upload a poster for verification by the internship coordinator.
 
 ## 🔬 Project Structure
-sql
+
+
 goIntern_frontend/
-|-- .idea/                     # IntelliJ IDEA config files
+|-- .idea/                     # IntelliJ IDEA config file
 |-- .mvn/                      # Maven Wrapper
 |-- src/
 |   |-- main/
@@ -78,6 +74,7 @@ goIntern_frontend/
 |   |   |   |   |-- views/     # UI components
 |-- pom.xml                    # Maven build file
 |-- package.json               # npm dependencies
+
 
 goIntern_backend/
 |-- .idea/                     # IntelliJ IDEA config files
