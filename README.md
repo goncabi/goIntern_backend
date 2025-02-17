@@ -4,8 +4,12 @@ Dies ist das Backend von GoIntern, einer Plattform zur Verwaltung von Praktikums
 Es wurde mit Spring Boot 3 und PostgreSQL entwickelt und bietet eine REST API für das Frontend.
 
 ## 🚀 Funktionen
-✅ Benutzerauthentifizierung → Registrieren, Login, JWT-Token
-✅ Praktikumsanträge verwalten → Erstellen, Bearbeiten, Löschen, Genehmigen, Ablehnen, Abbrechen, Arbeitstageberechnung, Poster hochlanden als PDF ✅ Rollenmanagement → Studenten & Praktikumsbeauftragte
+✅ Benutzerauthentifizierung → Registrieren, Login, Passwort-Encoder
+
+✅ Praktikumsanträge verwalten → Erstellen, Bearbeiten, Löschen, Genehmigen, Ablehnen, Abbrechen, Arbeitstageberechnung, Poster hochlanden als PDF 
+
+✅ Rollenmanagement → Studenten & Praktikumsbeauftragte
+
 ✅ REST-API für das Frontend
 
 ## 🛠️ Tech Stack
