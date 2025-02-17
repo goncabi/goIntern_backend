@@ -25,7 +25,7 @@ Es wurde mit **Spring Boot 3 und PostgreSQL** entwickelt und bietet eine REST AP
 - **Maven installiert**  
 
 ### **🔹 Schritte zur Installation**
-1️⃣ **Repository klonen:**  
+**Repository klonen:**  
 git clone https://github.com/goncabi/gointern-backend.git
 cd gointern-backend
 
