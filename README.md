@@ -37,10 +37,15 @@ REST API testen (Swagger UI verfügbar unter):
  
 🔗 http://localhost:3000/documentation
 
-📩 Kontakt
 
-👤 Entwickler: goncabi
+📧 E-Mail: 
 
-📧 E-Mail: gabriela.goncalvez@posteo.net
+Mira.Khreis@Student.HTW-Berlin.de<br>
+Angela.Barzaeva@Student.HTW-Berlin.de<br>
+Beyza.Acikgoez@Student.HTW-Berlin.de<br>
+Merlind.Pohl@Student.HTW-Berlin.de<br>
+Noa.Sauter@Student.HTW-Berlin.de<br>
+Gabriela.GoncalvezMontero@Student.HTW-Berlin.de<br>
+Maryam.Mirza@Student.HTW-Berlin.de
 
 🔗 Frontend Repo: GitHub - gointern-frontend
