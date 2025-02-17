@@ -22,19 +22,24 @@ Es wurde mit Spring Boot 3 und PostgreSQL entwickelt und bietet eine REST API f�
 
 ### 🔹 Voraussetzungen
 Java JDK 21
+
 PostgreSQL installiert
+
 Maven installiert
 
 ### 🔹 Schritte zur Installation
 
-Repository klonen:
-git clone https://github.com/goncabi/gointern-backend.git cd gointern-backend
+#### Repository klonen:
 
-Backend starten:
+git clone https://github.com/goncabi/gointern-backend.git 
+
+cd gointern-backend
+
+##### Backend starten:
 
 mvn spring-boot:run
 
-REST API testen (Swagger UI verfügbar unter):
+#### REST API testen (Swagger UI verfügbar unter):
 
 🔗 http://localhost:3000/documentation
 
