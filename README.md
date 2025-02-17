@@ -38,6 +38,9 @@ REST API testen (Swagger UI verfügbar unter):
 🔗 http://localhost:8080/dokumentation
 
 📩 Kontakt
+
 👤 Entwickler: goncabi
+
 📧 E-Mail: gabriela.goncalvez@posteo.net
+
 🔗 Frontend Repo: GitHub - gointern-frontend
