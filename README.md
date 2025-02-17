@@ -35,7 +35,7 @@ mvn spring-boot:run
 
 REST API testen (Swagger UI verfügbar unter):
  
-🔗 http://localhost:8080/dokumentation
+🔗 http://localhost:3000/documentation
 
 📩 Kontakt
 
